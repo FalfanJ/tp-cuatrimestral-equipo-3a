@@ -118,7 +118,6 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Home.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="NavBar.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -127,6 +126,11 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Clientes.aspx" />
+    <Content Include="Productos.aspx" />
+    <Content Include="ComprasVentas.aspx" />
+    <Content Include="ReporteFactura.aspx" />
+    <Content Include="MarcasCategorias.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -172,13 +176,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Home.aspx.cs">
-      <DependentUpon>Home.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Home.aspx.designer.cs">
-      <DependentUpon>Home.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -207,6 +204,41 @@
     </Compile>
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Clientes.aspx.cs">
+      <DependentUpon>Clientes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Clientes.aspx.designer.cs">
+      <DependentUpon>Clientes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Productos.aspx.cs">
+      <DependentUpon>Productos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Productos.aspx.designer.cs">
+      <DependentUpon>Productos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ComprasVentas.aspx.cs">
+      <DependentUpon>ComprasVentas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ComprasVentas.aspx.designer.cs">
+      <DependentUpon>ComprasVentas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReporteFactura.aspx.cs">
+      <DependentUpon>ReporteFactura.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReporteFactura.aspx.designer.cs">
+      <DependentUpon>ReporteFactura.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MarcasCategorias.aspx.cs">
+      <DependentUpon>MarcasCategorias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MarcasCategorias.aspx.designer.cs">
+      <DependentUpon>MarcasCategorias.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

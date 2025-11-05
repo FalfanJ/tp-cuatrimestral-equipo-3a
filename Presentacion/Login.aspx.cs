@@ -41,7 +41,7 @@ namespace Presentacion
             if (email == "perfiladmin@comercio.com" && password == "12345")
             {
                 Session["usuario"] = email;
-                Response.Redirect("Home.aspx");
+                Response.Redirect("~/Default.aspx");
             }
             else
             {

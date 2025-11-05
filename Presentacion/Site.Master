@@ -40,7 +40,66 @@
         </asp:ScriptManager>
 
         <!--Barra de navegacion-->
+     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid">
+        <!-- Marca -->
+        <a class="navbar-brand fw-bold" href="~/Default.aspx">
+            🧰 Ferretería Dos Clavos
+        </a>
 
+        <!-- Botón hamburguesa para pantallas chicas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Contenido del menú -->
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Menú desplegable principal -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="menuGestion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menú
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="menuGestion">
+    <li><a runat="server" href="~/Clientes.aspx" class="dropdown-item">Clientes</a></li>
+    <li><a runat="server" href="~/Productos.aspx" class="dropdown-item">Productos</a></li>
+    <li><a runat="server" href="~/MarcasCategorias.aspx" class="dropdown-item">Marcas y Categorías</a></li>
+    <li><a runat="server" href="~/ComprasVentas.aspx" class="dropdown-item">Compras y Ventas</a></li>
+    <li><a runat="server" href="~/ReporteFactura.aspx" class="dropdown-item">Reportes / Facturación</a></li>
+</ul>
+                </li>
+            </ul>
+
+            <!-- Sección derecha: usuario y login -->
+            <ul class="navbar-nav ms-auto">
+                <asp:LoginView runat="server">
+                    <AnonymousTemplate>
+                        <li class="nav-item">
+                           <a runat="server" href="~/Login.aspx" class="nav-link">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+                            </a>
+                        </li>
+                    </AnonymousTemplate>
+                    <LoggedInTemplate>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i><asp:LoginName runat="server" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
+                                <li><a class="dropdown-item" href="~/Perfil.aspx">Mi Perfil</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutPageUrl="Login.aspx"
+                                        CssClass="dropdown-item text-danger" LogoutText="Cerrar sesión" />
+                                </li>
+                            </ul>
+                        </li>
+                    </LoggedInTemplate>
+                </asp:LoginView>
+            </ul>
+        </div>
+    </div>
+</nav>
         <!--Contenido principal-->
         <main class="container mt-4" style="flex: 1;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
