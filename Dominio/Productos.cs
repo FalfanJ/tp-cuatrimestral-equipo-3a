@@ -9,6 +9,7 @@ namespace Dominio
     public class Productos
     {
         public int IdProducto { get; set; }
+        public int NSerie { get; set; }
         public int Precio { get; set; }
         public int Stock { get; set; }
         public int StockMinimo { get; set; }
@@ -16,5 +17,6 @@ namespace Dominio
         public Marcas Marca { get; set; }
         public Categorias Categoria { get; set; }
         public List<Proveedores> Proveedor { get; set; } = new List<Proveedores>();
+        public List<Imagenes> Imagenes { get; set; } = new List<Imagenes>();
     }
 }

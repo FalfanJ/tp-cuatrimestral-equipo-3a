@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Ventas
+    public class Compras
     {
-        public int IDVenta { get; set; }
-        public Clientes Cliente { get; set; }
-        public DateTime fecha { get; set; }
+        public int IDCompra { get; set; }
+        public int IDProveedor { get; set; }
+        public int IDUsurairo { get; set; }
+        public DateTime Fecha { get; set; }
         public List<DetalleOperacion> Productos { get; set; } = new List<DetalleOperacion>();
         public int Total { get; set; }
 

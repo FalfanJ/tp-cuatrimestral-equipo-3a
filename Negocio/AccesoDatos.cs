@@ -19,7 +19,7 @@ namespace Negocio
         }
         public AccesoDatos()
         {
-            conexion = new SqlConnection("server=.\\SQLEXPRESS; database=BD_COMERICO; integrated security=true");
+            conexion = new SqlConnection("server=.\\SQLEXPRESS; database=BD_COMERCIO; integrated security=true");
             comando = new SqlCommand();
         }
         public void SetearConsulta(string consulta)
