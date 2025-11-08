@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Productos
+    public class Producto
     {
         public int IdProducto { get; set; }
         public int NSerie { get; set; }
+        public Marca Marca { get; set; }
+        public Categoria Categoria { get; set; }
+        public string Nombre { get; set; }
         public int Precio { get; set; }
         public int Stock { get; set; }
         public int StockMinimo { get; set; }
+        public int PorcentajeGanancia { get; set; }
+        public string Modelo { get; set; }
         public string Descripcion { get; set; }
-        public Marcas Marca { get; set; }
-        public Categorias Categoria { get; set; }
-        public List<Proveedores> Proveedor { get; set; } = new List<Proveedores>();
-        public List<Imagenes> Imagenes { get; set; } = new List<Imagenes>();
+        public List<Imagen> Imagenes { get; set; } = new List<Imagen>();
     }
 }

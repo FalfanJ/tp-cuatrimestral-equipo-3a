@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Marcas
+    public class Categoria
     {
-        public int IdMarca { get; set; }
-        public string Marca { get; set; }
+        public int IdCategoria { get; set; }
+        public string Nombre { get; set; }
     }
 }
