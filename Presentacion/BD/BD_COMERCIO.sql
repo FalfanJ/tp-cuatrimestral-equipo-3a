@@ -36,7 +36,8 @@ CREATE TABLE Producto_Imagenes(
     IDImagen BIGINT NOT NULL UNIQUE IDENTITY(1,1),
     IDProducto BIGINT NOT NULL,
 	Direccion NVARCHAR(255) NOT NULL,
-	PRIMARY KEY(IDImagen)
+	PRIMARY KEY(IDImagen),
+    FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto)
 )
 GO
 CREATE TABLE Personas(
@@ -45,7 +46,7 @@ CREATE TABLE Personas(
 	Apellido NVARCHAR(50) NOT NULL,
 	DNI SMALLINT NULL,
 	CUIT SMALLINT NULL,
-    TipoPersona BOOLEAN NOT NULL,
+    TipoPersona BIT NOT NULL,
 	Telefono SMALLINT NOT NULL,
 	Email NVARCHAR(70) NULL,
     Direccion NVARCHAR(100) NULL,
