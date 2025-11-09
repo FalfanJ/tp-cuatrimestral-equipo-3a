@@ -11,8 +11,8 @@ namespace Dominio
         public Int64 IdPersona { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        public Int64 Dni { get; set; }
-        public Int64 Cuit { get; set; }
+        public Int64? Dni { get; set; }
+        public Int64? Cuit { get; set; }
         public bool TipoPersona { get; set; }
         public Int64 Telefono { get; set; }
         public string Email { get; set; }

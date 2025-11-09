@@ -21,10 +21,15 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     HistorialMovimiento aux = new HistorialMovimiento();
-                    aux.IdHistorial = (int)datos.Lector["IDHistorial"];
-                    aux.Producto.IdProducto = (int)datos.Lector["IDProducto"];
-                    aux.Venta.IdVenta = (int)datos.Lector["IDVenta"];
-                    aux.Compra.IdCompra = (int)datos.Lector["IDCompra"];
+                    aux.IdHistorial = (Int64)datos.Lector["IDHistorial"];
+                    aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
+
+                    if (!(datos.Lector["IDVenta"] is DBNull))
+                        aux.Venta.IdVenta = (Int64)datos.Lector["IDVenta"];
+
+                    if (!(datos.Lector["IDCompra"] is DBNull))
+                        aux.Compra.IdCompra = (Int64)datos.Lector["IDCompra"];
+
                     aux.StockAnterior = (int)datos.Lector["StockAnterior"];
                     aux.StockPosterior = (int)datos.Lector["StockPosterior"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];

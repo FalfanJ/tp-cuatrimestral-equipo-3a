@@ -21,9 +21,9 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     Venta aux = new Venta();
-                    aux.IdVenta = (int)datos.Lector["IDVenta"];
-                    aux.Cliente.IdCliente = (int)datos.Lector["IDCliente"];
-                    aux.Usuario.IdUsuario = (int)datos.Lector["IDUsuario"];
+                    aux.IdVenta = (Int64)datos.Lector["IDVenta"];
+                    aux.Cliente.IdCliente = (Int64)datos.Lector["IDCliente"];
+                    aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
                     aux.NFactura = (string)datos.Lector["NFactura"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
                     aux.Total = (int)datos.Lector["Total"];

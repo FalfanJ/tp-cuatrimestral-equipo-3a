@@ -21,8 +21,8 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     DetalleVenta aux = new DetalleVenta();
-                    aux.IdVenta = (int)datos.Lector["IDVenta"];
-                    aux.Producto.IdProducto = (int)datos.Lector["IDProducto"];
+                    aux.IdVenta = (Int64)datos.Lector["IDVenta"];
+                    aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.Cantidad = (int)datos.Lector["Cantidad"];
                     aux.PrecioUnitario = (int)datos.Lector["PrecioUnitario"];
                     aux.PrecioParcial= (int)datos.Lector["PrecioParcial"];

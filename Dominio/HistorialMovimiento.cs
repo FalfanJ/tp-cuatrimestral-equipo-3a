@@ -8,7 +8,7 @@ namespace Dominio
 {
     public class HistorialMovimiento
     {
-        public int IdHistorial { get; set; }
+        public Int64 IdHistorial { get; set; }
         public Producto Producto { get; set; }
         public Venta Venta { get; set; }
         public Compra Compra { get; set; }

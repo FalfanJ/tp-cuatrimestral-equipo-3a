@@ -21,8 +21,8 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     Imagen aux = new Imagen();
-                    aux.IdImagen = (int)datos.Lector["IDImagen"];
-                    aux.IdProducto = (int)datos.Lector["IDProducto"];
+                    aux.IdImagen = (Int64)datos.Lector["IDImagen"];
+                    aux.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.Direccion = (string)datos.Lector["Direccion"];
                     lista.Add(aux);
                 }

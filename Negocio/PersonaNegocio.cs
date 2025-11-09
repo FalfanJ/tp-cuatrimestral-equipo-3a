@@ -24,12 +24,19 @@ namespace Negocio
                     aux.IdPersona = (Int64)datos.Lector["IDPersona"];
                     aux.Nombre= (string)datos.Lector["Nombre"];
                     aux.Apellido= (string)datos.Lector["Apellido"];
-                    aux.Dni= (Int64)datos.Lector["DNI"];
-                    aux.Cuit= (Int64)datos.Lector["CUIT"];
+
+                    if (!(datos.Lector["DNI"] is DBNull))
+                        aux.Dni= (Int64)datos.Lector["DNI"];
+                    if (!(datos.Lector["CUIT"] is DBNull))
+                        aux.Cuit= (Int64)datos.Lector["CUIT"];
+
                     aux.TipoPersona= (bool)datos.Lector["TipoPersona"];
                     aux.Telefono= (Int64)datos.Lector["Telefono"];
-                    aux.Email= (string)datos.Lector["Email"];
-                    aux.Direccion= (string)datos.Lector["Direccion"];
+
+                    if (!(datos.Lector["Email"] is DBNull))
+                        aux.Email= (string)datos.Lector["Email"];
+                    if (!(datos.Lector["Direccion"] is DBNull))
+                        aux.Direccion= (string)datos.Lector["Direccion"];
 
                     lista.Add(aux);
                 }

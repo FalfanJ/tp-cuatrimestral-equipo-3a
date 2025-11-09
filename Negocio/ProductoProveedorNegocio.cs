@@ -21,9 +21,9 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     ProductoProveedor aux = new ProductoProveedor();
-                    aux.IDPP = (int)datos.Lector["IDPP"];
-                    aux.Producto.IdProducto = (int)datos.Lector["IDProducto"];
-                    aux.Proveedor.IdProveedor = (int)datos.Lector["IDProveedor"];
+                    aux.IDPP = (Int64)datos.Lector["IDPP"];
+                    aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
+                    aux.Proveedor.IdProveedor = (Int64)datos.Lector["IDProveedor"];
                     aux.FechaAlta = (DateTime)datos.Lector["FechaAlta"];
                     aux.FechaBaja = (DateTime)datos.Lector["FechaBaja"];
                     lista.Add(aux);

@@ -79,10 +79,14 @@ namespace Negocio
         public void Modificar(Proveedor modificado)
         {
             AccesoDatos datos = new AccesoDatos();
-
+            PersonaNegocio perNeg = new PersonaNegocio();
             try
             {
-
+                perNeg.Modificar(modificado);
+                datos.SetearConsulta("UPDATE Proveedor SET RazonSocial = @razonsocial WHERE IDProveedor = @idproveedor");
+                datos.SetearParametro("@idproveedor", modificado.IdProveedor);
+                datos.SetearParametro("@razonsocial", modificado.RazonSocial);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {

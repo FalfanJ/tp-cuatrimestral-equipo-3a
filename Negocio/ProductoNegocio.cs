@@ -21,15 +21,19 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     Producto aux = new Producto();
-                    aux.IdProducto = (int)datos.Lector["IDProducto"];
+                    aux.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.NSerie = (string)datos.Lector["NumeroSerie"];
                     aux.Nombre = (string)datos.Lector["Nombre"];
                     aux.Precio = (int)datos.Lector["Precio"];
                     aux.Stock = (int)datos.Lector["StockActual"];
                     aux.StockMinimo = (int)datos.Lector["StockMinimo"];
                     aux.PorcentajeGanancia = (int)datos.Lector["PorcentajeGanancia"];
-                    aux.Modelo = (string)datos.Lector["Modelo"];
-                    aux.Descripcion = (string)datos.Lector["Descripcion"];
+
+                    if (!(datos.Lector["Modelo"] is DBNull))
+                        aux.Modelo = (string)datos.Lector["Modelo"];
+                    
+                    if(!(datos.Lector["Descripcion"] is DBNull))
+                        aux.Descripcion = (string)datos.Lector["Descripcion"];
 
                     if (!(datos.Lector["Marca"] is DBNull))
                     {

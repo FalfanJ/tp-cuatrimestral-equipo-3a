@@ -59,7 +59,14 @@ namespace Negocio
         }
         public void SetearParametro(string nombreParametro, object valor)
         {
-            comando.Parameters.AddWithValue(nombreParametro, valor);
+            if (!(valor == null))
+            {
+                comando.Parameters.AddWithValue(nombreParametro, valor);
+            }
+            else
+            {
+                comando.Parameters.AddWithValue(nombreParametro, DBNull.Value);
+            }
         }
         public void CerrarConexion()
         {

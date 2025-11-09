@@ -8,7 +8,7 @@ namespace Dominio
 {
     public class ProductoProveedor
     {
-        public int IDPP { get; set; }
+        public Int64 IDPP { get; set; }
         public Producto Producto { get; set; }
         public Proveedor Proveedor { get; set; }
         public DateTime FechaAlta { get; set; }

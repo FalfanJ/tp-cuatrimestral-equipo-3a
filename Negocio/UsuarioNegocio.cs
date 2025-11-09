@@ -87,8 +87,12 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("");
-                datos.SetearParametro("@", modificado);
+                perNeg.Modificar(modificado);
+                datos.SetearConsulta("UPDATE Usuarios SET TipoUsuario = @tipousuario, NombreUsuario = @nombreusuario, Contraseña = @contraseña WHERE IDUsuario = @idusuario");
+                datos.SetearParametro("@idusuario", modificado.IdUsuario);
+                datos.SetearParametro("@tipousuario", modificado.TipoUsuario);
+                datos.SetearParametro("@nombreusuario", modificado.NombreUsuario);
+                datos.SetearParametro("@contraseña", modificado.Contraseña);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)

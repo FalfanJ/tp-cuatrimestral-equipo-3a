@@ -26,9 +26,9 @@ namespace Consola
             ProveedorNegocio negProveedor = new ProveedorNegocio();
             UsuarioNegocio negUsuario = new UsuarioNegocio();
             VentaNegocio negVeta = new VentaNegocio();
-            
-            //negCliente.Agregar(new Cliente { Nombre = "Rod", Apellido = "Falta", Dni = 4544212, Cuit=21421311, TipoPersona=true, Telefono= 1166339988, Email="zo@gmail.com", Direccion="AV123"});
 
+            //negCliente.Agregar(new Cliente { Nombre = "Rod", Apellido = "Falta", Dni = 4544212, Cuit=21421311, TipoPersona=true, Telefono= 1166339988, Email="zo@gmail.com", Direccion="AV123"});
+            negPersona.Agregar(new Persona { Nombre = "mm", Apellido = "RR", TipoPersona = false, Telefono = 445132132 });
 
 
             List<Persona> personaLista = new List<Persona>();
@@ -69,7 +69,9 @@ namespace Consola
                 Console.WriteLine(item.Email);
                 Console.WriteLine(item.Direccion);
                 Console.WriteLine("\n");
+                negCliente.Modificar(item);
             }
+
             Console.WriteLine("Lista Proveedor\n");
             foreach (Proveedor item in ProveedorLista)
             {
