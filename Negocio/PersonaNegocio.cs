@@ -24,10 +24,10 @@ namespace Negocio
                     aux.IdPersona = (Int64)datos.Lector["IDPersona"];
                     aux.Nombre= (string)datos.Lector["Nombre"];
                     aux.Apellido= (string)datos.Lector["Apellido"];
-                    aux.Dni= (int)datos.Lector["DNI"];
-                    aux.Cuit= (int)datos.Lector["CUIT"];
+                    aux.Dni= (Int64)datos.Lector["DNI"];
+                    aux.Cuit= (Int64)datos.Lector["CUIT"];
                     aux.TipoPersona= (bool)datos.Lector["TipoPersona"];
-                    aux.Telefono= (int)datos.Lector["Telefono"];
+                    aux.Telefono= (Int64)datos.Lector["Telefono"];
                     aux.Email= (string)datos.Lector["Email"];
                     aux.Direccion= (string)datos.Lector["Direccion"];
 
