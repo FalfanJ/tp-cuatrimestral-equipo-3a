@@ -12,15 +12,40 @@ namespace Negocio
         public List<Cliente> Listar()
         {
             List<Cliente> lista = new List<Cliente>();
+            List<Persona> perList = new List<Persona>();
             AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
+                perList = perNeg.Listar();
+                datos.SetearConsulta("SELECT IDCliente, IDPersona FROM Clientes");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    Cliente aux = new Cliente();
+                    aux.IdCliente = (Int64)datos.Lector["IDCliente"];
+                    aux.IdPersona = (Int64)datos.Lector["IDPersona"];
+                    foreach (Persona item in perList)
+                    {
+                        if (item.IdPersona == aux.IdPersona)
+                        {
+                            aux.Nombre = item.Nombre;
+                            aux.Apellido = item.Apellido;
+                            aux.Dni = item.Dni;
+                            aux.Cuit = item.Cuit;
+                            aux.TipoPersona = item.TipoPersona;
+                            aux.Telefono = item.Telefono;
+                            aux.Email = item.Email;
+                            aux.Direccion = item.Direccion;
+                        }
+                    }
+                    lista.Add(aux);
+                }
                 return lista;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
             finally
@@ -31,10 +56,13 @@ namespace Negocio
         public void Agregar(Cliente nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
-
+            PersonaNegocio perNeg = new PersonaNegocio();
             try
             {
-
+                Int64 idPersona = perNeg.AgregarYObtener(nuevo);
+                datos.SetearConsulta("INSERT INTO Clientes (IDPersona) VALUES (@idpersona)");
+                datos.SetearParametro("@idpersona", idPersona);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
@@ -48,10 +76,11 @@ namespace Negocio
         public void Modificar(Cliente modificado)
         {
             AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-
+                perNeg.Modificar(modificado);
             }
             catch (Exception ex)
             {
@@ -59,7 +88,6 @@ namespace Negocio
             }
             finally
             {
-                datos.CerrarConexion();
             }
         }
         public void BajaLogica(int ID)

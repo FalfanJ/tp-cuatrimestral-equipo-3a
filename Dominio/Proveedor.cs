@@ -8,7 +8,7 @@ namespace Dominio
 {
     public class Proveedor : Persona
     {
-        public int IdProveedor { get; set; }
+        public Int64 IdProveedor { get; set; }
         public string RazonSocial { get; set; }
     }
 }

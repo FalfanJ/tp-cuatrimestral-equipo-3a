@@ -12,16 +12,37 @@ namespace Negocio
         public List<Usuario> Listar()
         {
             List<Usuario> lista = new List<Usuario>();
+            List<Persona> perList = new List<Persona>();
             AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-                datos.SetearConsulta("");
+                perList = perNeg.Listar();
+                datos.SetearConsulta("SELECT IDUsuario, IDPersona, TipoUsuario, NombreUsuario, Contraseña FROM Usuarios");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
                     Usuario aux = new Usuario();
-
+                    aux.IdUsuario = (Int64)datos.Lector["IDUsuario"];
+                    aux.IdUsuario = (Int64)datos.Lector["IDPersona"];
+                    aux.TipoUsuario = (string)datos.Lector["TipoUsuario"];
+                    aux.NombreUsuario = (string)datos.Lector["NombreUsuario"];
+                    aux.Contraseña = (string)datos.Lector["Contraseña"];
+                    foreach (Persona item in perList)
+                    {
+                        if (item.IdPersona == aux.IdPersona)
+                        {
+                            aux.Nombre = item.Nombre;
+                            aux.Apellido = item.Apellido;
+                            aux.Dni = item.Dni;
+                            aux.Cuit = item.Cuit;
+                            aux.TipoPersona = item.TipoPersona;
+                            aux.Telefono = item.Telefono;
+                            aux.Email = item.Email;
+                            aux.Direccion = item.Direccion;
+                        }
+                    }
                     lista.Add(aux);
                 }
                 return lista;
@@ -38,11 +59,16 @@ namespace Negocio
         public void Agregar(Usuario nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-                datos.SetearConsulta("");
-                datos.SetearParametro("@", nuevo);
+                Int64 idPersona = perNeg.AgregarYObtener(nuevo);
+                datos.SetearConsulta("INSERT INTO Usuarios (IDPersona, TipoUsuario, NombreUsuario, Contraseña) VALUES (@idpersona, @tipousuario, @nombreusuario, @contraseña)");
+                datos.SetearParametro("@idpersona", idPersona);
+                datos.SetearParametro("@tipousuario", nuevo.TipoUsuario);
+                datos.SetearParametro("@nombreusuario", nuevo.NombreUsuario);
+                datos.SetearParametro("@contraseña", nuevo.Contraseña);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)
@@ -57,6 +83,7 @@ namespace Negocio
         public void Modificar(Usuario modificado)
         {
             AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {

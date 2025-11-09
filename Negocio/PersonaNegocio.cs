@@ -21,7 +21,7 @@ namespace Negocio
                 while (datos.Lector.Read())
                 {
                     Persona aux = new Persona();
-                    aux.IdPersona = (int)datos.Lector["ID"];
+                    aux.IdPersona = (Int64)datos.Lector["IDPersona"];
                     aux.Nombre= (string)datos.Lector["Nombre"];
                     aux.Apellido= (string)datos.Lector["Apellido"];
                     aux.Dni= (int)datos.Lector["DNI"];
@@ -62,6 +62,34 @@ namespace Negocio
                 datos.SetearParametro("@direccion", nuevo.Direccion);
                 datos.EjecutarAccion();
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+        public Int64 AgregarYObtener (Persona nuevo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("INSERT INTO Personas (Nombre, Apellido, DNI, CUIT, TipoPersona, Telefono, Email, Direccion) VALUES (@nombre, @apellido, @dni, @cuit, @tipopersona, @telefono, @email, @direccion); SELECT SCOPE_IDENTITY()");
+                datos.SetearParametro("@nombre", nuevo.Nombre);
+                datos.SetearParametro("@apellido", nuevo.Apellido);
+                datos.SetearParametro("@dni", nuevo.Dni);
+                datos.SetearParametro("@cuit", nuevo.Cuit);
+                datos.SetearParametro("@tipopersona", nuevo.TipoPersona);
+                datos.SetearParametro("@telefono", nuevo.Telefono);
+                datos.SetearParametro("@email", nuevo.Email);
+                datos.SetearParametro("@direccion", nuevo.Direccion);
+
+                Int64 idPersona = Convert.ToInt64(datos.EjecutarScalar());
+                return idPersona;
             }
             catch (Exception ex)
             {

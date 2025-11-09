@@ -24,6 +24,7 @@ namespace Negocio
         }
         public void SetearConsulta(string consulta)
         {
+            comando.Parameters.Clear(); // Limpieza automática
             comando.CommandType = System.Data.CommandType.Text;
             comando.CommandText = consulta;
         }
@@ -65,6 +66,19 @@ namespace Negocio
             if (lector != null)
                 lector.Close();
             conexion.Close();
+        }
+        public object EjecutarScalar()
+        {
+            comando.Connection = conexion;
+            try
+            {
+                conexion.Open();
+                return comando.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

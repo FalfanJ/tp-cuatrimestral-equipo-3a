@@ -8,6 +8,6 @@ namespace Dominio
 {
     public class Cliente : Persona
     {
-        public int IdCliente { get; set; }
+        public Int64 IdCliente { get; set; }
     }
 }
