@@ -16,6 +16,20 @@ namespace Negocio
 
             try
             {
+                datos.SetearConsulta("SELECT IDHistorial, IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha FROM HistorialMovimiento");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    HistorialMovimiento aux = new HistorialMovimiento();
+                    aux.IdHistorial = (int)datos.Lector["IDHistorial"];
+                    aux.Producto.IdProducto = (int)datos.Lector["IDProducto"];
+                    aux.Venta.IdVenta = (int)datos.Lector["IDVenta"];
+                    aux.Compra.IdCompra = (int)datos.Lector["IDCompra"];
+                    aux.StockAnterior = (int)datos.Lector["StockAnterior"];
+                    aux.StockPosterior = (int)datos.Lector["StockPosterior"];
+                    aux.Fecha = (DateTime)datos.Lector["Fecha"];
+                    lista.Add(aux);
+                }
                 return lista;
             }
             catch (Exception ex)
@@ -34,7 +48,14 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("INSERT INTO HistorialMovimiento (IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha) VALUES (@idproducto, @idventa, @idcompra, @stockanterior, @stockposterior, @fecha)");
+                datos.SetearParametro("@idproducto", nuevo.Producto.IdProducto);
+                datos.SetearParametro("@idventa", nuevo.Venta.IdVenta);
+                datos.SetearParametro("@idcompra", nuevo.Compra.IdCompra);
+                datos.SetearParametro("@stockanterior", nuevo.StockAnterior);
+                datos.SetearParametro("@stockposterior", nuevo.StockPosterior);
+                datos.SetearParametro("@fecha", nuevo.Fecha);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
@@ -51,7 +72,15 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("UPDATE HistorialMovimiento SET IDProducto = @idproducto, IDVenta = @idventa, IDCompra = @idcompra, StockAnterior = @stockanterior, StockPosterior = @stockposterior, Fecha = @fecha WHERE IDHistorial = @idhistorial");
+                datos.SetearParametro("@idhistorial", modificado.IdHistorial);
+                datos.SetearParametro("@idproducto", modificado.Producto.IdProducto);
+                datos.SetearParametro("@idventa", modificado.Venta.IdVenta);
+                datos.SetearParametro("@idcompra", modificado.Compra.IdCompra);
+                datos.SetearParametro("@stockanterior", modificado.StockAnterior);
+                datos.SetearParametro("@stockposterior", modificado.StockPosterior);
+                datos.SetearParametro("@fecha", modificado.Fecha);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
