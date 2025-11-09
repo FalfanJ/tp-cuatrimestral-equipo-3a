@@ -13,7 +13,6 @@ namespace Dominio
         public Usuario Usuario { get; set; }
         public DateTime Fecha { get; set; }
         public int Total { get; set; }
-        public List<DetalleOperacion> Productos { get; set; } = new List<DetalleOperacion>();
-
+        public List<DetalleCompra> Detalle { get; set; } = new List<DetalleCompra>();
     }
 }

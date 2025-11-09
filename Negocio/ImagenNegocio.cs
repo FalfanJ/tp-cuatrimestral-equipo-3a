@@ -16,11 +16,20 @@ namespace Negocio
 
             try
             {
+                datos.SetearConsulta("SELECT IDImagen, IDProducto, Direccion FROM Producto_Imagenes");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    Imagen aux = new Imagen();
+                    aux.IdImagen = (int)datos.Lector["IDImagen"];
+                    aux.IdProducto = (int)datos.Lector["IDProducto"];
+                    aux.Direccion = (string)datos.Lector["Direccion"];
+                    lista.Add(aux);
+                }
                 return lista;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
             finally
@@ -34,7 +43,10 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("INSERT INTO Producto_Imagenes (IDProducto, Direccion) VALUES (@idproducto, @direccion)");
+                datos.SetearParametro("@idproducto", nuevo.IdProducto);
+                datos.SetearParametro("@direccion", nuevo.Direccion);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
@@ -51,7 +63,11 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("UPDATE Producto_Imagenes SET IDProducto = @idproducto, Direccion = @direccion WHERE IDImagen = @idimagen");
+                datos.SetearParametro("@idimagen", modificado.IdImagen);
+                datos.SetearParametro("@idproducto", modificado.IdProducto);
+                datos.SetearParametro("@direccion", modificado.Direccion);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {

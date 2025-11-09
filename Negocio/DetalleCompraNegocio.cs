@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 
 namespace Negocio
 {
-    public class ProductoProveedorNegocio
+    public class DetalleCompraNegocio
     {
-        public List<ProductoProveedor> Listar()
+        public List<DetalleCompra> Listar()
         {
-            List<ProductoProveedor> lista = new List<ProductoProveedor>();
+            List<DetalleCompra> lista = new List<DetalleCompra>();
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                datos.SetearConsulta("SELECT IDPP, IDProducto, IDProveedor, FechaAlta, FechaBaja FROM Producto_Proveedor");
+                datos.SetearConsulta("SELECT IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial FROM Detalle_Compra");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
-                    ProductoProveedor aux = new ProductoProveedor();
-                    aux.IDPP = (int)datos.Lector["IDPP"];
+                    DetalleCompra aux = new DetalleCompra();
+                    aux.IdCompra = (int)datos.Lector["IDCompra"];
                     aux.Producto.IdProducto = (int)datos.Lector["IDProducto"];
-                    aux.Proveedor.IdProveedor = (int)datos.Lector["IDProveedor"];
-                    aux.FechaAlta = (DateTime)datos.Lector["FechaAlta"];
-                    aux.FechaBaja = (DateTime)datos.Lector["FechaBaja"];
+                    aux.Cantidad = (int)datos.Lector["Cantidad"];
+                    aux.PrecioUnitario = (int)datos.Lector["PrecioUnitario"];
+                    aux.PrecioParcial = (int)datos.Lector["PrecioParcial"];
                     lista.Add(aux);
                 }
                 return lista;
@@ -40,16 +40,18 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void Agregar(ProductoProveedor nuevo)
+        public void Agregar(DetalleCompra nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Producto_Proveedor (IDProducto, IDProveedor, FechaAlta) VALUES (@idproducto, @idproveedor, @fechaalta)");
+                datos.SetearConsulta("INSERT INTO Detalle_Compra (IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial) VALUES (@idcompra, @idproducto, @cantidad, @preciounitario, @precioparcial)");
+                datos.SetearParametro("@idcompra", nuevo.IdCompra);
                 datos.SetearParametro("@idproducto", nuevo.Producto.IdProducto);
-                datos.SetearParametro("@idproveedor", nuevo.Proveedor.IdProveedor);
-                datos.SetearParametro("@fechaalta", nuevo.FechaAlta);
+                datos.SetearParametro("@cantidad", nuevo.Cantidad);
+                datos.SetearParametro("@preciounitario", nuevo.PrecioUnitario);
+                datos.SetearParametro("@precioparcial", nuevo.PrecioParcial);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)
@@ -61,18 +63,18 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void Modificar(ProductoProveedor modificado)
+        public void Modificar(DetalleCompra modificado)
         {
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                datos.SetearConsulta("UPDATE Producto_Proveedor SET IDProducto = @idproducto, IDProveedor = @idproveedor, FechaAlta = @fechaalta, FechaBaja = @fechabaja WHERE IDPP = @idpp ");
-                datos.SetearParametro("@idpp", modificado.IDPP);
+                datos.SetearConsulta("UPDATE Detalle_Compra SET Cantidad = @cantidad, PrecioUnitario =  @preciounitario, PrecioParcial = @precioparcial WHERE IDCompra = @idcompra AND IDProducto = @idproducto");
+                datos.SetearParametro("@idcompra", modificado.IdCompra);
                 datos.SetearParametro("@idproducto", modificado.Producto.IdProducto);
-                datos.SetearParametro("@idproveedor", modificado.Proveedor.IdProveedor);
-                datos.SetearParametro("@fechaalta", modificado.FechaAlta);
-                datos.SetearParametro("@fechabaja", modificado.FechaBaja);
+                datos.SetearParametro("@cantidad", modificado.Cantidad);
+                datos.SetearParametro("@preciounitario", modificado.PrecioUnitario);
+                datos.SetearParametro("@precioparcial", modificado.PrecioParcial);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)

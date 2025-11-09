@@ -16,11 +16,18 @@ namespace Negocio
 
             try
             {
+                datos.SetearConsulta("");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    Usuario aux = new Usuario();
+
+                    lista.Add(aux);
+                }
                 return lista;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
             finally
@@ -34,7 +41,9 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("");
+                datos.SetearParametro("@", nuevo);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
@@ -51,7 +60,9 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("");
+                datos.SetearParametro("@", modificado);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {

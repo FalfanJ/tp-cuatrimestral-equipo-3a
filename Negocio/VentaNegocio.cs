@@ -16,6 +16,19 @@ namespace Negocio
 
             try
             {
+                datos.SetearConsulta("SELECT IDVenta, IDCliente, IDUsuario, NFactura, Fecha, Total FROM Ventas");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    Venta aux = new Venta();
+                    aux.IdVenta = (int)datos.Lector["IDVenta"];
+                    aux.Cliente.IdCliente = (int)datos.Lector["IDCliente"];
+                    aux.Usuario.IdUsuario = (int)datos.Lector["IDUsuario"];
+                    aux.NFactura = (string)datos.Lector["NFactura"];
+                    aux.Fecha = (DateTime)datos.Lector["Fecha"];
+                    aux.Total = (int)datos.Lector["Total"];
+                    lista.Add(aux);
+                }
                 return lista;
             }
             catch (Exception ex)
@@ -34,7 +47,13 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("INSERT INTO Ventas(IDCliente, IDUsuario, NFactura, Fecha, Total) VALUES (@idcliente, @idusuario, @nfactura, @fecha, @total)");
+                datos.SetearParametro("@idcliente", nuevo.Cliente.IdCliente);
+                datos.SetearParametro("@idusuario", nuevo.Usuario.IdUsuario);
+                datos.SetearParametro("@nfactura", nuevo.NFactura);
+                datos.SetearParametro("@fecha", nuevo.Fecha);
+                datos.SetearParametro("@total", nuevo.Total);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
@@ -51,7 +70,14 @@ namespace Negocio
 
             try
             {
-
+                datos.SetearConsulta("UPDATE Ventas SET IDCliente = @idcliente, IDUsuario = @idusuario, NFactura = @nfactura, Fecha = @fecha, Total = @total WHERE IDVenta = @idventa");
+                datos.SetearParametro("@idventa", modificado.IdVenta);
+                datos.SetearParametro("@idcliente", modificado.Cliente.IdCliente);
+                datos.SetearParametro("@idusuario", modificado.Usuario.IdUsuario);
+                datos.SetearParametro("@nfactura", modificado.NFactura);
+                datos.SetearParametro("@fecha", modificado.Fecha);
+                datos.SetearParametro("@total", modificado.Total);
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
