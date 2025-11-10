@@ -61,12 +61,14 @@
                         Menú
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="menuGestion">
-    <li><a runat="server" href="~/Clientes.aspx" class="dropdown-item">Clientes</a></li>
-    <li><a runat="server" href="~/Productos.aspx" class="dropdown-item">Productos</a></li>
-    <li><a runat="server" href="~/MarcasCategorias.aspx" class="dropdown-item">Marcas y Categorías</a></li>
-    <li><a runat="server" href="~/ComprasVentas.aspx" class="dropdown-item">Compras y Ventas</a></li>
-    <li><a runat="server" href="~/ReporteFactura.aspx" class="dropdown-item">Reportes / Facturación</a></li>
-</ul>
+                        <li><a runat="server" href="~/Clientes.aspx" class="dropdown-item">Clientes</a></li>
+                        <li><a runat="server" href="~/Proveedores.aspx" class="dropdown-item">Proveedores</a></li>
+                        <li><a runat="server" href="~/Productos.aspx" class="dropdown-item">Productos</a></li>
+                        <li><a runat="server" href="~/MarcasCategorias.aspx" class="dropdown-item">Marcas y Categorías</a></li>
+                        <li><a runat="server" href="~/ComprasVentas.aspx" class="dropdown-item">Compras y Ventas</a></li>
+                        <li><a runat="server" href="~/ReporteFactura.aspx" class="dropdown-item">Reportes / Facturación</a></li>
+                        <li><a runat="server" href="~/GestionUsuarios.aspx" class="dropdown-item">Gestión de Usuarios</a></li>
+                    </ul>
                 </li>
             </ul>
 
