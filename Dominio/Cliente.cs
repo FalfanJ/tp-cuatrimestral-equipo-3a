@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Imagenes
+    public class Cliente : Persona
     {
-        public int IDImagen { get; set; }
-        public int IDProducto { get; set; }
-        public string URL { get; set; }
+        public Int64 IdCliente { get; set; }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Categorias
+    public class Proveedor : Persona
     {
-        public int IdCategoria { get; set; }
-        public string Categoria { get; set; }
+        public Int64 IdProveedor { get; set; }
+        public string RazonSocial { get; set; }
     }
 }

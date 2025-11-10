@@ -17,14 +17,14 @@ CREATE TABLE Marcas(
 GO
 CREATE TABLE Productos(
     IDProducto BIGINT NOT NULL UNIQUE IDENTITY(1,1),
-	NumeroSerial NVARCHAR(70) NOT NULL,
+	NumeroSerie NVARCHAR(70) NOT NULL,
 	IDMarca INT NOT NULL,
 	IDCategoria INT NOT NULL,
 	Nombre NVARCHAR(50) NOT NULL,
-	Precio DECIMAL NOT NULL,
+	Precio DECIMAL(16,3) NOT NULL,
 	StockActual SMALLINT NOT NULL,
 	StockMinimo SMALLINT NOT NULL,
-	ProcentajeGanancia SMALLINT NOT NULL,
+	PorcentajeGanancia SMALLINT NOT NULL,
 	Modelo NVARCHAR(50),
 	Descripcion NVARCHAR(255),
 	PRIMARY KEY(IDProducto),
@@ -35,17 +35,21 @@ GO
 CREATE TABLE Producto_Imagenes(
     IDImagen BIGINT NOT NULL UNIQUE IDENTITY(1,1),
     IDProducto BIGINT NOT NULL,
-	URL NVARCHAR(255) NOT NULL,
-	PRIMARY KEY(IDImagen)
+	Direccion NVARCHAR(255) NOT NULL,
+	PRIMARY KEY(IDImagen),
+    FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto)
 )
 GO
 CREATE TABLE Personas(
     IDPersona BIGINT NOT NULL UNIQUE IDENTITY(1,1),
 	Nombre NVARCHAR(50) NOT NULL,
 	Apellido NVARCHAR(50) NOT NULL,
-	DNI SMALLINT,
-	Email NVARCHAR(50) NOT NULL,
-	Numero SMALLINT NOT NULL,
+	DNI SMALLINT NULL,
+	CUIT SMALLINT NULL,
+    TipoPersona BIT NOT NULL,
+	Telefono SMALLINT NOT NULL,
+	Email NVARCHAR(70) NULL,
+    Direccion NVARCHAR(100) NULL,
 	PRIMARY KEY(IDPersona)
 )
 GO
@@ -59,22 +63,32 @@ CREATE TABLE Usuarios(
     FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
 )
 GO
+CREATE TABLE Clientes(
+    IDCliente BIGINT NOT NULL UNIQUE IDENTITY(1,1),
+    IDPersona BIGINT NOT NULL UNIQUE,
+    PRIMARY KEY(IDCliente),
+    FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
+)
+GO
 CREATE TABLE Ventas(
     IDVenta BIGINT NOT NULL UNIQUE IDENTITY(1,1),
-	IDPersona BIGINT NOT NULL,
+	IDCliente BIGINT NOT NULL,
+    IDUsuario BIGINT NOT NULL,
+    NFactura NVARCHAR(50) NOT NULL,
 	Fecha DATETIME NOT NULL,
-	Total DECIMAL NOT NULL,
+	Total DECIMAL(16,3) NOT NULL,
 	PRIMARY KEY(IDVenta),
-    FOREIGN KEY (IDVenta) REFERENCES Productos (IDProducto),
-    FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
+    FOREIGN KEY (IDCliente) REFERENCES Clientes (IDCliente),
+    FOREIGN KEY (IDUsuario) REFERENCES Usuarios (IDUsuario)
 )
 GO
 CREATE TABLE Detalle_Venta(
     IDVenta BIGINT NOT NULL,
 	IDProducto BIGINT NOT NULL,
 	Cantidad SMALLINT NOT NULL,
-	PrecioUnitario DECIMAL NOT NULL,
-	PrecioParcial DECIMAL NOT NULL,
+	PrecioUnitario DECIMAL(16,3) NOT NULL,
+	PrecioParcial DECIMAL(16,3) NOT NULL,
+    ProcentajeGanancia SMALLINT NOT NULL,
 	PRIMARY KEY(IDVenta, IDProducto),
     FOREIGN KEY (IDVenta) REFERENCES Ventas (IDVenta),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto)
@@ -82,39 +96,29 @@ CREATE TABLE Detalle_Venta(
 GO
 CREATE TABLE Proveedor(
     IDProveedor BIGINT NOT NULL UNIQUE IDENTITY(1,1),
-	Nombre NVARCHAR(50) NOT NULL,
+    IDPersona BIGINT NOT NULL UNIQUE,
 	RazonSocial NVARCHAR(30) NOT NULL,
-	PRIMARY KEY(IDProveedor)
+	PRIMARY KEY(IDProveedor),
+    FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
 )
 GO
 CREATE TABLE Producto_Proveedor(
+    IDPP BIGINT NOT NULL UNIQUE IDENTITY(1,1),
     IDProducto BIGINT NOT NULL,
 	IDProveedor BIGINT NOT NULL,
-	PRIMARY KEY(IDProducto, IDProveedor),
+    FechaAlta DATE NOT NULL,
+    FechaBaja DATE NULL,
+	PRIMARY KEY(IDPP),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto),
-    FOREIGN KEY (IDProveedor) REFERENCES Proveedor (IDProveedor)
-)
-GO
-CREATE TABLE Proveedor_Telefono(
-    IDProveedor BIGINT NOT NULL,
-	Telefono SMALLINT NOT NULL UNIQUE,
-	PRIMARY KEY(IDProveedor, Telefono),
-    FOREIGN KEY (IDProveedor) REFERENCES Proveedor (IDProveedor)
-)
-GO
-CREATE TABLE Proveedor_Email(
-    IDProveedor BIGINT NOT NULL,
-	Email NVARCHAR(70) NOT NULL UNIQUE,
-	PRIMARY KEY(IDProveedor, Email),
     FOREIGN KEY (IDProveedor) REFERENCES Proveedor (IDProveedor)
 )
 GO
 CREATE TABLE Compras(
     IDCompra BIGINT NOT NULL UNIQUE IDENTITY(1,1),
-    IDProveedor BIGINT NOT NULL,
     IDUsuario BIGINT NOT NULL,
+    IDProveedor BIGINT NOT NULL,
     Fecha DATETIME NOT NULL,
-    Total DECIMAL NOT NULL,
+    Total DECIMAL(16,3) NOT NULL,
     PRIMARY KEY(IDCompra),
     FOREIGN KEY (IDProveedor) REFERENCES Proveedor (IDProveedor),
     FOREIGN KEY (IDUsuario) REFERENCES Usuarios (IDUsuario)
@@ -124,9 +128,23 @@ CREATE TABLE Detalle_Compra(
     IDCompra BIGINT NOT NULL,
     IDProducto BIGINT NOT NULL,
     Cantidad SMALLINT NOT NULL,
-    PrecioUnitario DECIMAL NOT NULL,
-    PrecioParcial DECIMAL NOT NULL,
+    PrecioUnitario DECIMAL(16,3) NOT NULL,
+    PrecioParcial DECIMAL(16,3) NOT NULL,
     PRIMARY KEY(IDCompra, IDProducto),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto),
+    FOREIGN KEY (IDCompra) REFERENCES Compras (IDCompra)
+)
+GO
+CREATE TABLE HistorialMovimiento(
+    IDHistorial BIGINT NOT NULL UNIQUE IDENTITY(1,1),
+    IDProducto BIGINT NOT NULL,
+    IDVenta BIGINT NULL,
+    IDCompra BIGINT NULL,
+    StockAnterior SMALLINT NOT NULL,
+    StockPosterior SMALLINT NOT NULL,
+    Fecha DATETIME NOT NULL,
+    PRIMARY KEY(IDHistorial),
+    FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto),
+    FOREIGN KEY (IDVenta) REFERENCES Ventas (IDVenta),
     FOREIGN KEY (IDCompra) REFERENCES Compras (IDCompra)
 )

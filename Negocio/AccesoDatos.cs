@@ -24,6 +24,7 @@ namespace Negocio
         }
         public void SetearConsulta(string consulta)
         {
+            comando.Parameters.Clear(); // Limpieza automática
             comando.CommandType = System.Data.CommandType.Text;
             comando.CommandText = consulta;
         }
@@ -58,13 +59,33 @@ namespace Negocio
         }
         public void SetearParametro(string nombreParametro, object valor)
         {
-            comando.Parameters.AddWithValue(nombreParametro, valor);
+            if (!(valor == null))
+            {
+                comando.Parameters.AddWithValue(nombreParametro, valor);
+            }
+            else
+            {
+                comando.Parameters.AddWithValue(nombreParametro, DBNull.Value);
+            }
         }
         public void CerrarConexion()
         {
             if (lector != null)
                 lector.Close();
             conexion.Close();
+        }
+        public object EjecutarScalar()
+        {
+            comando.Connection = conexion;
+            try
+            {
+                conexion.Open();
+                return comando.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

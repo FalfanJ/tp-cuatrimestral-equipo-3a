@@ -1,0 +1,107 @@
+﻿using Dominio;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Negocio
+{
+    public class DetalleCompraNegocio
+    {
+        public List<DetalleCompra> Listar()
+        {
+            List<DetalleCompra> lista = new List<DetalleCompra>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("SELECT IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial FROM Detalle_Compra");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    DetalleCompra aux = new DetalleCompra();
+                    aux.IdCompra = (Int64)datos.Lector["IDCompra"];
+                    aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
+                    aux.Cantidad = (int)datos.Lector["Cantidad"];
+                    aux.PrecioUnitario = (int)datos.Lector["PrecioUnitario"];
+                    aux.PrecioParcial = (int)datos.Lector["PrecioParcial"];
+                    lista.Add(aux);
+                }
+                return lista;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+        public void Agregar(DetalleCompra nuevo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("INSERT INTO Detalle_Compra (IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial) VALUES (@idcompra, @idproducto, @cantidad, @preciounitario, @precioparcial)");
+                datos.SetearParametro("@idcompra", nuevo.IdCompra);
+                datos.SetearParametro("@idproducto", nuevo.Producto.IdProducto);
+                datos.SetearParametro("@cantidad", nuevo.Cantidad);
+                datos.SetearParametro("@preciounitario", nuevo.PrecioUnitario);
+                datos.SetearParametro("@precioparcial", nuevo.PrecioParcial);
+                datos.EjecutarAccion();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+        public void Modificar(DetalleCompra modificado)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("UPDATE Detalle_Compra SET Cantidad = @cantidad, PrecioUnitario =  @preciounitario, PrecioParcial = @precioparcial WHERE IDCompra = @idcompra AND IDProducto = @idproducto");
+                datos.SetearParametro("@idcompra", modificado.IdCompra);
+                datos.SetearParametro("@idproducto", modificado.Producto.IdProducto);
+                datos.SetearParametro("@cantidad", modificado.Cantidad);
+                datos.SetearParametro("@preciounitario", modificado.PrecioUnitario);
+                datos.SetearParametro("@precioparcial", modificado.PrecioParcial);
+                datos.EjecutarAccion();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+        public void BajaLogica(int ID)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+    }
+}
