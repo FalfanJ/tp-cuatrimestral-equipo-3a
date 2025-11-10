@@ -28,84 +28,129 @@ namespace Consola
             VentaNegocio negVeta = new VentaNegocio();
 
             //negCliente.Agregar(new Cliente { Nombre = "Rod", Apellido = "Falta", Dni = 4544212, Cuit=21421311, TipoPersona=true, Telefono= 1166339988, Email="zo@gmail.com", Direccion="AV123"});
-            negPersona.Agregar(new Persona { Nombre = "mm", Apellido = "RR", TipoPersona = false, Telefono = 445132132 });
+            //negPersona.Agregar(new Persona { Nombre = "mm", Apellido = "RR", TipoPersona = false, Telefono = 445132132 });
+            //negCategoria.Agregar(new Categoria { Nombre="Comida"}); //funciona
+            //negCliente.Agregar();
+            //negCompra.Agregar();
+            //negDetalleCompra.Agregar();
+            //negDetalleVenta.Agregar();
+            //negHistorialMovimiento.Agregar();
+            //negIMG.Agregar();
+            //negMarca.Agregar(new Marca { Nombre= "Samsung"}); //Funciona
+            //negPersona.Agregar();
+            //negProductoProveedor.Agregar();
+            //negProveedor.Agregar(new Proveedor { Nombre = "Compania1", Apellido = "SA", Cuit = 30589734123, TipoPersona = false, Telefono = 3368797421, Email = "compania@compania", Direccion = "MMM", RazonSocial="SociedadAnonima" }); // Funciona
+            //negUsuario.Agregar(new Usuario { Nombre = "Usuario1", Apellido = "Admin1", Dni = 30333444, Cuit = 20303334441, TipoPersona = true, Telefono = 1122334455, Email = "ad@gmail.com", Direccion = "BF456", TipoUsuario="Admin", NombreUsuario="Admin1", Contraseña="ContraÑ" }); // funciona
+            //negVeta.Agregar();
 
 
-            List<Persona> personaLista = new List<Persona>();
-            List<Cliente> clienteLista = new List<Cliente>();
-            List<Proveedor> ProveedorLista = new List<Proveedor>();
-            List<Usuario> UsuarioLista = new List<Usuario>();
-            personaLista = negPersona.Listar();
-            clienteLista = negCliente.Listar();
-            ProveedorLista = negProveedor.Listar();
-            UsuarioLista = negUsuario.Listar();
+            List<Imagen> listImg = new List<Imagen>();
+            listImg.Add(new Imagen { Direccion = "RAW.HTML0"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML1"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML2"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML3"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML4"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML5"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML6"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML7"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML8"});
+            listImg.Add(new Imagen { Direccion = "RAW.HTML9"});
+            //negIMG.Agregar(listImg);
             
-            
-            Console.WriteLine("Lista Persona\n");
-            foreach (Persona item in personaLista)
-            {
-                Console.WriteLine(item.IdPersona);
-                Console.WriteLine(item.Nombre);
-                Console.WriteLine(item.Apellido);
-                Console.WriteLine(item.Dni);
-                Console.WriteLine(item.Cuit);
-                Console.WriteLine(item.TipoPersona);
-                Console.WriteLine(item.Telefono);
-                Console.WriteLine(item.Email);
-                Console.WriteLine(item.Direccion);
-                Console.WriteLine("\n");
-            }
-            Console.WriteLine("Lista Cliente\n");
-            foreach (Cliente item in clienteLista)
-            {
-                Console.WriteLine(item.IdCliente);
-                Console.WriteLine(item.IdPersona);
-                Console.WriteLine(item.Nombre);
-                Console.WriteLine(item.Apellido);
-                Console.WriteLine(item.Dni);
-                Console.WriteLine(item.Cuit);
-                Console.WriteLine(item.TipoPersona);
-                Console.WriteLine(item.Telefono);
-                Console.WriteLine(item.Email);
-                Console.WriteLine(item.Direccion);
-                Console.WriteLine("\n");
-                negCliente.Modificar(item);
-            }
 
-            Console.WriteLine("Lista Proveedor\n");
-            foreach (Proveedor item in ProveedorLista)
-            {
-                Console.WriteLine(item.IdProveedor);
-                Console.WriteLine(item.IdPersona);
-                Console.WriteLine(item.Nombre);
-                Console.WriteLine(item.Apellido);
-                Console.WriteLine(item.Dni);
-                Console.WriteLine(item.Cuit);
-                Console.WriteLine(item.TipoPersona);
-                Console.WriteLine(item.Telefono);
-                Console.WriteLine(item.Email);
-                Console.WriteLine(item.Direccion);
-                Console.WriteLine(item.RazonSocial);
-                Console.WriteLine("\n");
-            }
-            Console.WriteLine("Lista Usuario\n");
-            foreach (Usuario item in UsuarioLista)
-            {
-                Console.WriteLine(item.IdUsuario);
-                Console.WriteLine(item.IdPersona);
-                Console.WriteLine(item.Nombre);
-                Console.WriteLine(item.Apellido);
-                Console.WriteLine(item.Dni);
-                Console.WriteLine(item.Cuit);
-                Console.WriteLine(item.TipoPersona);
-                Console.WriteLine(item.Telefono);
-                Console.WriteLine(item.Email);
-                Console.WriteLine(item.Direccion);
-                Console.WriteLine(item.TipoUsuario);
-                Console.WriteLine(item.NombreUsuario);
-                Console.WriteLine(item.Contraseña);
-                Console.WriteLine("\n");
-            }
+            Producto pro = new Producto();
+            pro.NSerie = "MX203";
+            pro.Marca = new Marca { IdMarca = 1 };
+            pro.Categoria = new Categoria { IdCategoria = 1 };
+            pro.Nombre = "MAX";
+            pro.Precio = 5000;
+            pro.Stock = 100;
+            pro.StockMinimo = 20;
+            pro.PorcentajeGanancia = 40;
+            pro.Modelo = "Cuidado1";
+            pro.Descripcion = "Feo";
+            pro.Imagenes = listImg;
+
+            
+            negProducto.Agregar(pro);
+
+
+
+            //List<Persona> personaLista = new List<Persona>();
+            //List<Cliente> clienteLista = new List<Cliente>();
+            //List<Proveedor> ProveedorLista = new List<Proveedor>();
+            //List<Usuario> UsuarioLista = new List<Usuario>();
+            //personaLista = negPersona.Listar();
+            //clienteLista = negCliente.Listar();
+            //ProveedorLista = negProveedor.Listar();
+            //UsuarioLista = negUsuario.Listar();
+
+
+            //Console.WriteLine("Lista Persona\n");
+            //foreach (Persona item in personaLista)
+            //{
+            //    Console.WriteLine(item.IdPersona);
+            //    Console.WriteLine(item.Nombre);
+            //    Console.WriteLine(item.Apellido);
+            //    Console.WriteLine(item.Dni);
+            //    Console.WriteLine(item.Cuit);
+            //    Console.WriteLine(item.TipoPersona);
+            //    Console.WriteLine(item.Telefono);
+            //    Console.WriteLine(item.Email);
+            //    Console.WriteLine(item.Direccion);
+            //    Console.WriteLine("\n");
+            //}
+            //Console.WriteLine("Lista Cliente\n");
+            //foreach (Cliente item in clienteLista)
+            //{
+            //    Console.WriteLine(item.IdCliente);
+            //    Console.WriteLine(item.IdPersona);
+            //    Console.WriteLine(item.Nombre);
+            //    Console.WriteLine(item.Apellido);
+            //    Console.WriteLine(item.Dni);
+            //    Console.WriteLine(item.Cuit);
+            //    Console.WriteLine(item.TipoPersona);
+            //    Console.WriteLine(item.Telefono);
+            //    Console.WriteLine(item.Email);
+            //    Console.WriteLine(item.Direccion);
+            //    Console.WriteLine("\n");
+            //    negCliente.Modificar(item);
+            //}
+
+            //Console.WriteLine("Lista Proveedor\n");
+            //foreach (Proveedor item in ProveedorLista)
+            //{
+            //    Console.WriteLine(item.IdProveedor);
+            //    Console.WriteLine(item.IdPersona);
+            //    Console.WriteLine(item.Nombre);
+            //    Console.WriteLine(item.Apellido);
+            //    Console.WriteLine(item.Dni);
+            //    Console.WriteLine(item.Cuit);
+            //    Console.WriteLine(item.TipoPersona);
+            //    Console.WriteLine(item.Telefono);
+            //    Console.WriteLine(item.Email);
+            //    Console.WriteLine(item.Direccion);
+            //    Console.WriteLine(item.RazonSocial);
+            //    Console.WriteLine("\n");
+            //}
+            //Console.WriteLine("Lista Usuario\n");
+            //foreach (Usuario item in UsuarioLista)
+            //{
+            //    Console.WriteLine(item.IdUsuario);
+            //    Console.WriteLine(item.IdPersona);
+            //    Console.WriteLine(item.Nombre);
+            //    Console.WriteLine(item.Apellido);
+            //    Console.WriteLine(item.Dni);
+            //    Console.WriteLine(item.Cuit);
+            //    Console.WriteLine(item.TipoPersona);
+            //    Console.WriteLine(item.Telefono);
+            //    Console.WriteLine(item.Email);
+            //    Console.WriteLine(item.Direccion);
+            //    Console.WriteLine(item.TipoUsuario);
+            //    Console.WriteLine(item.NombreUsuario);
+            //    Console.WriteLine(item.Contraseña);
+            //    Console.WriteLine("\n");
+            //}
         }
     }
 }

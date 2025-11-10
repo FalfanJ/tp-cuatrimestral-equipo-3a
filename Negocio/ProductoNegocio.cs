@@ -66,10 +66,11 @@ namespace Negocio
         public void Agregar(Producto nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
+            ImagenNegocio imgNeg = new ImagenNegocio();
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Productos (NumeroSerie, IDMarca, IDCategoria, Nombre, Precio, StockActual, StockMinimo, PorcentajeGanancia, Modelo, Descripcion) VALUES (@numeroserie, @idmarca, @idcategoria, @nombre, @precio, @stockactual, @stockminimo, @porcentajeganancia, @modelo, @descripcion)");
+                datos.SetearConsulta("INSERT INTO Productos (NumeroSerie, IDMarca, IDCategoria, Nombre, Precio, StockActual, StockMinimo, PorcentajeGanancia, Modelo, Descripcion) VALUES (@numeroserie, @idmarca, @idcategoria, @nombre, @precio, @stockactual, @stockminimo, @porcentajeganancia, @modelo, @descripcion); SELECT SCOPE_IDENTITY()");
                 datos.SetearParametro("@numeroserie", nuevo.NSerie);
                 datos.SetearParametro("@idmarca", nuevo.Marca.IdMarca);
                 datos.SetearParametro("@idcategoria", nuevo.Categoria.IdCategoria);
@@ -80,7 +81,12 @@ namespace Negocio
                 datos.SetearParametro("@porcentajeganancia", nuevo.PorcentajeGanancia);
                 datos.SetearParametro("@modelo", nuevo.Modelo);
                 datos.SetearParametro("@descripcion", nuevo.Descripcion);
-                datos.EjecutarAccion();
+                nuevo.IdProducto = Convert.ToInt64(datos.EjecutarScalar());
+                foreach (Imagen item in nuevo.Imagenes)
+                {
+                    item.IdProducto = nuevo.IdProducto;
+                }
+                imgNeg.Agregar(nuevo.Imagenes);
             }
             catch (Exception ex)
             {

@@ -57,6 +57,29 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+        public void Agregar(List<Imagen> nuevo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("INSERT INTO Producto_Imagenes (IDProducto, Direccion) VALUES (@idproducto, @direccion)");
+                foreach (Imagen item in nuevo)
+                {
+                    datos.SetearParametro("@idproducto", item.IdProducto);
+                    datos.SetearParametro("@direccion", item.Direccion);
+                    datos.EjecutarAccion();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
         public void Modificar(Imagen modificado)
         {
             AccesoDatos datos = new AccesoDatos();

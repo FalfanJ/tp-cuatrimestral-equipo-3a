@@ -47,8 +47,10 @@ namespace Negocio
             comando.Connection = conexion;
             try
             {
-                conexion.Open();
+                if(conexion.State != System.Data.ConnectionState.Open) // primero verifica si hay una conexion abierta, si la hay no abre, si no la hay abre una
+                    conexion.Open();
                 comando.ExecuteNonQuery();
+                comando.Parameters.Clear(); // limpia los parametros
             }
             catch (Exception ex)
             {
@@ -59,13 +61,13 @@ namespace Negocio
         }
         public void SetearParametro(string nombreParametro, object valor)
         {
-            if (!(valor == null))
+            if (!(valor == null)) // si el valor recibido es nulo entonces le envia a la base de datos un valor nulo para que no explote
             {
                 comando.Parameters.AddWithValue(nombreParametro, valor);
             }
             else
             {
-                comando.Parameters.AddWithValue(nombreParametro, DBNull.Value);
+                comando.Parameters.AddWithValue(nombreParametro, DBNull.Value); 
             }
         }
         public void CerrarConexion()
@@ -74,7 +76,7 @@ namespace Negocio
                 lector.Close();
             conexion.Close();
         }
-        public object EjecutarScalar()
+        public object EjecutarScalar() // Igual que EjecutarAccion solo que este recibe un elemento que devuelve la base de datos
         {
             comando.Connection = conexion;
             try
