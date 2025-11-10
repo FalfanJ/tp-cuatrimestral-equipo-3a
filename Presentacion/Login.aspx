@@ -79,7 +79,7 @@
             <h3><i class="bi bi-lock-fill me-2"></i>Iniciar Sesión</h3>
 
             <div class="mb-3">
-                <label for="txtEmail" class="form-label">Correo electrónico</label>
+                <label for="txtEmail" class="form-label">Correo electrónico:</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
                     <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" placeholder="perfiladmin@comercio.com"></asp:TextBox>
@@ -87,7 +87,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="txtPassword" class="form-label">Contraseña</label>
+                <label for="txtPassword" class="form-label">Contraseña:</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
                     <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="********"></asp:TextBox>

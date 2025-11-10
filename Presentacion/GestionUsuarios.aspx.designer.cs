@@ -11,25 +11,25 @@ namespace Presentacion
 {
 
 
-    public partial class SiteMaster
+    public partial class GestionUsuarios
     {
 
         /// <summary>
-        /// head control.
+        /// btnNuevoUsuario control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
+        protected global::System.Web.UI.WebControls.Button btnNuevoUsuario;
 
         /// <summary>
-        /// MainContent control.
+        /// gvUsuarios control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::System.Web.UI.WebControls.GridView gvUsuarios;
     }
 }
