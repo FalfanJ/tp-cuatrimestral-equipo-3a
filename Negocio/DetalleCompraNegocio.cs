@@ -63,6 +63,32 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+        public void Agregar(List<DetalleCompra> nuevo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("INSERT INTO Detalle_Compra (IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial) VALUES (@idcompra, @idproducto, @cantidad, @preciounitario, @precioparcial)");
+                foreach (DetalleCompra item in nuevo)
+                {
+                    datos.SetearParametro("@idcompra", item.IdCompra);
+                    datos.SetearParametro("@idproducto", item.Producto.IdProducto);
+                    datos.SetearParametro("@cantidad", item.Cantidad);
+                    datos.SetearParametro("@preciounitario", item.PrecioUnitario);
+                    datos.SetearParametro("@precioparcial", item.PrecioParcial);
+                    datos.EjecutarAccion();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
         public void Modificar(DetalleCompra modificado)
         {
             AccesoDatos datos = new AccesoDatos();

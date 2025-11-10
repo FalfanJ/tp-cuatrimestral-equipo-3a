@@ -31,7 +31,6 @@ namespace Consola
             //negPersona.Agregar(new Persona { Nombre = "mm", Apellido = "RR", TipoPersona = false, Telefono = 445132132 });
             //negCategoria.Agregar(new Categoria { Nombre="Comida"}); //funciona
             //negCliente.Agregar();
-            //negCompra.Agregar();
             //negDetalleCompra.Agregar();
             //negDetalleVenta.Agregar();
             //negHistorialMovimiento.Agregar();
@@ -71,10 +70,21 @@ namespace Consola
             pro.Descripcion = "Feo";
             pro.Imagenes = listImg;
 
-            
-            negProducto.Agregar(pro);
 
+            //negProducto.Agregar(pro);
 
+            List<DetalleCompra> detalleCompra = new List<DetalleCompra>();
+            detalleCompra.Add(new DetalleCompra { Cantidad=3, PrecioParcial= 302, PrecioUnitario= 10, Producto = new Producto { IdProducto = 1} });
+            detalleCompra.Add(new DetalleCompra { Cantidad=4, PrecioParcial= 330, PrecioUnitario= 132, Producto = new Producto { IdProducto = 2} });
+
+            Compra com = new Compra();
+            com.Proveedor = new Proveedor { IdProveedor = 1 };
+            com.Usuario = new Usuario { IdUsuario = 1 };
+            com.Fecha = DateTime.Now;
+            com.Total = 1000000;
+            com.Detalle = detalleCompra;
+
+            negCompra.Agregar(com);
 
             //List<Persona> personaLista = new List<Persona>();
             //List<Cliente> clienteLista = new List<Cliente>();

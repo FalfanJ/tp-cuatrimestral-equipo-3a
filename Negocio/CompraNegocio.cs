@@ -43,15 +43,21 @@ namespace Negocio
         public void Agregar(Compra nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
+            DetalleCompraNegocio detalleNeg = new DetalleCompraNegocio();
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Compras(IDUsuario, IDProveedor, Fecha, Total) VALUES (@idusuario, @idproveedor, @fecha, @total)");
+                datos.SetearConsulta("INSERT INTO Compras(IDUsuario, IDProveedor, Fecha, Total) VALUES (@idusuario, @idproveedor, @fecha, @total); SELECT SCOPE_IDENTITY()");
                 datos.SetearParametro("@idusuario", nuevo.Usuario.IdUsuario);
                 datos.SetearParametro("@idproveedor", nuevo.Proveedor.IdProveedor);
                 datos.SetearParametro("@fecha", nuevo.Fecha);
                 datos.SetearParametro("@total", nuevo.Total);
-                datos.EjecutarAccion();
+                nuevo.IdCompra = Convert.ToInt64(datos.EjecutarScalar());
+                foreach (DetalleCompra item in nuevo.Detalle)
+                {
+                    item.IdCompra = nuevo.IdCompra;
+                }
+                detalleNeg.Agregar(nuevo.Detalle);
             }
             catch (Exception ex)
             {
