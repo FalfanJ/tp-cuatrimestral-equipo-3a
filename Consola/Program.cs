@@ -43,48 +43,51 @@ namespace Consola
             //negVeta.Agregar();
 
 
-            List<Imagen> listImg = new List<Imagen>();
-            listImg.Add(new Imagen { Direccion = "RAW.HTML0"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML1"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML2"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML3"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML4"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML5"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML6"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML7"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML8"});
-            listImg.Add(new Imagen { Direccion = "RAW.HTML9"});
-            //negIMG.Agregar(listImg);
+            //List<Imagen> listImg = new List<Imagen>();
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML0"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML1"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML2"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML3"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML4"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML5"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML6"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML7"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML8"});
+            //listImg.Add(new Imagen { Direccion = "RAW.HTML9"});
+            ////negIMG.Agregar(listImg);
             
 
-            Producto pro = new Producto();
-            pro.NSerie = "MX203";
-            pro.Marca = new Marca { IdMarca = 1 };
-            pro.Categoria = new Categoria { IdCategoria = 1 };
-            pro.Nombre = "MAX";
-            pro.Precio = 5000;
-            pro.Stock = 100;
-            pro.StockMinimo = 20;
-            pro.PorcentajeGanancia = 40;
-            pro.Modelo = "Cuidado1";
-            pro.Descripcion = "Feo";
-            pro.Imagenes = listImg;
+            //Producto pro = new Producto();
+            //pro.NSerie = "MX203";
+            //pro.Marca = new Marca { IdMarca = 1 };
+            //pro.Categoria = new Categoria { IdCategoria = 1 };
+            //pro.Nombre = "MAX";
+            //pro.Precio = 5000;
+            //pro.Stock = 100;
+            //pro.StockMinimo = 20;
+            //pro.PorcentajeGanancia = 40;
+            //pro.Modelo = "Cuidado1";
+            //pro.Descripcion = "Feo";
+            //pro.Imagenes = listImg;
 
 
-            //negProducto.Agregar(pro);
+            ////negProducto.Agregar(pro);
 
-            List<DetalleCompra> detalleCompra = new List<DetalleCompra>();
-            detalleCompra.Add(new DetalleCompra { Cantidad=3, PrecioParcial= 302, PrecioUnitario= 10, Producto = new Producto { IdProducto = 1} });
-            detalleCompra.Add(new DetalleCompra { Cantidad=4, PrecioParcial= 330, PrecioUnitario= 132, Producto = new Producto { IdProducto = 2} });
+            //List<DetalleCompra> detalleCompra = new List<DetalleCompra>();
+            //detalleCompra.Add(new DetalleCompra { Cantidad=3, PrecioParcial= 302, PrecioUnitario= 10, Producto = new Producto { IdProducto = 1} });
+            //detalleCompra.Add(new DetalleCompra { Cantidad=4, PrecioParcial= 330, PrecioUnitario= 132, Producto = new Producto { IdProducto = 2} });
 
-            Compra com = new Compra();
-            com.Proveedor = new Proveedor { IdProveedor = 1 };
-            com.Usuario = new Usuario { IdUsuario = 1 };
-            com.Fecha = DateTime.Now;
-            com.Total = 1000000;
-            com.Detalle = detalleCompra;
+            //Compra com = new Compra();
+            //com.Proveedor = new Proveedor { IdProveedor = 1 };
+            //com.Usuario = new Usuario { IdUsuario = 1 };
+            //com.Fecha = DateTime.Now;
+            //com.Total = 1000000;
+            //com.Detalle = detalleCompra;
 
-            negCompra.Agregar(com);
+            //bool Nombre = negUsuario.Ingreso("Admin1", "ContraÑ");
+            //Console.WriteLine(Nombre);
+
+            //negCompra.Agregar(com);
 
             //List<Persona> personaLista = new List<Persona>();
             //List<Cliente> clienteLista = new List<Cliente>();

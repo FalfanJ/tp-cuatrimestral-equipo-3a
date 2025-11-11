@@ -104,6 +104,28 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+        public bool Ingreso(string NombreUsuario, string Contraseña)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE NombreUsuario = @nombreusuario AND Contraseña = @contraseña");
+                datos.SetearParametro("@nombreusuario", NombreUsuario);
+                datos.SetearParametro("@contraseña", Contraseña);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
         public void BajaLogica(int ID)
         {
             AccesoDatos datos = new AccesoDatos();

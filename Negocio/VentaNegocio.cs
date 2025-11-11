@@ -44,6 +44,7 @@ namespace Negocio
         public void Agregar(Venta nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
+            DetalleVentaNegocio detalleNeg = new DetalleVentaNegocio();
 
             try
             {
@@ -53,7 +54,12 @@ namespace Negocio
                 datos.SetearParametro("@nfactura", nuevo.NFactura);
                 datos.SetearParametro("@fecha", nuevo.Fecha);
                 datos.SetearParametro("@total", nuevo.Total);
-                datos.EjecutarAccion();
+                nuevo.IdVenta = Convert.ToInt64(datos.EjecutarScalar());
+                foreach (DetalleVenta item in nuevo.Detalle)
+                {
+                    item.IdVenta = nuevo.IdVenta;
+                }
+                detalleNeg.Agregar(nuevo.Detalle);
             }
             catch (Exception ex)
             {

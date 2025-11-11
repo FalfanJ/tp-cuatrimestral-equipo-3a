@@ -25,7 +25,7 @@ namespace Negocio
                     aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.Cantidad = (int)datos.Lector["Cantidad"];
                     aux.PrecioUnitario = (int)datos.Lector["PrecioUnitario"];
-                    aux.PrecioParcial= (int)datos.Lector["PrecioParcial"];
+                    aux.PrecioParcial = (int)datos.Lector["PrecioParcial"];
                     aux.PorcentajeGanancia = (int)datos.Lector["ProcentajeGanancia"];
                     lista.Add(aux);
                 }
@@ -54,6 +54,33 @@ namespace Negocio
                 datos.SetearParametro("@precioparcial", nuevo.PrecioParcial);
                 datos.SetearParametro("@procentajeganancia", nuevo.PorcentajeGanancia);
                 datos.EjecutarAccion();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+        public void Agregar(List<DetalleVenta> nuevo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("INSERT INTO Detalle_Venta (IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, ProcentajeGanancia) VALUES (@idventa, @idproducto, @cantidad, @preciounitario, @precioparcial, @procentajeganancia)");
+                foreach (DetalleVenta item in nuevo)
+                {
+                    datos.SetearParametro("@idventa", item.IdVenta);
+                    datos.SetearParametro("@idproducto", item.Producto.IdProducto);
+                    datos.SetearParametro("@cantidad", item.Cantidad);
+                    datos.SetearParametro("@preciounitario", item.PrecioUnitario);
+                    datos.SetearParametro("@precioparcial", item.PrecioParcial);
+                    datos.SetearParametro("@procentajeganancia", item.PorcentajeGanancia);
+                    datos.EjecutarAccion();
+                }
             }
             catch (Exception ex)
             {
