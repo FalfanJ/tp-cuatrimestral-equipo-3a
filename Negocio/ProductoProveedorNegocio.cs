@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDPP, IDProducto, IDProveedor, FechaAlta, FechaBaja FROM Producto_Proveedor");
+                datos.SetearConsulta("SELECT IDPP, IDProducto, IDProveedor, FechaAlta, FechaBaja FROM Producto_Proveedor WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -84,13 +84,15 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-
+                datos.SetearConsulta("UPDATE Producto_Proveedor SET Estado=0 WHERE IDPP = @idpp SELECT @@ROWCOUNT");
+                datos.SetearParametro("@idpp", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

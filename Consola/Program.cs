@@ -27,6 +27,11 @@ namespace Consola
             UsuarioNegocio negUsuario = new UsuarioNegocio();
             VentaNegocio negVeta = new VentaNegocio();
 
+            bool Estado = negCategoria.BajaLogica(0);
+            Console.WriteLine(Estado);
+
+          
+
             //negCliente.Agregar(new Cliente { Nombre = "Rod", Apellido = "Falta", Dni = 4544212, Cuit=21421311, TipoPersona=true, Telefono= 1166339988, Email="zo@gmail.com", Direccion="AV123"});
             //negPersona.Agregar(new Persona { Nombre = "mm", Apellido = "RR", TipoPersona = false, Telefono = 445132132 });
             //negCategoria.Agregar(new Categoria { Nombre="Comida"}); //funciona

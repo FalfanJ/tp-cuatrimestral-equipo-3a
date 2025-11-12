@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDCategoria, Categoria FROM Categorias");
+                datos.SetearConsulta("SELECT IDCategoria, Categoria FROM Categorias WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -75,13 +75,15 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(int ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-
+                datos.SetearConsulta("UPDATE Categorias SET Estado=0 WHERE IDCategoria = @idcategoria SELECT @@ROWCOUNT");
+                datos.SetearParametro("@idcategoria", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

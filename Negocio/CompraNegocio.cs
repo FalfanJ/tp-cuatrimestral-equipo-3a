@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDCompra, IDUsuario, IDProveedor, Fecha, Total FROM Compras");
+                datos.SetearConsulta("SELECT IDCompra, IDUsuario, IDProveedor, Fecha, Total FROM Compras WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -28,7 +28,7 @@ namespace Negocio
                     aux.Total = (int)datos.Lector["Total"];
                     lista.Add(aux);
                 }
-                    return lista;
+                return lista;
             }
             catch (Exception ex)
             {
@@ -91,13 +91,20 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
+            DetalleCompraNegocio detComNeg = new DetalleCompraNegocio();
+            bool Resultado = false;
             try
             {
-
+                if (detComNeg.BajaLogica(ID))
+                {
+                    datos.SetearConsulta("UPDATE Compras SET Estado=0 WHERE IDCompra = @idcompra SELECT @@ROWCOUNT");
+                    datos.SetearParametro("@idcompra", ID);
+                    Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                }
+                return Resultado;
             }
             catch (Exception ex)
             {

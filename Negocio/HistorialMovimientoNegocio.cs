@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDHistorial, IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha FROM HistorialMovimiento");
+                datos.SetearConsulta("SELECT IDHistorial, IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha FROM HistorialMovimiento WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -96,13 +96,15 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-
+                datos.SetearConsulta("UPDATE HistorialMovimiento SET Estado=0 WHERE IDHistorial = @idhistorial SELECT @@ROWCOUNT\r\n");
+                datos.SetearParametro("@idhistorial", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

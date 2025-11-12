@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDImagen, IDProducto, Direccion FROM Producto_Imagenes");
+                datos.SetearConsulta("SELECT IDImagen, IDProducto, Direccion FROM Producto_Imagenes WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -101,13 +101,15 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(int ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-
+                datos.SetearConsulta("UPDATE Producto_Imagenes SET Estado=0 WHERE IDImagen = @idimagen SELECT @@ROWCOUNT");
+                datos.SetearParametro("@idimagen", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial FROM Detalle_Compra");
+                datos.SetearConsulta("SELECT IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial FROM Detalle_Compra WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -112,13 +112,15 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-
+                datos.SetearConsulta("UPDATE Detalle_Compra SET Estado=0 WHERE IDCompra = @idcompra SELECT @@ROWCOUNT");
+                datos.SetearParametro("@idcompra", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

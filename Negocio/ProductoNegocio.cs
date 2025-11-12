@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT P.IDProducto, P.NumeroSerie, M.Marca AS 'Marca', C.Categoria AS 'Categoria', P.Nombre, P.Precio, P.StockActual, P.StockMinimo, P.PorcentajeGanancia, P.Modelo, P.Descripcion, P.IDMarca, P.IDCategoria FROM Productos P LEFT JOIN Marcas M ON P.IDMarca = M.IDMarca LEFT JOIN Categorias C ON P.IDCategoria = C.IDCategoria");
+                datos.SetearConsulta("SELECT P.IDProducto, P.NumeroSerie, M.Marca AS 'Marca', C.Categoria AS 'Categoria', P.Nombre, P.Precio, P.StockActual, P.StockMinimo, P.PorcentajeGanancia, P.Modelo, P.Descripcion, P.IDMarca, P.IDCategoria FROM Productos P LEFT JOIN Marcas M ON P.IDMarca = M.IDMarca LEFT JOIN Categorias C ON P.IDCategoria = C.IDCategoria WHERE P.Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -126,13 +126,15 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 ID)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-
+                datos.SetearConsulta("UPDATE Productos SET Estado=0 WHERE IDProducto = @idproducto SELECT @@ROWCOUNT");
+                datos.SetearParametro("@idproducto", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

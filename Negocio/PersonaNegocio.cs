@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDPersona, Nombre, Apellido, DNI, CUIT, TipoPersona, Telefono, Email, Direccion FROM Personas");
+                datos.SetearConsulta("SELECT IDPersona, Nombre, Apellido, DNI, CUIT, TipoPersona, Telefono, Email, Direccion FROM Personas WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -134,13 +134,16 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 ID)
         {
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-
+                datos.SetearConsulta("UPDATE Personas SET Estado=0 WHERE IDPersona = @idpersona SELECT @@ROWCOUNT");
+                datos.SetearParametro("@idpersona", ID);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                return Resultado;
             }
             catch (Exception ex)
             {

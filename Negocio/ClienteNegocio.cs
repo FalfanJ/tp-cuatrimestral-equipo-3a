@@ -19,7 +19,7 @@ namespace Negocio
             try
             {
                 perList = perNeg.Listar();
-                datos.SetearConsulta("SELECT IDCliente, IDPersona FROM Clientes");
+                datos.SetearConsulta("SELECT IDCliente, IDPersona FROM Clientes WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -90,13 +90,21 @@ namespace Negocio
             {
             }
         }
-        public void BajaLogica(int ID)
+        public bool BajaLogica(Int64 IDPersona, Int64 IDCliente)
         {
             AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
+            bool Resultado = false;
 
             try
             {
-
+                if (perNeg.BajaLogica(IDPersona))
+                {
+                    datos.SetearConsulta("UPDATE Clientes SET Estado=0 WHERE IDCliente = @idcliente SELECT @@ROWCOUNT");
+                    datos.SetearParametro("@idcliente", IDCliente);
+                    Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                }
+                return Resultado;
             }
             catch (Exception ex)
             {
