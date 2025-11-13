@@ -6,12 +6,14 @@ GO
 CREATE TABLE Categorias(
     IDCategoria INT NOT NULL UNIQUE IDENTITY(1,1),
     Categoria NVARCHAR(70) NOT NULL UNIQUE,
+    Estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY (IDCategoria)
 )
 GO
 CREATE TABLE Marcas(
     IDMarca INT NOT NULL UNIQUE IDENTITY(1,1),
     Marca NVARCHAR(70) NOT NULL UNIQUE,
+    Estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY (IDMarca)
 )
 GO
@@ -27,6 +29,7 @@ CREATE TABLE Productos(
 	PorcentajeGanancia SMALLINT NOT NULL,
 	Modelo NVARCHAR(50),
 	Descripcion NVARCHAR(255),
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDProducto),
     FOREIGN KEY (IDMarca) REFERENCES Marcas (IDMarca),
     FOREIGN KEY (IDCategoria) REFERENCES Categorias (IDCategoria)
@@ -36,6 +39,7 @@ CREATE TABLE Producto_Imagenes(
     IDImagen BIGINT NOT NULL UNIQUE IDENTITY(1,1),
     IDProducto BIGINT NOT NULL,
 	Direccion NVARCHAR(255) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDImagen),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto)
 )
@@ -44,12 +48,13 @@ CREATE TABLE Personas(
     IDPersona BIGINT NOT NULL UNIQUE IDENTITY(1,1),
 	Nombre NVARCHAR(50) NOT NULL,
 	Apellido NVARCHAR(50) NOT NULL,
-	DNI SMALLINT NULL,
-	CUIT SMALLINT NULL,
+	DNI BIGINT NULL,
+	CUIT BIGINT NULL,
     TipoPersona BIT NOT NULL,
-	Telefono SMALLINT NOT NULL,
+	Telefono BIGINT NOT NULL,
 	Email NVARCHAR(70) NULL,
     Direccion NVARCHAR(100) NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDPersona)
 )
 GO
@@ -59,6 +64,7 @@ CREATE TABLE Usuarios(
 	TipoUsuario NVARCHAR(20) NOT NULL,
 	NombreUsuario NVARCHAR(50) NOT NULL UNIQUE,
 	Contraseña NVARCHAR(50) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDUsuario),
     FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
 )
@@ -66,6 +72,7 @@ GO
 CREATE TABLE Clientes(
     IDCliente BIGINT NOT NULL UNIQUE IDENTITY(1,1),
     IDPersona BIGINT NOT NULL UNIQUE,
+    Estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY(IDCliente),
     FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
 )
@@ -77,6 +84,7 @@ CREATE TABLE Ventas(
     NFactura NVARCHAR(50) NOT NULL,
 	Fecha DATETIME NOT NULL,
 	Total DECIMAL(16,3) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDVenta),
     FOREIGN KEY (IDCliente) REFERENCES Clientes (IDCliente),
     FOREIGN KEY (IDUsuario) REFERENCES Usuarios (IDUsuario)
@@ -89,6 +97,7 @@ CREATE TABLE Detalle_Venta(
 	PrecioUnitario DECIMAL(16,3) NOT NULL,
 	PrecioParcial DECIMAL(16,3) NOT NULL,
     ProcentajeGanancia SMALLINT NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDVenta, IDProducto),
     FOREIGN KEY (IDVenta) REFERENCES Ventas (IDVenta),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto)
@@ -98,6 +107,7 @@ CREATE TABLE Proveedor(
     IDProveedor BIGINT NOT NULL UNIQUE IDENTITY(1,1),
     IDPersona BIGINT NOT NULL UNIQUE,
 	RazonSocial NVARCHAR(30) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDProveedor),
     FOREIGN KEY (IDPersona) REFERENCES Personas (IDPersona)
 )
@@ -108,6 +118,7 @@ CREATE TABLE Producto_Proveedor(
 	IDProveedor BIGINT NOT NULL,
     FechaAlta DATE NOT NULL,
     FechaBaja DATE NULL,
+    Estado BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY(IDPP),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto),
     FOREIGN KEY (IDProveedor) REFERENCES Proveedor (IDProveedor)
@@ -119,6 +130,7 @@ CREATE TABLE Compras(
     IDProveedor BIGINT NOT NULL,
     Fecha DATETIME NOT NULL,
     Total DECIMAL(16,3) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY(IDCompra),
     FOREIGN KEY (IDProveedor) REFERENCES Proveedor (IDProveedor),
     FOREIGN KEY (IDUsuario) REFERENCES Usuarios (IDUsuario)
@@ -130,6 +142,7 @@ CREATE TABLE Detalle_Compra(
     Cantidad SMALLINT NOT NULL,
     PrecioUnitario DECIMAL(16,3) NOT NULL,
     PrecioParcial DECIMAL(16,3) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY(IDCompra, IDProducto),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto),
     FOREIGN KEY (IDCompra) REFERENCES Compras (IDCompra)
@@ -143,6 +156,7 @@ CREATE TABLE HistorialMovimiento(
     StockAnterior SMALLINT NOT NULL,
     StockPosterior SMALLINT NOT NULL,
     Fecha DATETIME NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY(IDHistorial),
     FOREIGN KEY (IDProducto) REFERENCES Productos (IDProducto),
     FOREIGN KEY (IDVenta) REFERENCES Ventas (IDVenta),

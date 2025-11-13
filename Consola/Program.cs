@@ -27,56 +27,56 @@ namespace Consola
             UsuarioNegocio negUsuario = new UsuarioNegocio();
             VentaNegocio negVeta = new VentaNegocio();
 
-            bool Estado = negCategoria.BajaLogica(0);
-            Console.WriteLine(Estado);
+            //bool Estado = negCategoria.BajaLogica(0);
+            //Console.WriteLine(Estado);
 
-          
+
 
             //negCliente.Agregar(new Cliente { Nombre = "Rod", Apellido = "Falta", Dni = 4544212, Cuit=21421311, TipoPersona=true, Telefono= 1166339988, Email="zo@gmail.com", Direccion="AV123"});
             //negPersona.Agregar(new Persona { Nombre = "mm", Apellido = "RR", TipoPersona = false, Telefono = 445132132 });
-            //negCategoria.Agregar(new Categoria { Nombre="Comida"}); //funciona
             //negCliente.Agregar();
             //negDetalleCompra.Agregar();
             //negDetalleVenta.Agregar();
             //negHistorialMovimiento.Agregar();
             //negIMG.Agregar();
-            //negMarca.Agregar(new Marca { Nombre= "Samsung"}); //Funciona
             //negPersona.Agregar();
             //negProductoProveedor.Agregar();
             //negProveedor.Agregar(new Proveedor { Nombre = "Compania1", Apellido = "SA", Cuit = 30589734123, TipoPersona = false, Telefono = 3368797421, Email = "compania@compania", Direccion = "MMM", RazonSocial="SociedadAnonima" }); // Funciona
             //negUsuario.Agregar(new Usuario { Nombre = "Usuario1", Apellido = "Admin1", Dni = 30333444, Cuit = 20303334441, TipoPersona = true, Telefono = 1122334455, Email = "ad@gmail.com", Direccion = "BF456", TipoUsuario="Admin", NombreUsuario="Admin1", Contraseña="ContraÑ" }); // funciona
             //negVeta.Agregar();
 
+            //negCategoria.Agregar(new Categoria { Nombre="Comida"}); //funciona
+            //negMarca.Agregar(new Marca { Nombre= "Samsung"}); //Funciona
 
-            //List<Imagen> listImg = new List<Imagen>();
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML0"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML1"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML2"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML3"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML4"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML5"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML6"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML7"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML8"});
-            //listImg.Add(new Imagen { Direccion = "RAW.HTML9"});
+            List<Imagen> listImg = new List<Imagen>();
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR1" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR2" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR3" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR4" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR5" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR6" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR7" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR8" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR9" });
+            listImg.Add(new Imagen { Direccion = "RAW.HTMLLLAR0" });
             ////negIMG.Agregar(listImg);
-            
 
-            //Producto pro = new Producto();
-            //pro.NSerie = "MX203";
-            //pro.Marca = new Marca { IdMarca = 1 };
-            //pro.Categoria = new Categoria { IdCategoria = 1 };
-            //pro.Nombre = "MAX";
-            //pro.Precio = 5000;
-            //pro.Stock = 100;
-            //pro.StockMinimo = 20;
-            //pro.PorcentajeGanancia = 40;
-            //pro.Modelo = "Cuidado1";
-            //pro.Descripcion = "Feo";
+
+            Producto pro = new Producto();
+            pro.NSerie = "vnnv320";
+            pro.Marca = new Marca { IdMarca = 1 };
+            pro.Categoria = new Categoria { IdCategoria = 1 };
+            pro.Nombre = "CON";
+            pro.Precio = 20000;
+            pro.Stock = 10021;
+            pro.StockMinimo = 220;
+            pro.PorcentajeGanancia = 01;
+            pro.Modelo = "Cuidado2";
+            pro.Descripcion = "FeoLindo";
             //pro.Imagenes = listImg;
 
 
-            ////negProducto.Agregar(pro);
+            //negProducto.Agregar(pro);
 
             //List<DetalleCompra> detalleCompra = new List<DetalleCompra>();
             //detalleCompra.Add(new DetalleCompra { Cantidad=3, PrecioParcial= 302, PrecioUnitario= 10, Producto = new Producto { IdProducto = 1} });
@@ -169,6 +169,31 @@ namespace Consola
             //    Console.WriteLine(item.Contraseña);
             //    Console.WriteLine("\n");
             //}
+
+            List<Producto> listProducto = negProducto.Listar();
+            foreach (Producto item in listProducto)
+            {
+                Console.WriteLine(item.IdProducto);
+                Console.WriteLine(item.NSerie);
+                Console.WriteLine(item.Marca.Nombre);
+                Console.WriteLine(item.Categoria.Nombre);
+                Console.WriteLine(item.Nombre);
+                Console.WriteLine(item.Precio);
+                Console.WriteLine(item.Stock);
+                Console.WriteLine(item.StockMinimo);
+                Console.WriteLine(item.PorcentajeGanancia);
+                Console.WriteLine(item.Modelo);
+                Console.WriteLine(item.Descripcion);
+                Console.WriteLine("IMG Url\n");
+                foreach (Imagen item2 in item.Imagenes)
+                {
+                    Console.WriteLine(item2.IdImagen);
+                    Console.WriteLine(item2.IdProducto);
+                    Console.WriteLine(item2.Direccion);
+                    Console.WriteLine("IMG Nueva\n");
+
+                }
+            }
         }
     }
 }

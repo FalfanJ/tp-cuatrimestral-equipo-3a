@@ -26,7 +26,7 @@ namespace Negocio
                     aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
                     aux.NFactura = (string)datos.Lector["NFactura"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
-                    aux.Total = (int)datos.Lector["Total"];
+                    aux.Total = (decimal)datos.Lector["Total"];
                     lista.Add(aux);
                 }
                 return lista;
