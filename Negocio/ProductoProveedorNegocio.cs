@@ -25,7 +25,10 @@ namespace Negocio
                     aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.Proveedor.IdProveedor = (Int64)datos.Lector["IDProveedor"];
                     aux.FechaAlta = (DateTime)datos.Lector["FechaAlta"];
-                    aux.FechaBaja = (DateTime)datos.Lector["FechaBaja"];
+
+                    if (!(datos.Lector["FechaBaja"] is DBNull))
+                        aux.FechaBaja = (DateTime)datos.Lector["FechaBaja"];
+                    
                     lista.Add(aux);
                 }
                 return lista;

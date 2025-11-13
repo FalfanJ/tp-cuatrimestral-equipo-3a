@@ -10,8 +10,8 @@ namespace Dominio
     {
         public Int64 IdCompra { get; set; }
         public Producto Producto { get; set; }
-        public int Cantidad { get; set; }
-        public int PrecioUnitario { get; set; }
-        public int PrecioParcial { get; set; }
+        public Int16 Cantidad { get; set; }
+        public decimal PrecioUnitario { get; set; }
+        public decimal PrecioParcial { get; set; }
     }
 }

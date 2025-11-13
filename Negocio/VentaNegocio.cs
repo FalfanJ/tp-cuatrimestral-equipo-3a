@@ -26,7 +26,7 @@ namespace Negocio
                     aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
                     aux.NFactura = (string)datos.Lector["NFactura"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
-                    aux.Total = (int)datos.Lector["Total"];
+                    aux.Total = (decimal)datos.Lector["Total"];
                     lista.Add(aux);
                 }
                 return lista;
@@ -48,7 +48,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Ventas(IDCliente, IDUsuario, NFactura, Fecha, Total) VALUES (@idcliente, @idusuario, @nfactura, @fecha, @total)");
+                datos.SetearConsulta("INSERT INTO Ventas(IDCliente, IDUsuario, NFactura, Fecha, Total) VALUES (@idcliente, @idusuario, @nfactura, @fecha, @total); SELECT SCOPE_IDENTITY()");
                 datos.SetearParametro("@idcliente", nuevo.Cliente.IdCliente);
                 datos.SetearParametro("@idusuario", nuevo.Usuario.IdUsuario);
                 datos.SetearParametro("@nfactura", nuevo.NFactura);

@@ -13,7 +13,7 @@ namespace Dominio
         public Usuario Usuario { get; set; }
         public string NFactura { get; set; }
         public DateTime Fecha { get; set; }
-        public int Total { get; set; }
+        public decimal Total { get; set; }
         public List<DetalleVenta> Detalle { get; set; } = new List<DetalleVenta>();
     }
 }

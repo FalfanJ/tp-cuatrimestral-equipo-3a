@@ -13,9 +13,12 @@ namespace Negocio
         {
             List<Producto> lista = new List<Producto>();
             AccesoDatos datos = new AccesoDatos();
+            ImagenNegocio imgNeg = new ImagenNegocio();
 
             try
             {
+                List<Imagen> listImg = imgNeg.Listar();
+
                 datos.SetearConsulta("SELECT P.IDProducto, P.NumeroSerie, M.Marca AS 'Marca', C.Categoria AS 'Categoria', P.Nombre, P.Precio, P.StockActual, P.StockMinimo, P.PorcentajeGanancia, P.Modelo, P.Descripcion, P.IDMarca, P.IDCategoria FROM Productos P LEFT JOIN Marcas M ON P.IDMarca = M.IDMarca LEFT JOIN Categorias C ON P.IDCategoria = C.IDCategoria WHERE P.Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
@@ -24,15 +27,16 @@ namespace Negocio
                     aux.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.NSerie = (string)datos.Lector["NumeroSerie"];
                     aux.Nombre = (string)datos.Lector["Nombre"];
-                    aux.Precio = (int)datos.Lector["Precio"];
-                    aux.Stock = (int)datos.Lector["StockActual"];
-                    aux.StockMinimo = (int)datos.Lector["StockMinimo"];
-                    aux.PorcentajeGanancia = (int)datos.Lector["PorcentajeGanancia"];
+                    //aux.Precio = Convert.ToDecimal(datos.Lector["Precio"]);
+                    aux.Precio = (decimal)datos.Lector["Precio"];
+                    aux.Stock = (Int16)datos.Lector["StockActual"];
+                    aux.StockMinimo = (Int16)datos.Lector["StockMinimo"];
+                    aux.PorcentajeGanancia = (Int16)datos.Lector["PorcentajeGanancia"];
 
                     if (!(datos.Lector["Modelo"] is DBNull))
                         aux.Modelo = (string)datos.Lector["Modelo"];
-                    
-                    if(!(datos.Lector["Descripcion"] is DBNull))
+
+                    if (!(datos.Lector["Descripcion"] is DBNull))
                         aux.Descripcion = (string)datos.Lector["Descripcion"];
 
                     if (!(datos.Lector["Marca"] is DBNull))
@@ -48,6 +52,8 @@ namespace Negocio
                         aux.Categoria.IdCategoria = (int)datos.Lector["IDCategoria"];
                         aux.Categoria.Nombre = (string)datos.Lector["Categoria"];
                     }
+
+                    aux.Imagenes = listImg.FindAll(x => x.IdProducto == aux.IdProducto);
 
                     lista.Add(aux);
                 }
@@ -82,11 +88,14 @@ namespace Negocio
                 datos.SetearParametro("@modelo", nuevo.Modelo);
                 datos.SetearParametro("@descripcion", nuevo.Descripcion);
                 nuevo.IdProducto = Convert.ToInt64(datos.EjecutarScalar());
-                foreach (Imagen item in nuevo.Imagenes)
+                if (nuevo.Imagenes.Count != 0)
                 {
-                    item.IdProducto = nuevo.IdProducto;
+                    foreach (Imagen item in nuevo.Imagenes)
+                    {
+                        item.IdProducto = nuevo.IdProducto;
+                    }
+                    imgNeg.Agregar(nuevo.Imagenes);
                 }
-                imgNeg.Agregar(nuevo.Imagenes);
             }
             catch (Exception ex)
             {
