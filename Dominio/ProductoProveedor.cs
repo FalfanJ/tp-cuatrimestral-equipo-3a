@@ -12,6 +12,6 @@ namespace Dominio
         public Producto Producto { get; set; }
         public Proveedor Proveedor { get; set; }
         public DateTime FechaAlta { get; set; }
-        public DateTime FechaBaja { get; set; }
+        public DateTime? FechaBaja { get; set; }
     }
 }
