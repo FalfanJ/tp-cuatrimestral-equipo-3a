@@ -30,7 +30,7 @@ namespace Negocio
                     if (!(datos.Lector["IDCompra"] is DBNull))
                         aux.Compra.IdCompra = (Int64)datos.Lector["IDCompra"];
 
-                    aux.Usuario.IdUsuario= (Int64)datos.Lector["IDUsuario"];
+                    aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
                     aux.StockAnterior = (Int16)datos.Lector["StockAnterior"];
                     aux.StockPosterior = (Int16)datos.Lector["StockPosterior"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
@@ -56,8 +56,22 @@ namespace Negocio
             {
                 datos.SetearConsulta("INSERT INTO HistorialMovimiento (IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha, IDUsuario) VALUES (@idproducto, @idventa, @idcompra, @stockanterior, @stockposterior, @fecha, @idusuario)");
                 datos.SetearParametro("@idproducto", nuevo.Producto.IdProducto);
-                datos.SetearParametro("@idventa", nuevo.Venta.IdVenta);
-                datos.SetearParametro("@idcompra", nuevo.Compra.IdCompra);
+                if (nuevo.Venta != null)
+                {
+                    datos.SetearParametro("@idventa", nuevo.Venta.IdVenta);
+                }
+                else
+                {
+                    datos.SetearParametro("@idventa", null);
+                }
+                if (nuevo.Compra != null)
+                {
+                    datos.SetearParametro("@idcompra", nuevo.Compra.IdCompra);
+                }
+                else
+                {
+                    datos.SetearParametro("@idcompra", null);
+                }
                 datos.SetearParametro("@stockanterior", nuevo.StockAnterior);
                 datos.SetearParametro("@stockposterior", nuevo.StockPosterior);
                 datos.SetearParametro("@fecha", nuevo.Fecha);
@@ -82,8 +96,22 @@ namespace Negocio
                 datos.SetearConsulta("UPDATE HistorialMovimiento SET IDProducto = @idproducto, IDVenta = @idventa, IDCompra = @idcompra, StockAnterior = @stockanterior, StockPosterior = @stockposterior, Fecha = @fecha, IDUsuario = @idusuario WHERE IDHistorial = @idhistorial");
                 datos.SetearParametro("@idhistorial", modificado.IdHistorial);
                 datos.SetearParametro("@idproducto", modificado.Producto.IdProducto);
-                datos.SetearParametro("@idventa", modificado.Venta.IdVenta);
-                datos.SetearParametro("@idcompra", modificado.Compra.IdCompra);
+                if (modificado.Venta != null)
+                {
+                    datos.SetearParametro("@idventa", modificado.Venta.IdVenta);
+                }
+                else
+                {
+                    datos.SetearParametro("@idventa", null);
+                }
+                if (modificado.Compra != null)
+                {
+                    datos.SetearParametro("@idcompra", modificado.Compra.IdCompra);
+                }
+                else
+                {
+                    datos.SetearParametro("@idcompra", null);
+                }
                 datos.SetearParametro("@stockanterior", modificado.StockAnterior);
                 datos.SetearParametro("@stockposterior", modificado.StockPosterior);
                 datos.SetearParametro("@fecha", modificado.Fecha);
