@@ -1,9 +1,6 @@
-﻿using Dominio;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Dominio;
 
 namespace Negocio
 {
@@ -12,110 +9,83 @@ namespace Negocio
         public List<Proveedor> Listar()
         {
             List<Proveedor> lista = new List<Proveedor>();
-            List<Persona> perList = new List<Persona>();
             AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-                perList = perNeg.Listar();
-                datos.SetearConsulta("SELECT IDProveedor, IDPersona, RazonSocial FROM Proveedor WHERE Estado=1");
+                datos.SetearConsulta("SELECT IDProveedor, Nombre, CUIT, Direccion, Telefono, Email, Estado FROM Proveedor WHERE Estado = 1");
                 datos.EjecutarLectura();
+
                 while (datos.Lector.Read())
                 {
-                    Proveedor aux = new Proveedor();
-                    aux.IdProveedor = (Int64)datos.Lector["IDProveedor"];
-                    aux.IdPersona = (Int64)datos.Lector["IDPersona"];
-                    aux.RazonSocial = (string)datos.Lector["RazonSocial"];
-                    foreach (Persona item in perList)
+                    Proveedor aux = new Proveedor
                     {
-                        if (item.IdPersona == aux.IdPersona)
-                        {
-                            aux.Nombre = item.Nombre;
-                            aux.Apellido = item.Apellido;
-                            aux.Dni = item.Dni;
-                            aux.Cuit = item.Cuit;
-                            aux.TipoPersona = item.TipoPersona;
-                            aux.Telefono = item.Telefono;
-                            aux.Email = item.Email;
-                            aux.Direccion = item.Direccion;
-                        }
-                    }
+                        IdProveedor = (long)datos.Lector["IDProveedor"],
+                        Nombre = datos.Lector["Nombre"]?.ToString(),
+                        CUIT = datos.Lector["CUIT"]?.ToString(),
+                        Direccion = datos.Lector["Direccion"]?.ToString(),
+                        Telefono = datos.Lector["Telefono"]?.ToString(),
+                        Email = datos.Lector["Email"]?.ToString(),
+                        Estado = (bool)datos.Lector["Estado"]
+                    };
                     lista.Add(aux);
                 }
-                return lista;
-            }
-            catch (Exception ex)
-            {
 
-                throw ex;
+                return lista;
             }
             finally
             {
                 datos.CerrarConexion();
             }
         }
+
         public void Agregar(Proveedor nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
             try
             {
-                Int64 idPersona = perNeg.AgregarYObtener(nuevo);
-                datos.SetearConsulta("INSERT INTO Proveedor(IDPersona, RazonSocial) VALUES (@idpersona, @razonsocial)");
-                datos.SetearParametro("@idpersona", idPersona);
-                datos.SetearParametro("@razonsocial", nuevo.RazonSocial);
+                datos.SetearConsulta("INSERT INTO Proveedor (Nombre, CUIT, Direccion, Telefono, Email, Estado) VALUES (@nombre, @cuit, @direccion, @tel, @mail, 1)");
+                datos.SetearParametro("@nombre", nuevo.Nombre);
+                datos.SetearParametro("@cuit", nuevo.CUIT);
+                datos.SetearParametro("@direccion", nuevo.Direccion);
+                datos.SetearParametro("@tel", nuevo.Telefono);
+                datos.SetearParametro("@mail", nuevo.Email);
                 datos.EjecutarAccion();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
             finally
             {
                 datos.CerrarConexion();
             }
         }
-        public void Modificar(Proveedor modificado)
-        {
-            AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
-            try
-            {
-                perNeg.Modificar(modificado);
-                datos.SetearConsulta("UPDATE Proveedor SET RazonSocial = @razonsocial WHERE IDProveedor = @idproveedor");
-                datos.SetearParametro("@idproveedor", modificado.IdProveedor);
-                datos.SetearParametro("@razonsocial", modificado.RazonSocial);
-                datos.EjecutarAccion();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                datos.CerrarConexion();
-            }
-        }
-        public bool BajaLogica(Int64 IDPersona, Int64 IDProveedor)
-        {
-            AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
-            bool Resultado = false;
 
+        public void Editar(Proveedor proveedor)
+        {
+            AccesoDatos datos = new AccesoDatos();
             try
             {
-                if (perNeg.BajaLogica(IDPersona))
-                {
-                    datos.SetearConsulta("UPDATE Proveedor SET Estado=0 WHERE IDProveedor = @idproveedor SELECT @@ROWCOUNT");
-                    datos.SetearParametro("@idproveedor", IDProveedor);
-                    Resultado = Convert.ToBoolean(datos.EjecutarScalar());
-                }
-                return Resultado;
+                datos.SetearConsulta("UPDATE Proveedor SET Nombre=@nombre, CUIT=@cuit, Direccion=@direccion, Telefono=@tel, Email=@mail WHERE IDProveedor=@id");
+                datos.SetearParametro("@nombre", proveedor.Nombre);
+                datos.SetearParametro("@cuit", proveedor.CUIT);
+                datos.SetearParametro("@direccion", proveedor.Direccion);
+                datos.SetearParametro("@tel", proveedor.Telefono);
+                datos.SetearParametro("@mail", proveedor.Email);
+                datos.SetearParametro("@id", proveedor.IdProveedor);
+                datos.EjecutarAccion();
             }
-            catch (Exception ex)
+            finally
             {
-                throw ex;
+                datos.CerrarConexion();
+            }
+        }
+
+        public void BajaLogica(long id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.SetearConsulta("UPDATE Proveedor SET Estado = 0 WHERE IDProveedor = @id");
+                datos.SetearParametro("@id", id);
+                datos.EjecutarAccion();
             }
             finally
             {

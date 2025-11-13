@@ -1,31 +1,142 @@
-﻿using System;
+﻿using Dominio;
+using Negocio;
+using System;
 using System.Collections.Generic;
+using System.Web.UI;
 
 namespace Presentacion
 {
     public partial class Proveedores : System.Web.UI.Page
     {
+        protected string tituloModal = "Nuevo Proveedor";
+        protected bool idEditing = false;
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack)
-            {
                 CargarProveedores();
-            }
         }
 
         private void CargarProveedores()
         {
-            var proveedores = new List<dynamic>
+            try
             {
-                new { Id = 1, Nombre = "Ferretería Industrial S.R.L.", Email = "ventas@ferreind.com", Telefono = "+54 11 4789-2233", Direccion = "Av. San Martín 4520, CABA", CUIT = "30-65781234-9" },
-                new { Id = 2, Nombre = "Hierros y Tornillos del Sur", Email = "contacto@hytsur.com", Telefono = "+54 11 4665-7788", Direccion = "Calle Mitre 2345, Lomas de Zamora", CUIT = "33-78214569-1" },
-                new { Id = 3, Nombre = "Distribuidora FerreMax", Email = "info@ferremax.com.ar", Telefono = "+54 11 4554-9933", Direccion = "Av. Rivadavia 15600, Morón", CUIT = "27-45981236-4" },
-                new { Id = 4, Nombre = "Tornillería Delta", Email = "ventas@tornilleriadelta.com", Telefono = "+54 11 4899-5566", Direccion = "Camino General Belgrano 1023, Quilmes", CUIT = "30-99321456-7" },
-                new { Id = 5, Nombre = "Materiales San José", Email = "msj@ferresanjose.com", Telefono = "+54 11 4766-4421", Direccion = "Ruta 8 Km 34, San Miguel", CUIT = "33-44561234-8" }
-            };
+                ProveedorNegocio negocio = new ProveedorNegocio();
+                gvProveedor.DataSource = negocio.Listar();
+                gvProveedor.DataBind();
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error al cargar proveedores: {ex.Message}');</script>");
+            }
+        }
 
-            gvProveedor.DataSource = proveedores;
-            gvProveedor.DataBind();
+        protected void btnGuardarProveedor_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ProveedorNegocio negocio = new ProveedorNegocio();
+
+                Proveedor nuevo = new Proveedor
+                {
+                    Nombre = txtNombre.Text.Trim(),
+                    CUIT = txtCUIT.Text.Trim(),
+                    Direccion = txtDireccion.Text.Trim(),
+                    Telefono = txtTelefono.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Estado = true
+                };
+
+                // Si hay un ID oculto, estamos editando
+                if (!string.IsNullOrEmpty(hfIdProveedor.Value))
+                {
+                    nuevo.IdProveedor = Convert.ToInt64(hfIdProveedor.Value);
+                    negocio.Editar(nuevo);
+                    Response.Write("<script>alert('Proveedor actualizado correctamente');</script>");
+                }
+                else
+                {
+                    negocio.Agregar(nuevo);
+                    Response.Write("<script>alert('Proveedor agregado correctamente');</script>");
+                }
+
+                CargarProveedores();
+                LimpiarCampos();
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error: {ex.Message}');</script>");
+            }
+        }
+
+        private void LimpiarCampos()
+        {
+            hfIdProveedor.Value = string.Empty;
+            txtNombre.Text = "";
+            txtCUIT.Text = "";
+            txtDireccion.Text = "";
+            txtTelefono.Text = "";
+            txtEmail.Text = "";
+        }
+
+        protected void gvProveedor_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Editar")
+            {
+                long id = Convert.ToInt64(e.CommandArgument);
+                CargarProveedorEnModal(id);
+                tituloModal = "Editar Proveedor";
+                idEditing = true;
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "abrirModal",
+                    "var myModal = new bootstrap.Modal(document.getElementById('modalNuevoProveedor')); myModal.show();", true);
+            }
+        }
+
+        private void CargarProveedorEnModal(long id)
+        {
+            ProveedorNegocio negocio = new ProveedorNegocio();
+            Proveedor proveedor = negocio.Listar().Find(p => p.IdProveedor == id);
+
+            if (proveedor != null)
+            {
+                hfIdProveedor.Value = proveedor.IdProveedor.ToString();
+                txtNombre.Text = proveedor.Nombre;
+                txtCUIT.Text = proveedor.CUIT;
+                txtDireccion.Text = proveedor.Direccion;
+                txtTelefono.Text = proveedor.Telefono;
+                txtEmail.Text = proveedor.Email;
+            }
+        }
+
+        // ✅ Nuevo método: se ejecuta al confirmar eliminación en el modal
+        protected void btnEliminarProveedorConfirmado_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(hfIdProveedorEliminar.Value))
+                    throw new Exception("No se encontró el ID del proveedor a eliminar.");
+
+                long id = Convert.ToInt64(hfIdProveedorEliminar.Value);
+                ProveedorNegocio negocio = new ProveedorNegocio();
+                negocio.BajaLogica(id);
+
+                Response.Write("<script>alert('Proveedor eliminado correctamente');</script>");
+                CargarProveedores();
+
+                // Limpiar campo oculto
+                hfIdProveedorEliminar.Value = "";
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error al eliminar proveedor: {ex.Message}');</script>");
+            }
+        }
+
+        public void openCrearModal()
+        {
+            tituloModal = "Crear Proveedor";
+            idEditing = false;
         }
     }
 }

@@ -51,13 +51,14 @@
                                 <ItemTemplate>
                                     <div class="d-flex gap-2 justify-content-center">
                                         <asp:LinkButton ID="btnEditar" runat="server"
+                                            data-bs-toggle="modal" data-bs-target="#modalEditarCliente"
                                             CssClass="btn btn-warning btn-sm"
                                             CommandName="EditarCliente"
                                             CommandArgument='<%# Eval("IdCliente") + ";" + Eval("IdPersona") %>'>
                                             ✏️ Editar
                                         </asp:LinkButton>
                                         
-                                        <asp:LinkButton ID="btnEliminar" runat="server"
+                                        <asp:LinkButton data-bs-toggle="modal" data-bs-target="#modalEliminarCliente" runat="server"
                                             CssClass="btn btn-danger btn-sm"
                                             CommandName="EliminarCliente"
                                             CommandArgument='<%# Eval("IdCliente") + ";" + Eval("IdPersona") + ";" + Eval("Nombre") + " " + Eval("Apellido") %>'>

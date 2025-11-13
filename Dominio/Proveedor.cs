@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Proveedor : Persona
+    public class Proveedor
     {
-        public Int64 IdProveedor { get; set; }
-        public string RazonSocial { get; set; }
+        public long IdProveedor { get; set; }
+        public string Nombre { get; set; }
+        public string CUIT { get; set; }
+        public bool Estado { get; set; }
+        public string Telefono { get; set; }
+        public string Email { get; set; }
+        public string Direccion { get; set; }
     }
 }
+

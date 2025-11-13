@@ -1,9 +1,6 @@
 ﻿using Dominio;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Negocio
 {
@@ -12,39 +9,26 @@ namespace Negocio
         public List<Usuario> Listar()
         {
             List<Usuario> lista = new List<Usuario>();
-            List<Persona> perList = new List<Persona>();
             AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-                perList = perNeg.Listar();
-                datos.SetearConsulta("SELECT IDUsuario, IDPersona, TipoUsuario, NombreUsuario, Contraseña FROM Usuarios WHERE Estado=1");
+                datos.SetearConsulta("SELECT IDUsuario, TipoUsuario, NombreUsuario, Email, Contrasenia FROM Usuarios WHERE Estado = 1");
                 datos.EjecutarLectura();
+
                 while (datos.Lector.Read())
                 {
-                    Usuario aux = new Usuario();
-                    aux.IdUsuario = (Int64)datos.Lector["IDUsuario"];
-                    aux.IdUsuario = (Int64)datos.Lector["IDPersona"];
-                    aux.TipoUsuario = (string)datos.Lector["TipoUsuario"];
-                    aux.NombreUsuario = (string)datos.Lector["NombreUsuario"];
-                    aux.Contraseña = (string)datos.Lector["Contraseña"];
-                    foreach (Persona item in perList)
+                    Usuario aux = new Usuario
                     {
-                        if (item.IdPersona == aux.IdPersona)
-                        {
-                            aux.Nombre = item.Nombre;
-                            aux.Apellido = item.Apellido;
-                            aux.Dni = item.Dni;
-                            aux.Cuit = item.Cuit;
-                            aux.TipoPersona = item.TipoPersona;
-                            aux.Telefono = item.Telefono;
-                            aux.Email = item.Email;
-                            aux.Direccion = item.Direccion;
-                        }
-                    }
+                        IdUsuario = (long)datos.Lector["IDUsuario"],
+                        TipoUsuario = (string)datos.Lector["TipoUsuario"],
+                        NombreUsuario = (string)datos.Lector["NombreUsuario"],
+                        email = (string)datos.Lector["Email"],
+                        Contrasenia = (string)datos.Lector["Contrasenia"]
+                    };
                     lista.Add(aux);
                 }
+
                 return lista;
             }
             catch (Exception ex)
@@ -56,19 +40,18 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
         public void Agregar(Usuario nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-                Int64 idPersona = perNeg.AgregarYObtener(nuevo);
-                datos.SetearConsulta("INSERT INTO Usuarios (IDPersona, TipoUsuario, NombreUsuario, Contraseña) VALUES (@idpersona, @tipousuario, @nombreusuario, @contraseña)");
-                datos.SetearParametro("@idpersona", idPersona);
-                datos.SetearParametro("@tipousuario", nuevo.TipoUsuario);
-                datos.SetearParametro("@nombreusuario", nuevo.NombreUsuario);
-                datos.SetearParametro("@contraseña", nuevo.Contraseña);
+                datos.SetearConsulta("INSERT INTO Usuarios (TipoUsuario, NombreUsuario, Email, Contrasenia, Estado) VALUES (@tipo, @nombre, @correo, @pass, 1)");
+                datos.SetearParametro("@tipo", nuevo.TipoUsuario);
+                datos.SetearParametro("@nombre", nuevo.NombreUsuario);
+                datos.SetearParametro("@correo", nuevo.email);
+                datos.SetearParametro("@pass", nuevo.Contrasenia);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)
@@ -80,19 +63,19 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
         public void Modificar(Usuario modificado)
         {
             AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
-                perNeg.Modificar(modificado);
-                datos.SetearConsulta("UPDATE Usuarios SET TipoUsuario = @tipousuario, NombreUsuario = @nombreusuario, Contraseña = @contraseña WHERE IDUsuario = @idusuario");
-                datos.SetearParametro("@idusuario", modificado.IdUsuario);
-                datos.SetearParametro("@tipousuario", modificado.TipoUsuario);
-                datos.SetearParametro("@nombreusuario", modificado.NombreUsuario);
-                datos.SetearParametro("@contraseña", modificado.Contraseña);
+                datos.SetearConsulta("UPDATE Usuarios SET TipoUsuario = @tipo, NombreUsuario = @nombre, Email = @correo, Contrasenia = @pass WHERE IDUsuario = @id");
+                datos.SetearParametro("@id", modificado.IdUsuario);
+                datos.SetearParametro("@tipo", modificado.TipoUsuario);
+                datos.SetearParametro("@nombre", modificado.NombreUsuario);
+                datos.SetearParametro("@correo", modificado.email);
+                datos.SetearParametro("@pass", modificado.Contrasenia);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)
@@ -104,21 +87,22 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public bool Ingreso(string NombreUsuario, string Contraseña)
+
+        public bool Ingreso(string nombreUsuario, string contrasenia)
         {
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE NombreUsuario = @nombreusuario AND Contraseña = @contraseña");
-                datos.SetearParametro("@nombreusuario", NombreUsuario);
-                datos.SetearParametro("@contraseña", Contraseña);
-                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
-                return Resultado;
+                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE NombreUsuario = @nombre AND Contrasenia = @pass AND Estado = 1");
+                datos.SetearParametro("@nombre", nombreUsuario);
+                datos.SetearParametro("@pass", contrasenia);
+
+                int resultado = Convert.ToInt32(datos.EjecutarScalar());
+                return resultado > 0;
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
@@ -126,20 +110,16 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public bool BajaLogica(Int64 IDPersona, Int64 IDUsuario)
+
+        public bool BajaLogica(long idUsuario)
         {
             AccesoDatos datos = new AccesoDatos();
-            PersonaNegocio perNeg = new PersonaNegocio();
-            bool Resultado = false;
 
             try
             {
-                if (perNeg.BajaLogica(IDPersona))
-                {
-                    datos.SetearConsulta("UPDATE Usuarios SET Estado=0 WHERE IDUsuario = @idusuario SELECT @@ROWCOUNT");
-                    datos.SetearParametro("@idusuario", IDUsuario);
-                    Resultado = Convert.ToBoolean(datos.EjecutarScalar());
-                }
+                datos.SetearConsulta("UPDATE Usuarios SET Estado = 0 WHERE IDUsuario = @id");
+                datos.SetearParametro("@id", idUsuario);
+                bool Resultado = Convert.ToBoolean(datos.EjecutarScalar());
                 return Resultado;
             }
             catch (Exception ex)
