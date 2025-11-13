@@ -3,6 +3,7 @@ using Negocio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -105,14 +106,61 @@ namespace Presentacion
         {
             try
             {
+                // --- Validar campos obligatorios ---
+                if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                    string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                    string.IsNullOrWhiteSpace(txtEmail.Text))
+                {
+                    MostrarAlerta("Por favor, complete Nombre, Apellido y Email.");
+                    return;
+                }
+
+                // --- Validar email ---
+                if (!Regex.IsMatch(txtEmail.Text.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    MostrarAlerta("Ingrese un email válido.");
+                    return;
+                }
+
+                // --- Convertir campos numéricos de forma segura ---
+                long telefono = 0;
+                long? dni = null;
+                long? cuit = null;
+
+                if (!string.IsNullOrWhiteSpace(txtTelefono.Text))
+                {
+                    if (!long.TryParse(txtTelefono.Text.Trim(), out telefono))
+                    {
+                        MostrarAlerta("Teléfono inválido. Solo se permiten números.");
+                        return;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(txtDNI.Text))
+                {
+                    if (!long.TryParse(txtDNI.Text.Trim(), out long dniVal))
+                        MostrarAlerta("DNI inválido. Solo se permiten números.");
+                    else
+                        dni = dniVal;
+                }
+
+                if (!string.IsNullOrWhiteSpace(txtCUIT.Text))
+                {
+                    if (!long.TryParse(txtCUIT.Text.Trim(), out long cuitVal))
+                        MostrarAlerta("CUIT inválido. Solo se permiten números.");
+                    else
+                        cuit = cuitVal;
+                }
+
+                // --- Crear cliente ---
                 Cliente nuevo = new Cliente
                 {
                     Nombre = txtNombre.Text.Trim(),
                     Apellido = txtApellido.Text.Trim(),
                     Email = txtEmail.Text.Trim(),
-                    Telefono = !string.IsNullOrEmpty(txtTelefono.Text) ? Convert.ToInt64(txtTelefono.Text) : 0,
-                    Dni = !string.IsNullOrEmpty(txtDNI.Text) ? Convert.ToInt64(txtDNI.Text) : (long?)null,
-                    Cuit = !string.IsNullOrEmpty(txtCUIT.Text) ? Convert.ToInt64(txtCUIT.Text) : (long?)null,
+                    Telefono = telefono,
+                    Dni = dni,
+                    Cuit = cuit,
                     Direccion = txtDireccion.Text.Trim(),
                     TipoPersona = true // por defecto físico
                 };
@@ -122,13 +170,25 @@ namespace Presentacion
 
                 // Cierra el modal con JS
                 ScriptManager.RegisterStartupScript(this, GetType(), "HideNewModal", "$('#modalNuevoCliente').modal('hide');", true);
+
+                // Limpiar campos
                 LimpiarCamposNuevo();
+
+                // Mensaje de éxito
+                MostrarAlerta("Cliente agregado correctamente.");
             }
             catch (Exception ex)
             {
-                throw ex;
+                MostrarAlerta($"Error al guardar el cliente: {ex.Message}");
             }
         }
+
+        // Método para mostrar alertas (puede estar en tu clase ya)
+        private void MostrarAlerta(string mensaje)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alerta", $"alert('{mensaje}');", true);
+        }
+
 
         private void LimpiarCamposNuevo()
         {
