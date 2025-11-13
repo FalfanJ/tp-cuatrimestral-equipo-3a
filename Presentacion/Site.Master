@@ -81,26 +81,11 @@
                 <asp:LoginView runat="server">
                     <AnonymousTemplate>
                         <li class="nav-item">
-                           <a runat="server" href="~/Login.aspx" class="nav-link">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+                           <a runat="server" href="~/Login" class="nav-link">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Cerrar sesión
                             </a>
                         </li>
                     </AnonymousTemplate>
-                    <LoggedInTemplate>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-1"></i><asp:LoginName runat="server" />
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                <li><a class="dropdown-item" href="~/Perfil.aspx">Mi Perfil</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutPageUrl="Login.aspx"
-                                        CssClass="dropdown-item text-danger" LogoutText="Cerrar sesión" />
-                                </li>
-                            </ul>
-                        </li>
-                    </LoggedInTemplate>
                 </asp:LoginView>
             </ul>
         </div>

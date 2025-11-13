@@ -88,18 +88,53 @@ namespace Negocio
             }
         }
 
-        public bool Ingreso(string nombreUsuario, string contrasenia)
+        public bool Ingreso(string email, string contrasenia)
         {
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE NombreUsuario = @nombre AND Contrasenia = @pass AND Estado = 1");
-                datos.SetearParametro("@nombre", nombreUsuario);
+                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE Email = @nombre AND Contrasenia = @pass AND Estado = 1");
+                datos.SetearParametro("@email", email);
                 datos.SetearParametro("@pass", contrasenia);
 
                 int resultado = Convert.ToInt32(datos.EjecutarScalar());
                 return resultado > 0;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+
+        public Usuario Login(string email, string contrasenia)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("SELECT IDUsuario, TipoUsuario, NombreUsuario, Email, Contrasenia FROM Usuarios WHERE Email = @correo AND Contrasenia = @pass AND Estado = 1");
+                datos.SetearParametro("@correo", email);
+                datos.SetearParametro("@pass", contrasenia);
+                datos.EjecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    return new Usuario
+                    {
+                        IdUsuario = (long)datos.Lector["IDUsuario"],
+                        TipoUsuario = (string)datos.Lector["TipoUsuario"],
+                        NombreUsuario = (string)datos.Lector["NombreUsuario"],
+                        email = (string)datos.Lector["Email"],
+                        Contrasenia = (string)datos.Lector["Contrasenia"]
+                    };
+                }
+
+                return null; // usuario no encontrado
             }
             catch (Exception)
             {

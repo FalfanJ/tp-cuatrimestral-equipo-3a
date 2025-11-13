@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dominio;
+using Negocio;
+using System;
 using System.Web.UI;
 
 namespace Presentacion
@@ -20,12 +22,7 @@ namespace Presentacion
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text.Trim();
 
-            // ---- Validamos de campos vacios
-            if (string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(password))
-            {
-                lblMensaje.Text = "Debe email email y contraseña.";
-                return;
-            }
+            // ---- Validaciones básicas
             if (string.IsNullOrWhiteSpace(email))
             {
                 lblMensaje.Text = "Debe ingresar el email.";
@@ -33,21 +30,32 @@ namespace Presentacion
             }
             if (string.IsNullOrWhiteSpace(password))
             {
-                lblMensaje.Text = "Debe ingresard la contraseña.";
+                lblMensaje.Text = "Debe ingresar la contraseña.";
                 return;
             }
 
-            // ---- Simulamos el log del en la db
-            if (email == "perfiladmin@comercio.com" && password == "12345")
+            try
             {
-                Session["usuario"] = email;
-                Response.Redirect("~/Default.aspx");
+                UsuarioNegocio negocio = new UsuarioNegocio();
+                Usuario usuario = negocio.Login(email, password);
+
+                if (usuario != null)
+                {
+                    // Guardamos el usuario completo en sesión
+                    Session["usuario"] = usuario;
+                    Response.Redirect("~/Default.aspx");
+                }
+                else
+                {
+                    lblMensaje.Text = "Correo o contraseña incorrectos.";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                lblMensaje.Text = "Correo o contraseña incorrectos.";
+                lblMensaje.Text = $"Error al iniciar sesión: {ex.Message}";
             }
         }
+
 
 
     }

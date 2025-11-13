@@ -109,7 +109,7 @@ namespace Presentacion
             }
         }
 
-        // ✅ Nuevo método: se ejecuta al confirmar eliminación en el modal
+        // Nuevo método: se ejecuta al confirmar eliminación en el modal
         protected void btnEliminarProveedorConfirmado_Click(object sender, EventArgs e)
         {
             try

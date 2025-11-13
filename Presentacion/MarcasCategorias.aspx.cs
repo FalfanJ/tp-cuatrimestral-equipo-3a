@@ -28,7 +28,7 @@ namespace Presentacion
             gvCategorias.DataSource = listaCategorias;
             gvCategorias.DataBind();
 
-            // Mostrar u ocultar los títulos según si hay registros
+            // ---- Mostrar u ocultar los titulos segun si hay registros
             lblTituloMarcas.Visible = listaMarcas.Count > 0;
             lblSinMarcas.Visible = listaMarcas.Count == 0;
 

@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <!-- 🟢 Modal Crear / Editar Usuario -->
+    <!--  Modal Crear / Editar Usuario -->
     <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-3 shadow">
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <!-- 🔴 Modal Confirmar Eliminación -->
+    <!-- Modal Confirmar Eliminación -->
     <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalConfirmarEliminarLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-3 shadow">

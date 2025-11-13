@@ -5,7 +5,7 @@
         <h2 class="mb-4 text-center">Administración de Marcas y Categorías</h2>
 
         <div class="row">
-            <!-- 🔹 Sección de Marcas -->
+            <!-- Sección de Marcas -->
             <div class="col-md-6">
                 <div class="card shadow-sm p-3 mb-4 rounded">
                     <h4 class="mb-3 text-primary">Marcas</h4>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <!-- 🔹 Sección de Categorías -->
+            <!-- Sección de Categorías -->
             <div class="col-md-6">
                 <div class="card shadow-sm p-3 mb-4 rounded">
                     <h4 class="mb-3 text-primary">Categorías</h4>
@@ -107,7 +107,7 @@
         </div>
     </div>
 
-    <!-- 🔸 MODAL Bootstrap para confirmación -->
+    <!--  MODAL Bootstrap para confirmación -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <!-- 🟢 Modal Nuevo / Editar Proveedor -->
+    <!--  Modal Nuevo / Editar Proveedor -->
     <div class="modal fade" id="modalNuevoProveedor" tabindex="-1" aria-labelledby="modalNuevoProveedorLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <!-- 🔴 Modal Confirmar Eliminación -->
+    <!-- Modal Confirmar Eliminación -->
     <div class="modal fade" id="modalEliminarProveedor" tabindex="-1" aria-labelledby="modalEliminarProveedorLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
