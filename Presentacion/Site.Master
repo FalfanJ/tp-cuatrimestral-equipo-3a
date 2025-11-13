@@ -43,9 +43,13 @@
      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
         <!-- Marca -->
-        <a class="navbar-brand fw-bold" href="~/Default.aspx">
-            🧰 Ferretería Dos Clavos
-        </a>
+        <asp:HyperLink 
+    ID="lnkInicio" 
+    runat="server" 
+    NavigateUrl="~/Default.aspx" 
+    CssClass="navbar-brand fw-bold">
+    🧰 Ferretería Dos Clavos
+</asp:HyperLink>
 
         <!-- Botón hamburguesa para pantallas chicas -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Toggle navigation">
