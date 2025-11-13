@@ -47,7 +47,7 @@ namespace Presentacion
                 ProveedorNegocio provNeg = new ProveedorNegocio();
                 listaProveedores = provNeg.Listar();
                 ddlProveedor.DataSource = listaProveedores;
-                ddlProveedor.DataTextField = "RazonSocial";
+                ddlProveedor.DataTextField = "Nombre"; // Cambiado a Nombre
                 ddlProveedor.DataValueField = "IdProveedor";
                 ddlProveedor.DataBind();
                 ddlProveedor.Items.Insert(0, new ListItem("Todos", "0"));
@@ -175,7 +175,6 @@ namespace Presentacion
             }
         }
 
-        
         protected void btnGuardarProducto_Click(object sender, EventArgs e)
         {
             try
@@ -193,25 +192,21 @@ namespace Presentacion
                 nuevo.Descripcion = txtDescripcion.Text.Trim();
                 nuevo.Imagenes = new List<Imagen>(); // por ahora vacío
 
-                Producto producto = new Producto();
-
                 // --- Validaciones 
-                if (decimal.TryParse(txtPrecio.Text, out decimal precio))
-                    producto.Precio = precio;
+                if (!decimal.TryParse(txtPrecio.Text, out decimal precio))
+                    nuevo.Precio = 0;
                 else
-                    producto.Precio = 0; 
+                    nuevo.Precio = precio;
 
-                if (short.TryParse(txtStock.Text, out short stock))
-                    producto.Stock = stock;
+                if (!short.TryParse(txtStock.Text, out short stock))
+                    nuevo.Stock = 0;
                 else
-                    producto.Stock = 0;
+                    nuevo.Stock = stock;
 
-                if (short.TryParse(txtStockMinimo.Text, out short stockMinimo))
-                    producto.StockMinimo = stockMinimo;
+                if (!short.TryParse(txtStockMinimo.Text, out short stockMinimo))
+                    nuevo.StockMinimo = 0;
                 else
-                    producto.StockMinimo = 0;
-
-            
+                    nuevo.StockMinimo = stockMinimo;
 
                 negocio.Agregar(nuevo);
 
@@ -223,10 +218,8 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
-                // Podrías mostrar el error en un label dentro del modal
                 throw ex;
             }
         }
     }
 }
-
