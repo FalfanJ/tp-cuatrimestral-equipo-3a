@@ -191,5 +191,39 @@ namespace Presentacion
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alerta", $"alert('{mensaje}');", true);
         }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                UsuarioNegocio negocio = new UsuarioNegocio();
+                var lista = negocio.Listar();
+
+                // Filtrar por nombre
+                if (!string.IsNullOrWhiteSpace(txtFiltroNombre.Text))
+                    lista = lista.FindAll(u => u.NombreUsuario.IndexOf(txtFiltroNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0);
+
+                // Filtrar por email
+                if (!string.IsNullOrWhiteSpace(txtFiltroEmail.Text))
+                    lista = lista.FindAll(u => u.email.IndexOf(txtFiltroEmail.Text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0);
+
+                gvUsuarios.DataSource = lista;
+                gvUsuarios.DataBind();
+            }
+            catch (Exception ex)
+            {
+                MostrarAlerta($"Error al filtrar usuarios: {ex.Message}");
+            }
+        }
+
+        protected void btnResetFiltros_Click(object sender, EventArgs e)
+        {
+            // Limpiar cajas de filtro
+            txtFiltroNombre.Text = "";
+            txtFiltroEmail.Text = "";
+
+            // Recargar todos los usuarios
+            CargarUsuarios();
+        }
     }
 }

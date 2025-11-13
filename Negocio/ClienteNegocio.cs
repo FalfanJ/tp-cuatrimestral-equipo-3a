@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Negocio
 {
     public class ClienteNegocio
     {
+        // LISTAR: solo clientes activos (Estado = 1)
         public List<Cliente> Listar()
         {
             List<Cliente> lista = new List<Cliente>();
@@ -18,30 +17,34 @@ namespace Negocio
 
             try
             {
-                perList = perNeg.Listar();
-                datos.SetearConsulta("SELECT IDCliente, IDPersona FROM Clientes WHERE Estado=1");
+                perList = perNeg.Listar(); // Traemos todas las personas
+                datos.SetearConsulta("SELECT IDCliente, IDPersona, Estado FROM Clientes WHERE Estado = 1");
                 datos.EjecutarLectura();
+
                 while (datos.Lector.Read())
                 {
                     Cliente aux = new Cliente();
                     aux.IdCliente = (Int64)datos.Lector["IDCliente"];
                     aux.IdPersona = (Int64)datos.Lector["IDPersona"];
-                    foreach (Persona item in perList)
+                    aux.Estado = (bool)datos.Lector["Estado"];
+
+                    // Mapear datos de Persona
+                    Persona persona = perList.FirstOrDefault(p => p.IdPersona == aux.IdPersona);
+                    if (persona != null)
                     {
-                        if (item.IdPersona == aux.IdPersona)
-                        {
-                            aux.Nombre = item.Nombre;
-                            aux.Apellido = item.Apellido;
-                            aux.Dni = item.Dni;
-                            aux.Cuit = item.Cuit;
-                            aux.TipoPersona = item.TipoPersona;
-                            aux.Telefono = item.Telefono;
-                            aux.Email = item.Email;
-                            aux.Direccion = item.Direccion;
-                        }
+                        aux.Nombre = persona.Nombre;
+                        aux.Apellido = persona.Apellido;
+                        aux.Dni = persona.Dni;
+                        aux.Cuit = persona.Cuit;
+                        aux.TipoPersona = persona.TipoPersona;
+                        aux.Telefono = persona.Telefono;
+                        aux.Email = persona.Email;
+                        aux.Direccion = persona.Direccion;
                     }
+
                     lista.Add(aux);
                 }
+
                 return lista;
             }
             catch (Exception ex)
@@ -53,14 +56,20 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
+        // AGREGAR: nuevo cliente con Estado activo
         public void Agregar(Cliente nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
             PersonaNegocio perNeg = new PersonaNegocio();
+
             try
             {
+                // Agregar Persona primero
                 Int64 idPersona = perNeg.AgregarYObtener(nuevo);
-                datos.SetearConsulta("INSERT INTO Clientes (IDPersona) VALUES (@idpersona)");
+
+                // Insertar cliente con Estado = 1 (activo)
+                datos.SetearConsulta("INSERT INTO Clientes (IDPersona, Estado) VALUES (@idpersona, 1)");
                 datos.SetearParametro("@idpersona", idPersona);
                 datos.EjecutarAccion();
             }
@@ -73,38 +82,42 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
+        // MODIFICAR: actualizar datos de Persona
         public void Modificar(Cliente modificado)
         {
-            AccesoDatos datos = new AccesoDatos();
             PersonaNegocio perNeg = new PersonaNegocio();
 
             try
             {
+                // Solo se modifica la información de la persona
                 perNeg.Modificar(modificado);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            finally
-            {
-            }
         }
+
+        // BAJA LOGICA: marca Estado = 0 para cliente y Persona
         public bool BajaLogica(Int64 IDPersona, Int64 IDCliente)
         {
             AccesoDatos datos = new AccesoDatos();
             PersonaNegocio perNeg = new PersonaNegocio();
-            bool Resultado = false;
+            bool resultado = false;
 
             try
             {
+                // Baja lógica de Persona
                 if (perNeg.BajaLogica(IDPersona))
                 {
-                    datos.SetearConsulta("UPDATE Clientes SET Estado=0 WHERE IDCliente = @idcliente SELECT @@ROWCOUNT");
+                    // Baja lógica de Cliente
+                    datos.SetearConsulta("UPDATE Clientes SET Estado = 0 WHERE IDCliente = @idcliente");
                     datos.SetearParametro("@idcliente", IDCliente);
-                    Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                    datos.EjecutarAccion();
                 }
-                return Resultado;
+
+                return resultado;
             }
             catch (Exception ex)
             {

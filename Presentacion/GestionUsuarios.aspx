@@ -9,6 +9,20 @@
                 CssClass="btn btn-success"
                 OnClick="btnNuevoUsuario_Click" />
         </div>
+        <!-- Filtros -->
+<div class="row mb-3">
+    <div class="col-md-4">
+        <asp:TextBox ID="txtFiltroNombre" runat="server" CssClass="form-control" placeholder="Filtrar por nombre" />
+    </div>
+    <div class="col-md-4">
+        <asp:TextBox ID="txtFiltroEmail" runat="server" CssClass="form-control" placeholder="Filtrar por email" />
+    </div>
+    <div class="col-md-4 d-flex gap-2">
+        <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="btn btn-primary" OnClick="btnFiltrar_Click" />
+        <asp:Button ID="btnResetFiltros" runat="server" Text="Resetear Filtros" CssClass="btn btn-secondary" OnClick="btnResetFiltros_Click" />
+    </div>
+</div>
+
 
         <!-- Tabla de Usuarios -->
         <div class="table-responsive shadow-sm rounded mt-4">
