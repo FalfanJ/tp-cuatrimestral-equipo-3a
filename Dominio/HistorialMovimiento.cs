@@ -12,8 +12,9 @@ namespace Dominio
         public Producto Producto { get; set; }
         public Venta Venta { get; set; }
         public Compra Compra { get; set; }
-        public int StockAnterior { get; set; }
-        public int StockPosterior { get; set; }
+        public Usuario Usuario { get; set; }
+        public Int16 StockAnterior { get; set; }
+        public Int16 StockPosterior { get; set; }
         public DateTime Fecha { get; set; }
     }
 }

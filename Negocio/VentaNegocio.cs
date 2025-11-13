@@ -48,7 +48,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Ventas(IDCliente, IDUsuario, NFactura, Fecha, Total) VALUES (@idcliente, @idusuario, @nfactura, @fecha, @total)");
+                datos.SetearConsulta("INSERT INTO Ventas(IDCliente, IDUsuario, NFactura, Fecha, Total) VALUES (@idcliente, @idusuario, @nfactura, @fecha, @total); SELECT SCOPE_IDENTITY()");
                 datos.SetearParametro("@idcliente", nuevo.Cliente.IdCliente);
                 datos.SetearParametro("@idusuario", nuevo.Usuario.IdUsuario);
                 datos.SetearParametro("@nfactura", nuevo.NFactura);

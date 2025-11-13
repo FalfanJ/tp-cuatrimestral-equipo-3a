@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDHistorial, IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha FROM HistorialMovimiento WHERE Estado=1");
+                datos.SetearConsulta("SELECT IDHistorial, IDProducto, IDVenta, IDCompra, IDUsuario, StockAnterior, StockPosterior, Fecha FROM HistorialMovimiento WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -30,8 +30,9 @@ namespace Negocio
                     if (!(datos.Lector["IDCompra"] is DBNull))
                         aux.Compra.IdCompra = (Int64)datos.Lector["IDCompra"];
 
-                    aux.StockAnterior = (int)datos.Lector["StockAnterior"];
-                    aux.StockPosterior = (int)datos.Lector["StockPosterior"];
+                    aux.Usuario.IdUsuario= (Int64)datos.Lector["IDUsuario"];
+                    aux.StockAnterior = (Int16)datos.Lector["StockAnterior"];
+                    aux.StockPosterior = (Int16)datos.Lector["StockPosterior"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
                     lista.Add(aux);
                 }
@@ -53,13 +54,14 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("INSERT INTO HistorialMovimiento (IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha) VALUES (@idproducto, @idventa, @idcompra, @stockanterior, @stockposterior, @fecha)");
+                datos.SetearConsulta("INSERT INTO HistorialMovimiento (IDProducto, IDVenta, IDCompra, StockAnterior, StockPosterior, Fecha, IDUsuario) VALUES (@idproducto, @idventa, @idcompra, @stockanterior, @stockposterior, @fecha, @idusuario)");
                 datos.SetearParametro("@idproducto", nuevo.Producto.IdProducto);
                 datos.SetearParametro("@idventa", nuevo.Venta.IdVenta);
                 datos.SetearParametro("@idcompra", nuevo.Compra.IdCompra);
                 datos.SetearParametro("@stockanterior", nuevo.StockAnterior);
                 datos.SetearParametro("@stockposterior", nuevo.StockPosterior);
                 datos.SetearParametro("@fecha", nuevo.Fecha);
+                datos.SetearParametro("@idusuario", nuevo.Usuario.IdUsuario);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)
@@ -77,7 +79,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("UPDATE HistorialMovimiento SET IDProducto = @idproducto, IDVenta = @idventa, IDCompra = @idcompra, StockAnterior = @stockanterior, StockPosterior = @stockposterior, Fecha = @fecha WHERE IDHistorial = @idhistorial");
+                datos.SetearConsulta("UPDATE HistorialMovimiento SET IDProducto = @idproducto, IDVenta = @idventa, IDCompra = @idcompra, StockAnterior = @stockanterior, StockPosterior = @stockposterior, Fecha = @fecha, IDUsuario = @idusuario WHERE IDHistorial = @idhistorial");
                 datos.SetearParametro("@idhistorial", modificado.IdHistorial);
                 datos.SetearParametro("@idproducto", modificado.Producto.IdProducto);
                 datos.SetearParametro("@idventa", modificado.Venta.IdVenta);
@@ -85,6 +87,7 @@ namespace Negocio
                 datos.SetearParametro("@stockanterior", modificado.StockAnterior);
                 datos.SetearParametro("@stockposterior", modificado.StockPosterior);
                 datos.SetearParametro("@fecha", modificado.Fecha);
+                datos.SetearParametro("@idusuario", modificado.Usuario.IdUsuario);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)

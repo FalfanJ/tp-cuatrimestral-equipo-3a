@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, ProcentajeGanancia FROM Detalle_Venta WHERE Estado=1");
+                datos.SetearConsulta("SELECT IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, PorcentajeGanancia FROM Detalle_Venta WHERE Estado=1");
                 datos.EjecutarLectura();
                 while (datos.Lector.Read())
                 {
@@ -26,7 +26,7 @@ namespace Negocio
                     aux.Cantidad = (Int16)datos.Lector["Cantidad"];
                     aux.PrecioUnitario = (decimal)datos.Lector["PrecioUnitario"];
                     aux.PrecioParcial = (decimal)datos.Lector["PrecioParcial"];
-                    aux.PorcentajeGanancia = (Int16)datos.Lector["ProcentajeGanancia"];
+                    aux.PorcentajeGanancia = (Int16)datos.Lector["PorcentajeGanancia"];
                     lista.Add(aux);
                 }
                 return lista;
@@ -46,13 +46,13 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Detalle_Venta (IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, ProcentajeGanancia) VALUES (@idventa, @idproducto, @cantidad, @preciounitario, @precioparcial, @procentajeganancia)");
+                datos.SetearConsulta("INSERT INTO Detalle_Venta (IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, PorcentajeGanancia) VALUES (@idventa, @idproducto, @cantidad, @preciounitario, @precioparcial, @porcentajeganancia)");
                 datos.SetearParametro("@idventa", nuevo.IdVenta);
                 datos.SetearParametro("@idproducto", nuevo.Producto.IdProducto);
                 datos.SetearParametro("@cantidad", nuevo.Cantidad);
                 datos.SetearParametro("@preciounitario", nuevo.PrecioUnitario);
                 datos.SetearParametro("@precioparcial", nuevo.PrecioParcial);
-                datos.SetearParametro("@procentajeganancia", nuevo.PorcentajeGanancia);
+                datos.SetearParametro("@porcentajeganancia", nuevo.PorcentajeGanancia);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)
@@ -70,7 +70,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Detalle_Venta (IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, ProcentajeGanancia) VALUES (@idventa, @idproducto, @cantidad, @preciounitario, @precioparcial, @procentajeganancia)");
+                datos.SetearConsulta("INSERT INTO Detalle_Venta (IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, PorcentajeGanancia) VALUES (@idventa, @idproducto, @cantidad, @preciounitario, @precioparcial, @porcentajeganancia)");
                 foreach (DetalleVenta item in nuevo)
                 {
                     datos.SetearParametro("@idventa", item.IdVenta);
@@ -78,7 +78,7 @@ namespace Negocio
                     datos.SetearParametro("@cantidad", item.Cantidad);
                     datos.SetearParametro("@preciounitario", item.PrecioUnitario);
                     datos.SetearParametro("@precioparcial", item.PrecioParcial);
-                    datos.SetearParametro("@procentajeganancia", item.PorcentajeGanancia);
+                    datos.SetearParametro("@porcentajeganancia", item.PorcentajeGanancia);
                     datos.EjecutarAccion();
                 }
             }
@@ -97,13 +97,13 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("UPDATE Detalle_Venta SET Cantidad = @cantidad, PrecioUnitario = @preciounitario, PrecioParcial = @precioparcial, ProcentajeGanancia = @procentajeganancia WHERE IDVenta = @idventa AND IDProducto = @idproducto");
+                datos.SetearConsulta("UPDATE Detalle_Venta SET Cantidad = @cantidad, PrecioUnitario = @preciounitario, PrecioParcial = @precioparcial, PorcentajeGanancia = @porcentajeganancia WHERE IDVenta = @idventa AND IDProducto = @idproducto");
                 datos.SetearParametro("@idventa", modificado.IdVenta);
                 datos.SetearParametro("@idproducto", modificado.Producto.IdProducto);
                 datos.SetearParametro("@cantidad", modificado.Cantidad);
                 datos.SetearParametro("@preciounitario", modificado.PrecioUnitario);
                 datos.SetearParametro("@precioparcial", modificado.PrecioParcial);
-                datos.SetearParametro("@procentajeganancia", modificado.PorcentajeGanancia);
+                datos.SetearParametro("@porcentajeganancia", modificado.PorcentajeGanancia);
                 datos.EjecutarAccion();
             }
             catch (Exception ex)

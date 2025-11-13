@@ -23,9 +23,9 @@ namespace Negocio
                     DetalleCompra aux = new DetalleCompra();
                     aux.IdCompra = (Int64)datos.Lector["IDCompra"];
                     aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
-                    aux.Cantidad = (int)datos.Lector["Cantidad"];
-                    aux.PrecioUnitario = (int)datos.Lector["PrecioUnitario"];
-                    aux.PrecioParcial = (int)datos.Lector["PrecioParcial"];
+                    aux.Cantidad = (Int16)datos.Lector["Cantidad"];
+                    aux.PrecioUnitario = (decimal)datos.Lector["PrecioUnitario"];
+                    aux.PrecioParcial = (decimal)datos.Lector["PrecioParcial"];
                     lista.Add(aux);
                 }
                 return lista;
