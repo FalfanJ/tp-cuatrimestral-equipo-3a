@@ -50,14 +50,14 @@
                             <asp:TemplateField HeaderText="Acciones" ItemStyle-CssClass="text-center">
                                 <ItemTemplate>
                                     <div class="d-flex gap-2 justify-content-center">
-                                        <asp:LinkButton ID="btnEditar" runat="server"
+                                        <asp:LinkButton data-bs-toogle="modal" data-bs-target="#modalEditarCliente" runat="server"
                                             CssClass="btn btn-warning btn-sm"
                                             CommandName="EditarCliente"
                                             CommandArgument='<%# Eval("IdCliente") + ";" + Eval("IdPersona") %>'>
                                             ✏️ Editar
                                         </asp:LinkButton>
                                         
-                                        <asp:LinkButton ID="btnEliminar" runat="server"
+                                        <asp:LinkButton data-bs-toogle="modal" data-bs-target="#modalEliminarCliente" runat="server"
                                             CssClass="btn btn-danger btn-sm"
                                             CommandName="EliminarCliente"
                                             CommandArgument='<%# Eval("IdCliente") + ";" + Eval("IdPersona") + ";" + Eval("Nombre") + " " + Eval("Apellido") %>'>
