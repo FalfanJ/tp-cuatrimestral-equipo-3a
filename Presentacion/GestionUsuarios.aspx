@@ -1,74 +1,139 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="GestionUsuarios.aspx.cs" Inherits="Presentacion.GestionUsuarios" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="container mt-4">
-        <!-- Encabezado -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #2735F5 0%, #4D079C 100%) !important;
+            background-attachment: fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+
+        h2 {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        .header-gradient-bg {
+            background: linear-gradient(to right, #2735F5, #4D079C);
+            color: white;
+            padding: 15px 20px;
+        }
+        
+        .header-red-bg {
+             background-color: #D10000;
+             color: white;
+             padding: 15px 20px;
+        }
+
+        .btn-action-green {
+            background-color: #8BD100; border: none; color: white; font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-action-green:hover { background-color: #75b300; color: white; transform: scale(1.05); }
+
+        .btn-action-red {
+            background-color: #D10000; border: none; color: white; font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-action-red:hover { background-color: #a30000; color: white; transform: scale(1.05); }
+
+        .btn-general-blue {
+             background-color: #8FADFA; border: none; color: white; font-weight: 600;
+             transition: transform 0.2s;
+        }
+        .btn-general-blue:hover { background-color: #6c94f7; color: white; transform: scale(1.05); }
+
+        .form-label { font-weight: 600; color: #4D079C; }
+    </style>
+
+    <div class="container pb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
             <h2>Gestión de Usuarios</h2>
             <asp:Button ID="btnNuevoUsuario" runat="server" Text="Nuevo Usuario"
-                CssClass="btn btn-success"
+                CssClass="btn btn-action-green btn-lg shadow"
                 OnClick="btnNuevoUsuario_Click" />
         </div>
-        <!-- Filtros -->
-<div class="row mb-3">
-    <div class="col-md-4">
-        <asp:TextBox ID="txtFiltroNombre" runat="server" CssClass="form-control" placeholder="Filtrar por nombre" />
-    </div>
-    <div class="col-md-4">
-        <asp:TextBox ID="txtFiltroEmail" runat="server" CssClass="form-control" placeholder="Filtrar por email" />
-    </div>
-    <div class="col-md-4 d-flex gap-2">
-        <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="btn btn-primary" OnClick="btnFiltrar_Click" />
-        <asp:Button ID="btnResetFiltros" runat="server" Text="Resetear Filtros" CssClass="btn btn-secondary" OnClick="btnResetFiltros_Click" />
-    </div>
-</div>
+        <div class="card card-custom mb-4">
+            <div class="card-header header-gradient-bg">
+                <h5 class="mb-0 fw-bold">Filtros de Búsqueda</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <asp:TextBox ID="txtFiltroNombre" runat="server" CssClass="form-control" placeholder="Filtrar por nombre" />
+                    </div>
+                    <div class="col-md-4">
+                        <asp:TextBox ID="txtFiltroEmail" runat="server" CssClass="form-control" placeholder="Filtrar por email" />
+                    </div>
+                    <div class="col-md-4 d-flex gap-2">
+                        <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="btn btn-action-green w-50" OnClick="btnFiltrar_Click" />
+                        <asp:Button ID="btnResetFiltros" runat="server" Text="Resetear" CssClass="btn btn-general-blue w-50" OnClick="btnResetFiltros_Click" />
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-        <!-- Tabla de Usuarios -->
-        <div class="table-responsive shadow-sm rounded mt-4">
-            <asp:GridView ID="gvUsuarios"
-                runat="server"
-                CssClass="table table-striped table-hover align-middle"
-                AutoGenerateColumns="False"
-                DataKeyNames="IdUsuario"
-                GridLines="None"
-                OnRowCommand="gvUsuarios_RowCommand">
+        <div class="card card-custom shadow">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <asp:GridView ID="gvUsuarios"
+                        runat="server"
+                        CssClass="table table-hover table-striped align-middle mb-0"
+                        AutoGenerateColumns="False"
+                        DataKeyNames="IdUsuario"
+                        GridLines="None"
+                        OnRowCommand="gvUsuarios_RowCommand">
 
-                <Columns>
-                    <asp:BoundField DataField="IdUsuario" HeaderText="ID" />
-                    <asp:BoundField DataField="NombreUsuario" HeaderText="Nombre de Usuario" />
-                    <asp:BoundField DataField="TipoUsuario" HeaderText="Perfil" />
-                    <asp:BoundField DataField="email" HeaderText="Email" />
+                        <HeaderStyle BackColor="White" ForeColor="#1A0047" BorderStyle="None" Height="50px" Font-Bold="True" />
 
-                    <asp:TemplateField HeaderText="Acciones">
-                        <ItemTemplate>
-                            <asp:Button runat="server" CommandName="Editar"
-                                CommandArgument='<%# Eval("IdUsuario") %>'
-                                Text="Editar" CssClass="btn btn-warning btn-sm me-2" />
+                        <Columns>
+                            <asp:BoundField DataField="IdUsuario" HeaderText="ID" />
+                            <asp:BoundField DataField="NombreUsuario" HeaderText="Nombre de Usuario" />
+                            <asp:BoundField DataField="TipoUsuario" HeaderText="Perfil" />
+                            <asp:BoundField DataField="email" HeaderText="Email" />
 
-                            <button type="button" class="btn btn-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalConfirmarEliminar"
-                                onclick="setUsuarioAEliminar('<%# Eval("IdUsuario") %>', '<%# Eval("NombreUsuario") %>')">
-                                Eliminar
-                            </button>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
+                            <asp:TemplateField HeaderText="Acciones" ItemStyle-CssClass="text-center">
+                                <ItemTemplate>
+                                    <asp:Button runat="server" CommandName="Editar"
+                                        CommandArgument='<%# Eval("IdUsuario") %>'
+                                        Text="Editar" CssClass="btn btn-action-green btn-sm me-2" />
+
+                                    <button type="button" class="btn btn-action-red btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalConfirmarEliminar"
+                                        onclick="setUsuarioAEliminar('<%# Eval("IdUsuario") %>', '<%# Eval("NombreUsuario") %>')">
+                                        Eliminar
+                                    </button>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!--  Modal Crear / Editar Usuario -->
     <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalNuevoUsuarioLabel"><%: tituloModal %></h5>
+            <div class="modal-content card-custom">
+                <div class="modal-header header-gradient-bg">
+                    <h5 class="modal-title fw-bold" id="modalNuevoUsuarioLabel"><%: tituloModal %></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <asp:HiddenField ID="hfIdUsuario" runat="server" />
 
                     <div class="mb-3">
@@ -109,37 +174,36 @@
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <asp:Button ID="btnGuardarUsuario" runat="server" Text="Guardar" CssClass="btn btn-primary"
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-general-blue" data-bs-dismiss="modal">Cancelar</button>
+                    <asp:Button ID="btnGuardarUsuario" runat="server" Text="Guardar" CssClass="btn btn-action-green px-4"
                         OnClick="btnGuardarUsuario_Click" />
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Confirmar Eliminación -->
     <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalConfirmarEliminarLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3 shadow">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="modalConfirmarEliminarLabel">Confirmar eliminación</h5>
+            <div class="modal-content card-custom">
+                <div class="modal-header header-red-bg">
+                    <h5 class="modal-title fw-bold" id="modalConfirmarEliminarLabel">Confirmar eliminación</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar el usuario <strong id="nombreUsuarioEliminar"></strong>?
+                <div class="modal-body text-center py-4">
+                    <i class="fas fa-exclamation-circle text-danger fa-3x mb-3"></i>
+                    <p class="fs-5">¿Estás seguro de que deseas eliminar el usuario <strong id="nombreUsuarioEliminar"></strong>?</p>
                     <asp:HiddenField ID="hfIdUsuarioEliminar" runat="server" />
                 </div>
-                <div class="modal-footer">
-                    <asp:Button ID="btnEliminarUsuarioConfirmado" runat="server" CssClass="btn btn-danger"
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-general-blue" data-bs-dismiss="modal">Cancelar</button>
+                    <asp:Button ID="btnEliminarUsuarioConfirmado" runat="server" CssClass="btn btn-action-red"
                         Text="Eliminar" OnClick="btnEliminarUsuarioConfirmado_Click" />
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JS scripts -->
     <script>
         function togglePassword() {
             const input = document.getElementById('<%= txtContrasenia.ClientID %>');

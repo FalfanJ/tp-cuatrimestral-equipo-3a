@@ -13,7 +13,6 @@ namespace Presentacion
     {
         private ClienteNegocio negocio = new ClienteNegocio();
 
-        // Propiedad para el título dinámico del modal
         protected string TituloModal = "➕ Nuevo Cliente";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -57,7 +56,6 @@ namespace Presentacion
             CargarGrid(texto);
         }
 
-        // --- BOTÓN LIMPIAR FILTROS (Agregado para consistencia) ---
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             txtBuscar.Text = string.Empty;
@@ -71,7 +69,6 @@ namespace Presentacion
             {
                 try
                 {
-                    // Recuperamos ambos IDs del argumento
                     string[] args = e.CommandArgument.ToString().Split(';');
                     long idCliente = Convert.ToInt64(args[0]);
                     long idPersona = Convert.ToInt64(args[1]);
@@ -96,12 +93,10 @@ namespace Presentacion
                 {
                     string[] args = e.CommandArgument.ToString().Split(';');
 
-                    // Guardamos los datos en los HiddenFields para usarlos al confirmar
                     hfIdClienteEliminar.Value = args[0];
                     hfIdPersonaEliminar.Value = args[1];
                     string nombreCompleto = args.Length > 2 ? args[2] : "este cliente";
 
-                    // Actualizamos el texto del modal de confirmación
                     lblNombreClienteEliminar.Text = nombreCompleto;
                     UpdatePanelEliminar.Update();
 
@@ -141,7 +136,6 @@ namespace Presentacion
         {
             try
             {
-                // 1. Validaciones básicas
                 if (string.IsNullOrWhiteSpace(txtNombre.Text) || string.IsNullOrWhiteSpace(txtApellido.Text) || string.IsNullOrWhiteSpace(txtEmail.Text))
                 {
                     MostrarMensaje("Por favor, complete Nombre, Apellido y Email.", "warning");
@@ -154,13 +148,12 @@ namespace Presentacion
                     return;
                 }
 
-                // 2. Mapeo de objeto
                 Cliente cliente = new Cliente();
                 cliente.Nombre = txtNombre.Text.Trim();
                 cliente.Apellido = txtApellido.Text.Trim();
                 cliente.Email = txtEmail.Text.Trim();
                 cliente.Direccion = txtDireccion.Text.Trim();
-                cliente.TipoPersona = true; // Default físico
+                cliente.TipoPersona = true;
 
                 if (long.TryParse(txtTelefono.Text.Trim(), out long tel)) cliente.Telefono = tel;
                 if (long.TryParse(txtDNI.Text.Trim(), out long dni)) cliente.Dni = dni;
@@ -194,7 +187,6 @@ namespace Presentacion
             }
         }
 
-        // --- BOTÓN ELIMINAR CONFIRMADO ---
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
             try
@@ -222,9 +214,7 @@ namespace Presentacion
             }
         }
 
-        // --- MÉTODOS AUXILIARES ---
-
-        // Se llama al abrir "Nuevo Cliente" para resetear el form
+       
         protected void btnAbrirModalNuevo_Click(object sender, EventArgs e)
         {
             LimpiarCamposModal();
