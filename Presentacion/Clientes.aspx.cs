@@ -13,6 +13,9 @@ namespace Presentacion
     {
         private ClienteNegocio negocio = new ClienteNegocio();
 
+        // Propiedad para el título dinámico del modal
+        protected string TituloModal = "➕ Nuevo Cliente";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -21,6 +24,7 @@ namespace Presentacion
             }
         }
 
+        // --- CARGA DE DATOS ---
         private void CargarGrid(string filtro = "")
         {
             try
@@ -39,11 +43,11 @@ namespace Presentacion
 
                 gvClientes.DataSource = lista;
                 gvClientes.DataBind();
+                UpdatePanelGrid.Update();
             }
             catch (Exception ex)
             {
-              
-                throw ex;
+                MostrarMensaje($"Error al cargar clientes: {ex.Message}", "danger");
             }
         }
 
@@ -53,145 +57,186 @@ namespace Presentacion
             CargarGrid(texto);
         }
 
+        // --- BOTÓN LIMPIAR FILTROS (Agregado para consistencia) ---
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtBuscar.Text = string.Empty;
+            CargarGrid();
+        }
+
+        // --- ROW COMMAND (EDITAR Y PREPARAR ELIMINAR) ---
         protected void gvClientes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "EditarCliente")
             {
-                string[] args = e.CommandArgument.ToString().Split(';');
-                long idCliente = Convert.ToInt64(args[0]);
-                long idPersona = Convert.ToInt64(args[1]);
-
-                hdnClienteID.Value = idCliente.ToString();
-                hdnPersonaID.Value = idPersona.ToString();
-
-                // Buscar cliente en la lista
-                ClienteNegocio cliNeg = new ClienteNegocio();
-                Cliente cliente = cliNeg.Listar().FirstOrDefault(c => c.IdCliente == idCliente);
-
-                if (cliente != null)
+                try
                 {
-                    txtEditNombre.Text = cliente.Nombre;
-                    txtEditApellido.Text = cliente.Apellido;
-                    txtEditEmail.Text = cliente.Email;
-                    txtEditTelefono.Text = cliente.Telefono.ToString();
-                    txtEditDNI.Text = cliente.Dni.HasValue ? cliente.Dni.Value.ToString() : "";
-                    txtEditCUIT.Text = cliente.Cuit.HasValue ? cliente.Cuit.Value.ToString() : "";
-                    txtEditDireccion.Text = cliente.Direccion;
-                }
-                // Forzamos la actualización del panel del modal de edición
-                UpdatePanelEditar.Update();
+                    // Recuperamos ambos IDs del argumento
+                    string[] args = e.CommandArgument.ToString().Split(';');
+                    long idCliente = Convert.ToInt64(args[0]);
+                    long idPersona = Convert.ToInt64(args[1]);
 
-                // Mostrar modal de edición por script
-                ScriptManager.RegisterStartupScript(this, GetType(), "ShowEditModal", "$('#modalEditarCliente').modal('show');", true);
+                    CargarDatosEnModal(idCliente, idPersona);
+
+                    TituloModal = "✏️ Editar Cliente";
+                    UpdatePanelFormulario.Update();
+
+                    // Abrir modal
+                    ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal",
+                        "var myModal = new bootstrap.Modal(document.getElementById('modalFormularioCliente')); myModal.show();", true);
+                }
+                catch (Exception ex)
+                {
+                    MostrarMensaje($"Error al cargar edición: {ex.Message}", "danger");
+                }
             }
             else if (e.CommandName == "EliminarCliente")
             {
-                string[] args = e.CommandArgument.ToString().Split(';');
-                long idCliente = Convert.ToInt64(args[0]);
-                long idPersona = Convert.ToInt64(args[1]);
-                string nombreCompleto = args.Length > 2 ? args[2] : "";
+                try
+                {
+                    string[] args = e.CommandArgument.ToString().Split(';');
 
-                hdnClienteID.Value = idCliente.ToString();
-                hdnPersonaID.Value = idPersona.ToString();
-                lblNombreClienteEliminar.Text = nombreCompleto;
+                    // Guardamos los datos en los HiddenFields para usarlos al confirmar
+                    hfIdClienteEliminar.Value = args[0];
+                    hfIdPersonaEliminar.Value = args[1];
+                    string nombreCompleto = args.Length > 2 ? args[2] : "este cliente";
 
-                // Forzamos la actualización del panel del modal de eliminación
-                UpdatePanelEliminar.Update();
-                // Mostrar modal de eliminación por script
-                ScriptManager.RegisterStartupScript(this, GetType(), "ShowDeleteModal", "$('#modalEliminarCliente').modal('show');", true);
+                    // Actualizamos el texto del modal de confirmación
+                    lblNombreClienteEliminar.Text = nombreCompleto;
+                    UpdatePanelEliminar.Update();
+
+                    // Abrir modal eliminar
+                    ScriptManager.RegisterStartupScript(this, GetType(), "abrirModalEliminar",
+                        "var myModal = new bootstrap.Modal(document.getElementById('modalEliminarCliente')); myModal.show();", true);
+                }
+                catch (Exception ex)
+                {
+                    MostrarMensaje($"Error al preparar eliminación: {ex.Message}", "danger");
+                }
             }
         }
 
-        protected void btnGuardarNuevo_Click(object sender, EventArgs e)
+        private void CargarDatosEnModal(long idCliente, long idPersona)
+        {
+            Cliente cliente = negocio.Listar().FirstOrDefault(c => c.IdCliente == idCliente);
+
+            if (cliente != null)
+            {
+                // Guardamos IDs para saber que estamos editando
+                hfIdCliente.Value = cliente.IdCliente.ToString();
+                hfIdPersona.Value = cliente.IdPersona.ToString();
+
+                txtNombre.Text = cliente.Nombre;
+                txtApellido.Text = cliente.Apellido;
+                txtEmail.Text = cliente.Email;
+                txtTelefono.Text = cliente.Telefono.ToString();
+                txtDNI.Text = cliente.Dni.HasValue ? cliente.Dni.Value.ToString() : "";
+                txtCUIT.Text = cliente.Cuit.HasValue ? cliente.Cuit.Value.ToString() : "";
+                txtDireccion.Text = cliente.Direccion;
+            }
+        }
+
+        // --- BOTÓN GUARDAR (NUEVO O EDITAR) ---
+        protected void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                // --- Validar campos obligatorios ---
-                if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                    string.IsNullOrWhiteSpace(txtApellido.Text) ||
-                    string.IsNullOrWhiteSpace(txtEmail.Text))
+                // 1. Validaciones básicas
+                if (string.IsNullOrWhiteSpace(txtNombre.Text) || string.IsNullOrWhiteSpace(txtApellido.Text) || string.IsNullOrWhiteSpace(txtEmail.Text))
                 {
-                    MostrarAlerta("Por favor, complete Nombre, Apellido y Email.");
+                    MostrarMensaje("Por favor, complete Nombre, Apellido y Email.", "warning");
                     return;
                 }
 
-                // --- Validar email ---
                 if (!Regex.IsMatch(txtEmail.Text.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    MostrarAlerta("Ingrese un email válido.");
+                    MostrarMensaje("Ingrese un email válido.", "warning");
                     return;
                 }
 
-                // --- Convertir campos numéricos de forma segura ---
-                long telefono = 0;
-                long? dni = null;
-                long? cuit = null;
+                // 2. Mapeo de objeto
+                Cliente cliente = new Cliente();
+                cliente.Nombre = txtNombre.Text.Trim();
+                cliente.Apellido = txtApellido.Text.Trim();
+                cliente.Email = txtEmail.Text.Trim();
+                cliente.Direccion = txtDireccion.Text.Trim();
+                cliente.TipoPersona = true; // Default físico
 
-                if (!string.IsNullOrWhiteSpace(txtTelefono.Text))
+                if (long.TryParse(txtTelefono.Text.Trim(), out long tel)) cliente.Telefono = tel;
+                if (long.TryParse(txtDNI.Text.Trim(), out long dni)) cliente.Dni = dni;
+                if (long.TryParse(txtCUIT.Text.Trim(), out long cuit)) cliente.Cuit = cuit;
+
+                // 3. Decidir si es Insert o Update
+                if (string.IsNullOrEmpty(hfIdCliente.Value))
                 {
-                    if (!long.TryParse(txtTelefono.Text.Trim(), out telefono))
-                    {
-                        MostrarAlerta("Teléfono inválido. Solo se permiten números.");
-                        return;
-                    }
+                    // NUEVO
+                    negocio.Agregar(cliente);
+                    MostrarMensaje("Cliente agregado correctamente.", "success");
+                }
+                else
+                {
+                    // EDITAR
+                    cliente.IdCliente = Convert.ToInt64(hfIdCliente.Value);
+                    cliente.IdPersona = Convert.ToInt64(hfIdPersona.Value); // Necesario para tu lógica de negocio
+                    negocio.Modificar(cliente);
+                    MostrarMensaje("Cliente modificado correctamente.", "success");
                 }
 
-                if (!string.IsNullOrWhiteSpace(txtDNI.Text))
-                {
-                    if (!long.TryParse(txtDNI.Text.Trim(), out long dniVal))
-                        MostrarAlerta("DNI inválido. Solo se permiten números.");
-                    else
-                        dni = dniVal;
-                }
-
-                if (!string.IsNullOrWhiteSpace(txtCUIT.Text))
-                {
-                    if (!long.TryParse(txtCUIT.Text.Trim(), out long cuitVal))
-                        MostrarAlerta("CUIT inválido. Solo se permiten números.");
-                    else
-                        cuit = cuitVal;
-                }
-
-                // --- Crear cliente ---
-                Cliente nuevo = new Cliente
-                {
-                    Nombre = txtNombre.Text.Trim(),
-                    Apellido = txtApellido.Text.Trim(),
-                    Email = txtEmail.Text.Trim(),
-                    Telefono = telefono,
-                    Dni = dni,
-                    Cuit = cuit,
-                    Direccion = txtDireccion.Text.Trim(),
-                    TipoPersona = true // por defecto físico
-                };
-
-                negocio.Agregar(nuevo);
                 CargarGrid();
+                LimpiarCamposModal();
 
-                // Cierra el modal con JS
-                ScriptManager.RegisterStartupScript(this, GetType(), "HideNewModal", "$('#modalNuevoCliente').modal('hide');", true);
-
-                // Limpiar campos
-                LimpiarCamposNuevo();
-
-                // Mensaje de éxito
-                MostrarAlerta("Cliente agregado correctamente.");
+                // Cerrar modal
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "$('#modalFormularioCliente').modal('hide');", true);
             }
             catch (Exception ex)
             {
-                MostrarAlerta($"Error al guardar el cliente: {ex.Message}");
+                MostrarMensaje($"Error al guardar: {ex.Message}", "danger");
             }
         }
 
-        // Método para mostrar alertas (puede estar en tu clase ya)
-        private void MostrarAlerta(string mensaje)
+        // --- BOTÓN ELIMINAR CONFIRMADO ---
+        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alerta", $"alert('{mensaje}');", true);
+            try
+            {
+                if (string.IsNullOrEmpty(hfIdClienteEliminar.Value)) return;
+
+                long idCliente = Convert.ToInt64(hfIdClienteEliminar.Value);
+                long idPersona = Convert.ToInt64(hfIdPersonaEliminar.Value);
+
+                negocio.BajaLogica(idPersona, idCliente);
+                CargarGrid();
+
+                MostrarMensaje("Cliente eliminado correctamente.", "success");
+
+                // Limpiar IDs
+                hfIdClienteEliminar.Value = "";
+                hfIdPersonaEliminar.Value = "";
+
+                // Cerrar modal
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModalEliminar", "$('#modalEliminarCliente').modal('hide');", true);
+            }
+            catch (Exception ex)
+            {
+                MostrarMensaje($"Error al eliminar: {ex.Message}", "danger");
+            }
         }
 
+        // --- MÉTODOS AUXILIARES ---
 
-        private void LimpiarCamposNuevo()
+        // Se llama al abrir "Nuevo Cliente" para resetear el form
+        protected void btnAbrirModalNuevo_Click(object sender, EventArgs e)
         {
+            LimpiarCamposModal();
+            TituloModal = "➕ Nuevo Cliente";
+            ScriptManager.RegisterStartupScript(this, GetType(), "abrirModalNuevo",
+                   "var myModal = new bootstrap.Modal(document.getElementById('modalFormularioCliente')); myModal.show();", true);
+        }
+
+        private void LimpiarCamposModal()
+        {
+            hfIdCliente.Value = string.Empty;
+            hfIdPersona.Value = string.Empty;
             txtNombre.Text = "";
             txtApellido.Text = "";
             txtEmail.Text = "";
@@ -199,53 +244,13 @@ namespace Presentacion
             txtDNI.Text = "";
             txtCUIT.Text = "";
             txtDireccion.Text = "";
+            TituloModal = "➕ Nuevo Cliente";
         }
 
-        protected void btnGuardarEdicion_Click(object sender, EventArgs e)
+        private void MostrarMensaje(string mensaje, string tipo)
         {
-            try
-            {
-                Cliente modificado = new Cliente
-                {
-                    IdCliente = Convert.ToInt64(hdnClienteID.Value),
-                    IdPersona = Convert.ToInt64(hdnPersonaID.Value),
-                    Nombre = txtEditNombre.Text.Trim(),
-                    Apellido = txtEditApellido.Text.Trim(),
-                    Email = txtEditEmail.Text.Trim(),
-                    Telefono = !string.IsNullOrEmpty(txtEditTelefono.Text) ? Convert.ToInt64(txtEditTelefono.Text) : 0,
-                    Dni = !string.IsNullOrEmpty(txtEditDNI.Text) ? Convert.ToInt64(txtEditDNI.Text) : (long?)null,
-                    Cuit = !string.IsNullOrEmpty(txtEditCUIT.Text) ? Convert.ToInt64(txtEditCUIT.Text) : (long?)null,
-                    Direccion = txtEditDireccion.Text.Trim(),
-                    TipoPersona = true
-                };
-
-                negocio.Modificar(modificado);
-                CargarGrid();
-
-                ScriptManager.RegisterStartupScript(this, GetType(), "HideEditModal", "$('#modalEditarCliente').modal('hide');", true);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                long idCliente = Convert.ToInt64(hdnClienteID.Value);
-                long idPersona = Convert.ToInt64(hdnPersonaID.Value);
-
-                negocio.BajaLogica(idPersona, idCliente);
-                CargarGrid();
-
-                ScriptManager.RegisterStartupScript(this, GetType(), "HideDeleteModal", "$('#modalEliminarCliente').modal('hide');", true);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                $"mostrarToast('{mensaje.Replace("'", "")}','{tipo}');", true);
         }
     }
 }

@@ -4,11 +4,9 @@
 
     <div class="container mt-4">
 
-        <%-- Panel de actualización principal --%>
         <asp:UpdatePanel ID="UpdatePanelProductos" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 
-                <%-- Campos Ocultos para guardar IDs seleccionados --%>
                 <asp:HiddenField ID="hfIdProductoEliminar" runat="server" />
                 
                 <div class="row mb-3">
@@ -16,14 +14,14 @@
                         <h2><i class="fas fa-box-open"></i> Gestión de Productos</h2>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <%-- Botón Nuevo: Llama al servidor para limpiar campos antes de abrir --%>
+                        
                         <asp:LinkButton ID="btnAbrirModalNuevo" runat="server" CssClass="btn btn-success" OnClick="btnAbrirModalNuevo_Click">
                              ✚ Nuevo Producto
                         </asp:LinkButton>
                     </div>
                 </div>
 
-                <%-- SECCIÓN DE FILTROS (Igual que antes) --%>
+              
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Filtros de Búsqueda</h5>
