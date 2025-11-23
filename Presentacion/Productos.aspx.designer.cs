@@ -24,6 +24,24 @@ namespace Presentacion
         protected global::System.Web.UI.UpdatePanel UpdatePanelProductos;
 
         /// <summary>
+        /// Control hfIdProductoEliminar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfIdProductoEliminar;
+
+        /// <summary>
+        /// Control btnAbrirModalNuevo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAbrirModalNuevo;
+
+        /// <summary>
         /// Control txtBuscarNombre.
         /// </summary>
         /// <remarks>
@@ -94,6 +112,15 @@ namespace Presentacion
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanelNuevoProducto;
+
+        /// <summary>
+        /// Control hfIdProducto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfIdProducto;
 
         /// <summary>
         /// Control txtNombreProducto.
@@ -184,5 +211,14 @@ namespace Presentacion
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGuardarProducto;
+
+        /// <summary>
+        /// Control btnEliminarProductoConfirmado.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEliminarProductoConfirmado;
     }
 }
