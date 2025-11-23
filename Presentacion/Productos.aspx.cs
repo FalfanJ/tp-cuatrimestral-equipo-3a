@@ -133,7 +133,7 @@ namespace Presentacion
 
         protected void gvProductos_Sorting(object sender, GridViewSortEventArgs e)
         {
-            // (Tu lógica de ordenamiento se mantiene igual, abreviada aquí por espacio)
+            
             ProductoNegocio prodNeg = new ProductoNegocio();
             listaProductos = prodNeg.Listar();
             IEnumerable<Producto> data = listaProductos;
@@ -149,24 +149,23 @@ namespace Presentacion
             gvProductos.DataBind();
         }
 
-        // 🟢 LÓGICA DE EDICIÓN (MODIFICADO)
+        //  LÓGICA DE EDICIÓN (MODIFICADO)
         protected void gvProductos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
             {
                 try
                 {
-                    // 1. Obtener el ID (Ojo: convertir a long porque tu BDD usa BigInt/Int64)
+                    
                     long id = Convert.ToInt64(e.CommandArgument);
 
                     // 2. Cargar los datos en los TextBoxes
                     CargarDatosEnModal(id);
 
-                    // 3. Cambiar título (opcional, ver punto 3 abajo)
+                   
                     TituloModal = "✏️ Editar Producto";
 
-                    // 4. [CLAVE] Forzar la actualización visual del Modal
-                    // Esto le dice al navegador: "Refresca también esta parte del HTML"
+                    
                     UpdatePanelNuevoProducto.Update();
 
                     // 5. Abrir el modal con JS
@@ -184,15 +183,14 @@ namespace Presentacion
         private void CargarDatosEnModal(long id)
         {
             ProductoNegocio negocio = new ProductoNegocio();
-            // Buscamos el producto en la lista completa
+         
             Producto seleccionado = negocio.Listar().Find(x => x.IdProducto == id);
 
             if (seleccionado != null)
             {
-                // Guardamos el ID en el HiddenField para saber que estamos editando
+              
                 hfIdProducto.Value = seleccionado.IdProducto.ToString();
 
-                // Llenamos los campos
                 txtNombreProducto.Text = seleccionado.Nombre;
                 txtNumeroSerie.Text = seleccionado.NSerie;
                 txtPrecio.Text = seleccionado.Precio.ToString("0.00").Replace(",", "."); // Formato seguro
@@ -200,11 +198,9 @@ namespace Presentacion
                 txtStockMinimo.Text = seleccionado.StockMinimo.ToString();
                 txtDescripcion.Text = seleccionado.Descripcion;
 
-                // Cargar Ganancia si existe en tu objeto
+                
                 txtGanancia.Text = seleccionado.PorcentajeGanancia.ToString();
 
-                // Seleccionar los DropDownLists
-                // Importante: Verificamos si Marca/Categoria no son nulos para evitar error
                 if (seleccionado.Marca != null)
                     ddlMarcaNuevo.SelectedValue = seleccionado.Marca.IdMarca.ToString();
 
@@ -213,7 +209,7 @@ namespace Presentacion
             }
         }
 
-        // 🟢 BOTÓN GUARDAR (CREAR O EDITAR)
+        // BOTÓN GUARDAR (CREAR O EDITAR)
         protected void btnGuardarProducto_Click(object sender, EventArgs e)
         {
             try
@@ -225,7 +221,7 @@ namespace Presentacion
                 producto.Nombre = txtNombreProducto.Text.Trim();
                 producto.NSerie = txtNumeroSerie.Text.Trim();
 
-                // Cuidado con los nulos en los DropDowns
+                
                 producto.Marca = new Marca();
                 producto.Marca.IdMarca = int.Parse(ddlMarcaNuevo.SelectedValue);
 
@@ -233,9 +229,8 @@ namespace Presentacion
                 producto.Categoria.IdCategoria = int.Parse(ddlCategoriaNuevo.SelectedValue);
 
                 producto.Descripcion = txtDescripcion.Text.Trim();
-                producto.Modelo = "ModeloX"; // Si tienes este campo en el form, úsalo, si no, pon un default o vacío.
+                producto.Modelo = "ModeloX"; 
 
-                // Validaciones de conversión numérica
                 if (decimal.TryParse(txtPrecio.Text, out decimal precio)) producto.Precio = precio;
                 else producto.Precio = 0;
 
@@ -245,7 +240,7 @@ namespace Presentacion
                 if (short.TryParse(txtStockMinimo.Text, out short stMin)) producto.StockMinimo = stMin;
                 else producto.StockMinimo = 0;
 
-                // Si tienes el campo ganancia en el form y en la clase:
+               
                 if (short.TryParse(txtGanancia.Text, out short ganancia)) producto.PorcentajeGanancia = ganancia;
 
 
@@ -259,12 +254,12 @@ namespace Presentacion
                 else
                 {
                     // SI HAY ID => ESTAMOS EDITANDO => MODIFICAR
-                    producto.IdProducto = long.Parse(hfIdProducto.Value); // Asignamos el ID al objeto
-                    negocio.Modificar(producto); // Llamamos al Update
+                    producto.IdProducto = long.Parse(hfIdProducto.Value); 
+                    negocio.Modificar(producto);
                     ScriptManager.RegisterStartupScript(this, GetType(), "toast", "mostrarToast('Producto modificado con éxito.', 'success');", true);
                 }
 
-                // 3. Finalizar
+               
                 CargarGrilla();
                 LimpiarCamposModalNuevoProducto();
 
@@ -278,28 +273,28 @@ namespace Presentacion
             }
         }
 
-        // 🟢 LÓGICA DE ELIMINAR (NUEVO)
+        //  LÓGICA DE ELIMINAR 
         protected void btnEliminarProductoConfirmado_Click(object sender, EventArgs e)
         {
             try
             {
                 if (string.IsNullOrEmpty(hfIdProductoEliminar.Value)) return;
 
-                // 1. Convertimos a Int64 (long) porque tu BajaLogica pide Int64
+               
                 long id = long.Parse(hfIdProductoEliminar.Value);
 
                 ProductoNegocio negocio = new ProductoNegocio();
 
-                // 2. Usamos BajaLogica en lugar de Eliminar
+                
                 negocio.BajaLogica(id);
 
                 CargarGrilla();
 
-                // Mostrar mensaje de éxito
+                
                 ScriptManager.RegisterStartupScript(this, GetType(), "toastExito",
                     "mostrarToast('Producto eliminado correctamente.', 'success');", true);
 
-                hfIdProductoEliminar.Value = ""; // Limpiar ID
+                hfIdProductoEliminar.Value = ""; 
 
                 // Cerrar modal
                 ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModalEliminar",
@@ -312,10 +307,10 @@ namespace Presentacion
             }
         }
 
-        // Método helper para limpiar el formulario
+        
         private void LimpiarCamposModalNuevoProducto()
         {
-            hfIdProducto.Value = string.Empty; // Importante limpiar el ID
+            hfIdProducto.Value = string.Empty; 
             txtNombreProducto.Text = string.Empty;
             txtNumeroSerie.Text = string.Empty;
             ddlMarcaNuevo.SelectedIndex = 0;
@@ -328,7 +323,6 @@ namespace Presentacion
             TituloModal = "➕ Nuevo Producto";
         }
 
-        // Botón "Nuevo Producto" para limpiar antes de abrir
         protected void btnAbrirModalNuevo_Click(object sender, EventArgs e)
         {
             LimpiarCamposModalNuevoProducto();

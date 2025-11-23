@@ -10,9 +10,9 @@ namespace Presentacion
     {
         protected string tituloModal = "Nuevo Proveedor";
         protected bool idEditing = false;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (!IsPostBack)
                 CargarProveedores();
         }
@@ -27,7 +27,7 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
-                Response.Write($"<script>alert('Error al cargar proveedores: {ex.Message}');</script>");
+                MostrarMensaje($"Error al cargar proveedores: {ex.Message}", "danger");
             }
         }
 
@@ -36,7 +36,6 @@ namespace Presentacion
             try
             {
                 ProveedorNegocio negocio = new ProveedorNegocio();
-
                 Proveedor nuevo = new Proveedor
                 {
                     Nombre = txtNombre.Text.Trim(),
@@ -52,20 +51,24 @@ namespace Presentacion
                 {
                     nuevo.IdProveedor = Convert.ToInt64(hfIdProveedor.Value);
                     negocio.Editar(nuevo);
-                    Response.Write("<script>alert('Proveedor actualizado correctamente');</script>");
+                    MostrarMensaje("Proveedor actualizado correctamente", "success");
                 }
                 else
                 {
                     negocio.Agregar(nuevo);
-                    Response.Write("<script>alert('Proveedor agregado correctamente');</script>");
+                    MostrarMensaje("Proveedor agregado correctamente", "success");
                 }
 
                 CargarProveedores();
                 LimpiarCampos();
+
+                // Cerrar el modal vía JS
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal",
+                    "var myModalEl = document.getElementById('modalNuevoProveedor'); var modal = bootstrap.Modal.getInstance(myModalEl); if(modal){ modal.hide(); } else { new bootstrap.Modal(myModalEl).hide(); }", true);
             }
             catch (Exception ex)
             {
-                Response.Write($"<script>alert('Error: {ex.Message}');</script>");
+                MostrarMensaje($"Error: {ex.Message}", "danger");
             }
         }
 
@@ -88,6 +91,7 @@ namespace Presentacion
                 tituloModal = "Editar Proveedor";
                 idEditing = true;
 
+                // Abrir modal con JS
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "abrirModal",
                     "var myModal = new bootstrap.Modal(document.getElementById('modalNuevoProveedor')); myModal.show();", true);
             }
@@ -109,7 +113,6 @@ namespace Presentacion
             }
         }
 
-        // Nuevo método: se ejecuta al confirmar eliminación en el modal
         protected void btnEliminarProveedorConfirmado_Click(object sender, EventArgs e)
         {
             try
@@ -121,15 +124,19 @@ namespace Presentacion
                 ProveedorNegocio negocio = new ProveedorNegocio();
                 negocio.BajaLogica(id);
 
-                Response.Write("<script>alert('Proveedor eliminado correctamente');</script>");
+                MostrarMensaje("Proveedor eliminado correctamente", "success");
                 CargarProveedores();
 
                 // Limpiar campo oculto
                 hfIdProveedorEliminar.Value = "";
+
+                // Cerrar modal de eliminar
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModalEliminar",
+                    "var myModalEl = document.getElementById('modalEliminarProveedor'); var modal = bootstrap.Modal.getInstance(myModalEl); if(modal){ modal.hide(); } else { new bootstrap.Modal(myModalEl).hide(); }", true);
             }
             catch (Exception ex)
             {
-                Response.Write($"<script>alert('Error al eliminar proveedor: {ex.Message}');</script>");
+                MostrarMensaje($"Error al eliminar proveedor: {ex.Message}", "danger");
             }
         }
 
@@ -137,6 +144,14 @@ namespace Presentacion
         {
             tituloModal = "Crear Proveedor";
             idEditing = false;
+        }
+
+        // Método auxiliar para llamar al Toast de JS
+        private void MostrarMensaje(string mensaje, string tipo)
+        {
+            string mensajeSeguro = mensaje.Replace("'", "");
+            ScriptManager.RegisterStartupScript(this, GetType(), "mostrarToast",
+                $"mostrarToast('{mensajeSeguro}', '{tipo}');", true);
         }
     }
 }

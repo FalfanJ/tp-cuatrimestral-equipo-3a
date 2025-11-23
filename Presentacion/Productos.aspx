@@ -121,7 +121,7 @@
         </asp:UpdatePanel>
     </div>
 
-    <%-- 🟢 MODAL NUEVO / EDITAR PRODUCTO --%>
+    <%--  MODAL NUEVO / EDITAR PRODUCTO --%>
     <div class="modal fade" id="modalNuevoProducto" tabindex="-1" aria-labelledby="modalNuevoProductoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <%-- 🔴 MODAL CONFIRMAR ELIMINAR --%>
+    <%-- MODAL CONFIRMAR ELIMINAR --%>
     <div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

@@ -6,12 +6,13 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="mb-0">Gestión de Proveedores</h2>
-            <button  onclick="openCrearModal" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor">
-                Nuevo Proveedor
+            
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" 
+                onclick="limpiarFormulario()">
+                ✚ Nuevo Proveedor
             </button>
         </div>
 
-        <!-- Tabla de proveedores -->
         <div class="table-responsive shadow-sm rounded mt-5">
             <asp:GridView ID="gvProveedor"
                 runat="server"
@@ -34,7 +35,6 @@
                             <asp:Button runat="server" CommandName="Editar" CommandArgument='<%# Eval("IdProveedor") %>'
                                 Text="Editar" CssClass="btn btn-warning btn-sm me-2" />
 
-                            <!-- Botón Eliminar abre modal -->
                             <button type="button" class="btn btn-danger btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalEliminarProveedor"
@@ -48,7 +48,6 @@
         </div>
     </div>
 
-    <!--  Modal Nuevo / Editar Proveedor -->
     <div class="modal fade" id="modalNuevoProveedor" tabindex="-1" aria-labelledby="modalNuevoProveedorLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -92,7 +91,6 @@
         </div>
     </div>
 
-    <!-- Modal Confirmar Eliminación -->
     <div class="modal fade" id="modalEliminarProveedor" tabindex="-1" aria-labelledby="modalEliminarProveedorLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -113,10 +111,55 @@
         </div>
     </div>
 
+    <%-- HTML DEL TOAST --%>
+    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1060;">
+        <div class="toast hide" role="alert" id="liveToast">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastHeader">Notificación</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastBody">
+            </div>
+        </div>
+    </div>
+
+
     <script>
         function setProveedorAEliminar(id, nombre) {
             document.getElementById('<%= hfIdProveedorEliminar.ClientID %>').value = id;
             document.getElementById('nombreProveedorAEliminar').textContent = nombre;
+        }
+
+       
+        function limpiarFormulario() {
+            document.getElementById('<%= hfIdProveedor.ClientID %>').value = "";
+            document.getElementById('<%= txtNombre.ClientID %>').value = "";
+            document.getElementById('<%= txtCUIT.ClientID %>').value = "";
+            document.getElementById('<%= txtDireccion.ClientID %>').value = "";
+            document.getElementById('<%= txtTelefono.ClientID %>').value = "";
+            document.getElementById('<%= txtEmail.ClientID %>').value = "";
+            document.getElementById('modalNuevoProveedorLabel').innerText = "Nuevo Proveedor";
+        }
+
+        function mostrarToast(mensaje, tipo) {
+            var toastEl = document.getElementById('liveToast');
+            var toastBody = document.getElementById('toastBody');
+            var toastHeader = document.getElementById('toastHeader');
+
+            toastBody.innerText = mensaje;
+
+            if (tipo === 'danger') {
+                toastHeader.classList.remove('text-success');
+                toastHeader.classList.add('text-danger');
+                toastHeader.innerText = "Error";
+            } else {
+                toastHeader.classList.remove('text-danger');
+                toastHeader.classList.add('text-success');
+                toastHeader.innerText = "Éxito";
+            }
+
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
         }
     </script>
 
