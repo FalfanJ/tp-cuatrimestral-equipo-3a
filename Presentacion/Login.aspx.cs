@@ -9,11 +9,10 @@ namespace Presentacion
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // ---- Si la sesion ya esta iniciada, redirigimos al home (consulta a la db)
-    
+            // ---- Si la sesión ya está iniciada, redirigimos al home
             if (Session["usuario"] != null)
             {
-                Response.Redirect("Home.aspx");
+                Response.Redirect("Default.aspx");
             }
         }
 
@@ -41,8 +40,15 @@ namespace Presentacion
 
                 if (usuario != null)
                 {
-                    // Guardamos el usuario completo en sesión
-                    Session["usuario"] = usuario;
+                    // ---- Guardar SOLO los datos necesarios del usuario
+                    Session["usuario"] = new
+                    {
+                        IdUsuario = usuario.IdUsuario,
+                        NombreUsuario = usuario.NombreUsuario,
+                        TipoUsuario = usuario.TipoUsuario,
+                        Email = usuario.Email
+                    };
+
                     Response.Redirect("~/Default.aspx");
                 }
                 else
@@ -55,8 +61,5 @@ namespace Presentacion
                 lblMensaje.Text = $"Error al iniciar sesión: {ex.Message}";
             }
         }
-
-
-
     }
 }

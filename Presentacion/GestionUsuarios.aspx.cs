@@ -1,18 +1,45 @@
 ﻿using Dominio;
 using Negocio;
+using Presentacion.Models;
 using System;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI;
 
 namespace Presentacion
 {
     public partial class GestionUsuarios : System.Web.UI.Page
     {
-        protected string tituloModal;
-        protected bool idEditing;
+        protected string tituloModal
+        {
+            get { return ViewState["TituloModal"] as string ?? ""; }
+            set { ViewState["TituloModal"] = value; }
+        }
+
+        protected bool idEditing
+        {
+            get { return ViewState["IdEditing"] != null ? (bool)ViewState["IdEditing"] : false; }
+            set { ViewState["IdEditing"] = value; }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Validar sesión
+            if (Session["usuario"] == null)
+            {
+                Response.Redirect("Login.aspx");
+                return;
+            }
+
+            dynamic usuario = Session["usuario"];
+
+            // Bloquear si es vendedor
+            if (Seguridad.EsVendedor(usuario))
+            {
+                Response.Redirect("Default.aspx");
+                return;
+            }
+        
             if (!IsPostBack)
                 CargarUsuarios();
         }
@@ -27,7 +54,7 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
-                MostrarAlerta($"Error al cargar usuarios: {ex.Message}");
+                MostrarMensaje($"Error al cargar usuarios: {ex.Message}", "danger");
             }
         }
 
@@ -36,9 +63,7 @@ namespace Presentacion
             tituloModal = "Crear Usuario";
             idEditing = false;
             LimpiarCampos();
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "abrirModal",
-                "var myModal = new bootstrap.Modal(document.getElementById('modalNuevoUsuario')); myModal.show();", true);
+            AbrirModal();
         }
 
         protected void gvUsuarios_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
@@ -47,20 +72,11 @@ namespace Presentacion
             {
                 long id = Convert.ToInt64(e.CommandArgument);
                 CargarUsuarioEnModal(id);
+
                 tituloModal = "Editar Usuario";
                 idEditing = true;
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "abrirModal",
-                    "var myModal = new bootstrap.Modal(document.getElementById('modalNuevoUsuario')); myModal.show();", true);
-            }
-            else if (e.CommandName == "Eliminar")
-            {
-                int index = Convert.ToInt32(e.CommandArgument);
-                long id = Convert.ToInt64(gvUsuarios.DataKeys[index].Value);
-                hfIdUsuarioEliminar.Value = id.ToString();
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "abrirEliminar",
-                    "var myModal = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar')); myModal.show();", true);
+                AbrirModal();
             }
         }
 
@@ -71,51 +87,49 @@ namespace Presentacion
 
             if (usuario != null)
             {
-                System.Diagnostics.Debug.WriteLine($"Usuario cargado: {usuario.IdUsuario} - {usuario.NombreUsuario} - {usuario.email} - {usuario.Contrasenia}");
-
                 hfIdUsuario.Value = usuario.IdUsuario.ToString();
                 txtNombreUsuario.Text = usuario.NombreUsuario;
                 txtEmail.Text = usuario.email;
                 ddlTipoUsuario.SelectedValue = usuario.TipoUsuario;
 
-                // ---- Forzamos q se muestre la contrasenia
                 txtContrasenia.Attributes["value"] = usuario.Contrasenia;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("⚠️ Usuario no encontrado");
+                MostrarMensaje("Usuario no encontrado.", "warning");
             }
         }
-
-
 
         protected void btnGuardarUsuario_Click(object sender, EventArgs e)
         {
             try
             {
-                // Validaciones
                 if (string.IsNullOrWhiteSpace(txtNombreUsuario.Text) ||
                     string.IsNullOrWhiteSpace(txtEmail.Text) ||
                     string.IsNullOrWhiteSpace(txtContrasenia.Text) ||
                     string.IsNullOrEmpty(ddlTipoUsuario.SelectedValue))
                 {
-                    MostrarAlerta("Por favor, complete todos los campos.");
+                    MostrarMensaje("Por favor, complete todos los campos.", "warning");
+                    AbrirModal();
                     return;
                 }
 
                 if (!EsEmailValido(txtEmail.Text.Trim()))
                 {
-                    MostrarAlerta("Ingrese un correo electrónico válido.");
+                    MostrarMensaje("Ingrese un correo electrónico válido.", "warning");
+                    AbrirModal();
                     return;
                 }
 
                 if (!EsContraseñaSegura(txtContrasenia.Text.Trim()))
                 {
-                    MostrarAlerta("La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial.");
+                    MostrarMensaje("La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial.", "warning");
+                    AbrirModal();
                     return;
                 }
 
                 UsuarioNegocio negocio = new UsuarioNegocio();
+
                 Usuario nuevo = new Usuario
                 {
                     NombreUsuario = txtNombreUsuario.Text.Trim(),
@@ -128,12 +142,12 @@ namespace Presentacion
                 {
                     nuevo.IdUsuario = Convert.ToInt64(hfIdUsuario.Value);
                     negocio.Modificar(nuevo);
-                    MostrarAlerta("Usuario actualizado correctamente.");
+                    MostrarMensaje("Usuario actualizado correctamente.", "success");
                 }
                 else
                 {
                     negocio.Agregar(nuevo);
-                    MostrarAlerta("Usuario agregado correctamente.");
+                    MostrarMensaje("Usuario agregado correctamente.", "success");
                 }
 
                 CargarUsuarios();
@@ -141,7 +155,7 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
-                MostrarAlerta($"Error al guardar usuario: {ex.Message}");
+                MostrarMensaje($"Error al guardar usuario: {ex.Message}", "danger");
             }
         }
 
@@ -150,19 +164,52 @@ namespace Presentacion
             try
             {
                 if (string.IsNullOrEmpty(hfIdUsuarioEliminar.Value))
-                    throw new Exception("No se encontró el ID del usuario a eliminar.");
+                {
+                    MostrarMensaje("No se encontró el usuario a eliminar.", "warning");
+                    return;
+                }
 
                 long id = Convert.ToInt64(hfIdUsuarioEliminar.Value);
+
                 UsuarioNegocio negocio = new UsuarioNegocio();
                 negocio.BajaLogica(id);
 
-                MostrarAlerta("Usuario eliminado correctamente.");
+                MostrarMensaje("Usuario eliminado correctamente.", "success");
                 CargarUsuarios();
             }
             catch (Exception ex)
             {
-                MostrarAlerta($"Error al eliminar usuario: {ex.Message}");
+                MostrarMensaje($"Error al eliminar usuario: {ex.Message}", "danger");
             }
+        }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                UsuarioNegocio negocio = new UsuarioNegocio();
+                var lista = negocio.Listar();
+
+                if (!string.IsNullOrWhiteSpace(txtFiltroNombre.Text))
+                    lista = lista.FindAll(u => u.NombreUsuario.IndexOf(txtFiltroNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0);
+
+                if (!string.IsNullOrWhiteSpace(txtFiltroEmail.Text))
+                    lista = lista.FindAll(u => u.email.IndexOf(txtFiltroEmail.Text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0);
+
+                gvUsuarios.DataSource = lista;
+                gvUsuarios.DataBind();
+            }
+            catch (Exception ex)
+            {
+                MostrarMensaje($"Error al filtrar usuarios: {ex.Message}", "danger");
+            }
+        }
+
+        protected void btnResetFiltros_Click(object sender, EventArgs e)
+        {
+            txtFiltroNombre.Text = "";
+            txtFiltroEmail.Text = "";
+            CargarUsuarios();
         }
 
         private void LimpiarCampos()
@@ -174,7 +221,6 @@ namespace Presentacion
             txtContrasenia.Text = "";
         }
 
-        // --- Validadores ---
         private bool EsEmailValido(string email)
         {
             string patron = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
@@ -187,43 +233,29 @@ namespace Presentacion
             return Regex.IsMatch(contrasenia, patron);
         }
 
-        private void MostrarAlerta(string mensaje)
+        private void MostrarMensaje(string mensaje, string tipo)
         {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alerta", $"alert('{mensaje}');", true);
+            mensaje = HttpUtility.JavaScriptStringEncode(mensaje);
+
+            ScriptManager.RegisterStartupScript(
+                this,
+                this.GetType(),
+                "toast",
+                $"mostrarToast('{mensaje}', '{tipo}');",
+                true
+            );
         }
 
-        protected void btnFiltrar_Click(object sender, EventArgs e)
+        private void AbrirModal()
         {
-            try
-            {
-                UsuarioNegocio negocio = new UsuarioNegocio();
-                var lista = negocio.Listar();
-
-                // Filtrar por nombre
-                if (!string.IsNullOrWhiteSpace(txtFiltroNombre.Text))
-                    lista = lista.FindAll(u => u.NombreUsuario.IndexOf(txtFiltroNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0);
-
-                // Filtrar por email
-                if (!string.IsNullOrWhiteSpace(txtFiltroEmail.Text))
-                    lista = lista.FindAll(u => u.email.IndexOf(txtFiltroEmail.Text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0);
-
-                gvUsuarios.DataSource = lista;
-                gvUsuarios.DataBind();
-            }
-            catch (Exception ex)
-            {
-                MostrarAlerta($"Error al filtrar usuarios: {ex.Message}");
-            }
-        }
-
-        protected void btnResetFiltros_Click(object sender, EventArgs e)
-        {
-            // Limpiar cajas de filtro
-            txtFiltroNombre.Text = "";
-            txtFiltroEmail.Text = "";
-
-            // Recargar todos los usuarios
-            CargarUsuarios();
+            ScriptManager.RegisterStartupScript(
+                this,
+                this.GetType(),
+                "abrirModal",
+                "var myModal = new bootstrap.Modal(document.getElementById('modalNuevoUsuario')); myModal.show();",
+                true
+            );
         }
     }
 }
+    

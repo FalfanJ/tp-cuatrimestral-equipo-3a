@@ -192,6 +192,7 @@
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Seguridad.cs" />
     <Compile Include="NavBar.aspx.cs">
       <DependentUpon>NavBar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

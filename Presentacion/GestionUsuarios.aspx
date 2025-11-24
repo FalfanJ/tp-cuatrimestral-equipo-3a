@@ -215,4 +215,39 @@
             document.getElementById("nombreUsuarioEliminar").innerText = nombre;
         }
     </script>
+
+        <%-- TOAST NOTIFICACIONES --%>
+    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 80px; right: 20px; z-index: 1060;">
+        <div class="toast hide shadow-lg align-items-center border-0" role="alert" id="liveToast">
+            <div class="d-flex">
+                <div class="toast-body fw-bold" id="toastBody"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarToast(mensaje, tipo) {
+            var toastEl = document.getElementById('liveToast');
+            var toastBody = document.getElementById('toastBody');
+
+            toastBody.innerText = mensaje;
+
+
+            if (tipo === 'danger') {
+                toastEl.style.backgroundColor = "#D10000";
+                toastEl.classList.add('text-white');
+            } else if (tipo === 'warning') {
+                toastEl.style.backgroundColor = "#ffc107";
+                toastEl.classList.remove('text-white');
+            } else {
+                toastEl.style.backgroundColor = "#8BD100";
+                toastEl.classList.add('text-white');
+            }
+
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    </script>
+
 </asp:Content>

@@ -1,5 +1,6 @@
 ﻿using Dominio;
 using Negocio;
+using Presentacion.Models;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -13,6 +14,22 @@ namespace Presentacion
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Validar sesión
+            if (Session["usuario"] == null)
+            {
+                Response.Redirect("Login.aspx");
+                return;
+            }
+
+            dynamic usuario = Session["usuario"];
+
+            // Bloquear si es vendedor
+            if (Seguridad.EsVendedor(usuario))
+            {
+                Response.Redirect("Default.aspx");
+                return;
+            }
+
             if (!IsPostBack)
                 CargarProveedores();
         }
