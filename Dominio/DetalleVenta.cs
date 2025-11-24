@@ -14,5 +14,6 @@ namespace Dominio
         public decimal PrecioUnitario { get; set; }
         public decimal PrecioParcial { get; set; }
         public Int16 PorcentajeGanancia { get; set; }
+        public Int64 ID { get; set; }
     }
 }
