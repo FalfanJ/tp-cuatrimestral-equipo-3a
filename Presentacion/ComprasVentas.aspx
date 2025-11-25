@@ -7,7 +7,7 @@
             <asp:Button ID="btnNuevaCompra" runat="server" CssClass="btn btn-primary w-100 mb-3" Text="Registrar Compra" />
         </div>
         <div class="col-md-6">
-            <asp:Button ID="btnNuevaVenta" runat="server" CssClass="btn btn-success w-100 mb-3" Text="Registrar Venta" />
+            <asp:Button ID="btnNuevaVenta" runat="server" CssClass="btn btn-success w-100 mb-3" Text="Registrar Venta" OnClick="btnNuevaVenta_Click" />
         </div>
     </div>
 </asp:Content>

@@ -13,5 +13,10 @@ namespace Presentacion
         {
 
         }
+
+        protected void btnNuevaVenta_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/SeleccionCliente.aspx");
+        }
     }
 }
