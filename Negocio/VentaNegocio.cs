@@ -41,7 +41,7 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
-        public void Agregar(Venta nuevo)
+        public bool Agregar(Venta nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
             DetalleVentaNegocio detalleNeg = new DetalleVentaNegocio();
@@ -60,9 +60,12 @@ namespace Negocio
                     item.IdVenta = nuevo.IdVenta;
                 }
                 detalleNeg.Agregar(nuevo.Detalle);
+
+                return true;
             }
             catch (Exception ex)
             {
+                return false;
                 throw ex;
             }
             finally

@@ -19,13 +19,25 @@
             }
             modal.show();
         }
+        function openModalFinFin() {
+            var myModalEl = document.getElementById('modalFIN');
+            var modal = bootstrap.Modal.getInstance(myModalEl); // Returns a Bootstrap modal instance
+            if (!modal) {
+                modal = new bootstrap.Modal(myModalEl);
+            }
+            modal.show();
+        }
     </script>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0">Gestión Ventas</h2>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProductos">Agregar Productos</button>
+            <div class="container">
+                <h2 class="mb-0">Gestión Ventas</h2>
+                <asp:Button Text="Cencelar Venta" runat="server" CssClass="btn btn-secondary btn-dark" ID="btnCancelarVenta" OnClick="btnCancelarVenta_Click"/>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProductos">Agregar Productos</button>
+            </div>
         </div>
 
 
@@ -68,7 +80,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <label>Total: </label>
                         <asp:Label ID="lblTotal" runat="server"></asp:Label>
-                        <asp:Button Text="Finalizar" ID="btnAbrirModalFinalizar" OnClick="btnAbrirModalFinalizar_Click" runat="server" CssClass="btn btn-primary" Enabled="false"/>
+                        <asp:Button Text="Finalizar" ID="btnAbrirModalFinalizar" OnClick="btnAbrirModalFinalizar_Click" runat="server" CssClass="btn btn-primary" Enabled="false" />
                     </div>
                 </div>
             </ContentTemplate>
@@ -173,6 +185,29 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <asp:Button Text="Finalizar venta" runat="server" ID="btnFinalizar" OnClick="btnFinalizar_Click" CssClass="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalFIN" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <p class="fs-5">Venta cargada correctamente</p>
+                </div>
+                <div class="modal-footer text-center">
+                    <asp:Button Text="Salir" runat="server" CssClass="btn btn-success" ID="btnFin" OnClick="btnFin_Click"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%--Modal Cancelacion--%>
+    <div class="modal fade" id="modalCaneclacion" tabindex="-1" aria-labelledby="modalFinalizarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+
                 </div>
             </div>
         </div>

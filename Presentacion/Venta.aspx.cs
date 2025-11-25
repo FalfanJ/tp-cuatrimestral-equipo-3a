@@ -213,8 +213,10 @@ namespace Presentacion
             ven.Total = Convert.ToDecimal(lblTotal.Text);
             ven.Fecha = DateTime.Now;
 
-            negVenta.Agregar(ven);
-
+            if (negVenta.Agregar(ven))
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalFinFin();", true);
+            }
         }
 
         protected void btnAbrirModalFinalizar_Click(object sender, EventArgs e)
@@ -241,6 +243,16 @@ namespace Presentacion
             {
                 btnAbrirModalFinalizar.Enabled = true;
             }
+        }
+
+        protected void btnFin_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/ComprasVentas.aspx");
+        }
+
+        protected void btnCancelarVenta_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/ComprasVentas.aspx");
         }
     }
 }
