@@ -49,6 +49,8 @@ namespace Presentacion
                         Email = usuario.Email
                     };
 
+                    Session["UsurioVenta"] = usuario;
+
                     Response.Redirect("~/Default.aspx");
                 }
                 else
