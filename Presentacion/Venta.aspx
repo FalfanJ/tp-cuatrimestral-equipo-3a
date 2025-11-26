@@ -1,6 +1,27 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Venta.aspx.cs" Inherits="Presentacion.Venta" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2735F5 0%, #4D079C 100%) !important;
+            background-attachment: fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+
+        h2, .text-white-title {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
     <script type='text/javascript'>
         function closeModal() {
             var myModalEl = document.getElementById('modalProductos');
@@ -31,12 +52,16 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="container">
-                <h2 class="mb-0">Gestión Ventas</h2>
-                <asp:Button Text="Cencelar Venta" runat="server" CssClass="btn btn-secondary btn-dark" ID="btnCancelarVenta" OnClick="btnCancelarVenta_Click"/>
+
+    <div class="container pb-5">
+        <div class="row mb-4 mt-4 align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold"><i class="fas fa-users me-2"></i>Gestión Ventas</h2>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <asp:Button Text="Cencelar Venta" runat="server" CssClass="btn btn-secondary btn-dark" ID="btnCancelarVenta" OnClick="btnCancelarVenta_Click" />
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProductos">Agregar Productos</button>
+
             </div>
         </div>
 
@@ -196,7 +221,7 @@
                     <p class="fs-5">Venta cargada correctamente</p>
                 </div>
                 <div class="modal-footer text-center">
-                    <asp:Button Text="Salir" runat="server" CssClass="btn btn-success" ID="btnFin" OnClick="btnFin_Click"/>
+                    <asp:Button Text="Salir" runat="server" CssClass="btn btn-success" ID="btnFin" OnClick="btnFin_Click" />
                 </div>
             </div>
         </div>
@@ -207,7 +232,6 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-
                 </div>
             </div>
         </div>

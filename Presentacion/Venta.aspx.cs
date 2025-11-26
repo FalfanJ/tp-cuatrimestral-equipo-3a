@@ -200,10 +200,7 @@ namespace Presentacion
             VentaNegocio negVenta = new VentaNegocio();
             List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
             Usuario usuario = (Usuario)Session["UsurioVenta"];
-            //Cliente cliente = (Cliente)Session["cliente"];
-            
-            Cliente cliente = new Cliente();
-            cliente.IdCliente = 2;
+            Cliente cliente = (Cliente)Session["Cliente"];
             ven.NFactura = "SD454ASD";
 
 
