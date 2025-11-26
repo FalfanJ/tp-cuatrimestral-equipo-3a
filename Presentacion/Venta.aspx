@@ -313,8 +313,5 @@
         </div>
     </div>
 
-<<<<<<< HEAD
 </asp:Content>
-=======
-</asp:Content>q
->>>>>>> d2d052fa9ce0558f6444772a2345efbd234c6d0b
+
