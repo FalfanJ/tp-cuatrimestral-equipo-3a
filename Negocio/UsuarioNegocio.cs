@@ -53,6 +53,7 @@ namespace Negocio
                 datos.SetearParametro("@correo", nuevo.email);
                 datos.SetearParametro("@pass", nuevo.Contrasenia);
                 datos.EjecutarAccion();
+                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {
@@ -94,7 +95,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE Email = @nombre AND Contrasenia = @pass AND Estado = 1");
+                datos.SetearConsulta("SELECT COUNT(*) FROM Usuarios WHERE Email = @email AND Contrasenia = @pass AND Estado = 1");
                 datos.SetearParametro("@email", email);
                 datos.SetearParametro("@pass", contrasenia);
 
@@ -117,7 +118,8 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT u.IDUsuario, u.TipoUsuario, u.NombreUsuario, p.Email, u.Contraseña FROM Usuarios u INNER JOIN Personas p ON u.IDPersona= p.IDPersona WHERE p.Email = @correo AND u.Contraseña = @pass AND u.Estado = 1");
+                // ❌ SACADO INNER JOIN y uso de p.Email
+                datos.SetearConsulta("SELECT IDUsuario, TipoUsuario, NombreUsuario, Email, Contrasenia FROM Usuarios WHERE Email = @correo AND Contrasenia = @pass AND Estado = 1");
                 datos.SetearParametro("@correo", email);
                 datos.SetearParametro("@pass", contrasenia);
                 datos.EjecutarLectura();
@@ -130,11 +132,11 @@ namespace Negocio
                         TipoUsuario = (string)datos.Lector["TipoUsuario"],
                         NombreUsuario = (string)datos.Lector["NombreUsuario"],
                         email = (string)datos.Lector["Email"],
-                        Contrasenia = (string)datos.Lector["Contraseña"]
+                        Contrasenia = (string)datos.Lector["Contrasenia"]
                     };
                 }
 
-                return null; // usuario no encontrado
+                return null;
             }
             catch (Exception)
             {
