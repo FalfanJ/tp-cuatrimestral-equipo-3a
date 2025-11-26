@@ -27,16 +27,7 @@ namespace Presentacion
 
             dynamic usuario = Session["usuario"];
 
-            // Bloquear si es vendedor
-            if (Seguridad.EsVendedor(usuario))
-            {
-                Response.Redirect("Default.aspx");
-                return;
-            }
-            if (!IsPostBack)
-            {
-                CargarGrid();
-            }
+          
         }
 
         // --- CARGA DE DATOS ---
