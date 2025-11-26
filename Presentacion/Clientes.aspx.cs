@@ -186,7 +186,7 @@ namespace Presentacion
                 LimpiarCamposModal();
 
                 // Cerrar modal
-                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "$('#modalFormularioCliente').modal('hide');", true);
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "var myModalEl = document.getElementById('modalFormularioCliente'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
             }
             catch (Exception ex)
             {

@@ -244,11 +244,23 @@ namespace Presentacion
 
         protected void btnFin_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/ComprasVentas.aspx");
+            Salir();
         }
 
         protected void btnCancelarVenta_Click(object sender, EventArgs e)
         {
+            Salir();
+        }
+        public void Salir()
+        {
+            if (Session["listDetalle"] != null)
+                Session.Remove("listDetalle");
+            if (Session["Cliente"] != null)
+                Session.Remove("Cliente");
+            if (Session["detalleActual"] != null)
+                Session.Remove("detalleActual");
+            if (Session["listProducto"] != null)
+                Session.Remove("listProducto");
             Response.Redirect("~/ComprasVentas.aspx");
         }
     }

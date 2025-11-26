@@ -53,6 +53,8 @@ namespace Presentacion
 
         protected void btnConfirmacion_Click(object sender, EventArgs e)
         {
+            if (Session["listCliente"] != null)
+                Session.Remove("listCliente");
             Response.Redirect("~/Venta.aspx");
         }
     }
