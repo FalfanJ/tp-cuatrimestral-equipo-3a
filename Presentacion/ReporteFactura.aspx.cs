@@ -12,7 +12,6 @@ namespace Presentacion
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Validar sesión
             if (Session["usuario"] == null)
             {
                 Response.Redirect("Login.aspx");
@@ -21,88 +20,150 @@ namespace Presentacion
 
             dynamic usuario = Session["usuario"];
 
-            // Bloquear si es vendedor
             if (Seguridad.EsVendedor(usuario))
             {
                 Response.Redirect("Default.aspx");
                 return;
             }
-            // No se carga nada al inicio
+
+            if (!IsPostBack && Request.QueryString["id"] != null)
+            {
+                txtNumVenta.Text = Request.QueryString["id"];
+                CargarFactura();
+            }
         }
 
         protected void btnBuscarVenta_Click(object sender, EventArgs e)
         {
-            //try
-            //{
-            //    lblError.Text = "";
-            //    pnlFactura.Visible = false;
+            CargarFactura();
+        }
 
-            //    if (string.IsNullOrWhiteSpace(txtNumVenta.Text))
-            //    {
-            //        lblError.Text = "Debe ingresar un número de venta.";
-            //        return;
-            //    }
+        private void CargarFactura()
+        {
+            try
+            {
+                pnlFactura.Visible = false;
+                lblError.Visible = false;
 
-            //    if (!long.TryParse(txtNumVenta.Text.Trim(), out long idVenta))
-            //    {
-            //        lblError.Text = "El número de venta no es válido.";
-            //        return;
-            //    }
+                if (string.IsNullOrWhiteSpace(txtNumVenta.Text))
+                {
+                    MostrarError("Por favor, ingrese un número de venta.");
+                    return;
+                }
 
-            //    // === 1. Obtener la venta de la lista ===
-            //    VentaNegocio ventaNegocio = new VentaNegocio();
-            //    List<Venta> ventas = ventaNegocio.Listar();
-            //    Venta venta = ventas.FirstOrDefault(v => v.IdVenta == idVenta);
+                if (!long.TryParse(txtNumVenta.Text.Trim(), out long idVenta))
+                {
+                    MostrarError("El ID de venta debe ser un número.");
+                    return;
+                }
 
-            //    if (venta == null)
-            //    {
-            //        lblError.Text = "No se encontró una venta con ese número.";
-            //        return;
-            //    }
+                // --- PASO 1: BUSCAR LA VENTA ---
+                VentaNegocio ventaNeg = new VentaNegocio();
 
-            //    // === 2. Obtener los detalles de esa venta ===
-            //    DetalleVentaNegocio detalleNegocio = new DetalleVentaNegocio();
-            //    List<DetalleVenta> detalles = detalleNegocio.Listar()
-            //        .Where(d => d.IdVenta == idVenta)
-            //        .ToList();
+                // 🔴 CORRECCIÓN AQUÍ: Usamos 'Dominio.Venta' explícitamente
+                List<Dominio.Venta> listaVentas = ventaNeg.Listar();
+                Dominio.Venta ventaSeleccionada = listaVentas.FirstOrDefault(x => x.IdVenta == idVenta);
 
-            //    if (detalles.Count == 0)
-            //    {
-            //        lblError.Text = "No hay detalles asociados a esta venta.";
-            //        return;
-            //    }
+                if (ventaSeleccionada == null)
+                {
+                    MostrarError("No se encontró ninguna venta con ese ID.");
+                    return;
+                }
 
-            //    // === 3. Cargar los datos del cliente (si existen) ===
-            //    // Como tu VentaNegocio no los llena, verificamos nulls
-            //    string nombreCliente = venta.Cliente?.Nombre ?? $"Cliente #{venta.Cliente?.IdCliente}";
-            //    string cuitCliente = venta.Cliente.Cuit.HasValue ? venta.Cliente.Cuit.Value.ToString() : "No informado";
-            //    string direccionCliente = venta.Cliente?.Direccion ?? "No disponible";
+                // --- PASO 2: BUSCAR DETALLES ---
+                DetalleVentaNegocio detalleNeg = new DetalleVentaNegocio();
+                List<DetalleVenta> todosLosDetalles = detalleNeg.Listar();
+                List<DetalleVenta> detallesVenta = todosLosDetalles.Where(x => x.IdVenta == idVenta).ToList();
 
-            //    litNombreCliente.Text = nombreCliente;
-            //    litCuitCliente.Text = "CUIT: " + cuitCliente;
-            //    litDireccionCliente.Text = "Dirección: " + direccionCliente;
+                if (detallesVenta.Count == 0)
+                {
+                    MostrarError("La venta existe pero no tiene productos asociados.");
+                    return;
+                }
+
+                // --- PASO 3: CRUZAR CON PRODUCTOS ---
+                ProductoNegocio prodNeg = new ProductoNegocio();
+                List<Producto> todosLosProductos = prodNeg.Listar();
+
+                foreach (var det in detallesVenta)
+                {
+                    Producto prodReal = todosLosProductos.FirstOrDefault(p => p.IdProducto == det.Producto.IdProducto);
+
+                    if (prodReal != null)
+                    {
+                        det.Producto.Nombre = prodReal.Nombre;
+                    }
+                    else
+                    {
+                        det.Producto.Nombre = "(Producto eliminado)";
+                    }
+                }
+
+                // --- PASO 4: CRUZAR CON CLIENTE ---
+                ClienteNegocio cliNeg = new ClienteNegocio();
+                List<Cliente> todosLosClientes = cliNeg.Listar();
+
+                // Usamos ventaSeleccionada que ahora es de tipo Dominio.Venta
+                Cliente clienteReal = todosLosClientes.FirstOrDefault(c => c.IdCliente == ventaSeleccionada.Cliente.IdCliente);
 
 
-            //    // === 4. Cargar cabecera de factura ===
-            //    litNumeroFactura.Text = venta.NFactura;
-            //    litFechaFactura.Text = venta.Fecha.ToString("dd/MM/yyyy");
+                // --- PASO 5: MOSTRAR DATOS ---
 
-            //    // === 5. Cargar detalle ===
-            //    gvDetallesVenta.DataSource = detalles;
-            //    gvDetallesVenta.DataBind();
+                lblNumeroFactura.Text = string.IsNullOrEmpty(ventaSeleccionada.NFactura) ? idVenta.ToString() : ventaSeleccionada.NFactura;
+                lblFecha.Text = ventaSeleccionada.Fecha.ToString("dd/MM/yyyy HH:mm");
 
-            //    // === 6. Total ===
-            //    decimal total = detalles.Sum(d => d.PrecioParcial);
-            //    litTotalFactura.Text = total.ToString("C");
+                // Vendedor
+                lblVendedor.Text = ventaSeleccionada.Usuario.IdUsuario.ToString();
 
-            //    // === 7. Mostrar factura ===
-            //    pnlFactura.Visible = true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    lblError.Text = "Error al buscar la venta: " + ex.Message;
-            //    pnlFactura.Visible = false;
-            //}
+                // Datos Cliente
+                if (clienteReal != null)
+                {
+                    lblNombreCliente.Text = $"{clienteReal.Nombre} {clienteReal.Apellido}";
+
+                    if (clienteReal.Dni.HasValue)
+                        lblDniCuit.Text = $"DNI: {clienteReal.Dni}";
+                    else if (clienteReal.Cuit.HasValue)
+                        lblDniCuit.Text = $"CUIT: {clienteReal.Cuit}";
+                    else
+                        lblDniCuit.Text = "-";
+
+                    lblDireccionCliente.Text = clienteReal.Direccion;
+                    lblEmailCliente.Text = clienteReal.Email;
+                }
+                else
+                {
+                    lblNombreCliente.Text = "Consumidor Final";
+                    lblDniCuit.Text = "-";
+                    lblDireccionCliente.Text = "-";
+                    lblEmailCliente.Text = "-";
+                }
+
+                // Grilla
+                gvDetallesFactura.DataSource = detallesVenta;
+                gvDetallesFactura.DataBind();
+
+                // Total
+                lblTotalPagar.Text = ventaSeleccionada.Total.ToString("C");
+
+                pnlFactura.Visible = true;
+
+            }
+            catch (Exception ex)
+            {
+                MostrarError("Error al generar reporte: " + ex.Message);
+            }
+        }
+
+        private void MostrarError(string msg)
+        {
+            lblError.Text = msg;
+            lblError.Visible = true;
+            pnlFactura.Visible = false;
+        }
+
+        protected void btnImprimir_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "print", "window.print();", true);
         }
     }
 }
