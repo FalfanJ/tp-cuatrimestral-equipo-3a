@@ -131,5 +131,53 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
+        // Traer el detalle de una compra específica
+        public List<DetalleCompra> ListarPorCompra(long idCompra)
+        {
+            List<DetalleCompra> lista = new List<DetalleCompra>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta(
+                @"SELECT dc.IDCompra,
+                         dc.IDProducto,
+                         dc.Cantidad,
+                         dc.PrecioUnitario,
+                         dc.PrecioParcial,
+                         p.Nombre AS NombreProducto
+                  FROM Detalle_Compra dc
+                  INNER JOIN Productos p ON p.IDProducto = dc.IDProducto
+                  WHERE dc.Estado = 1 AND dc.IDCompra = @idCompra");
+
+                datos.SetearParametro("@idCompra", idCompra);
+                datos.EjecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    DetalleCompra aux = new DetalleCompra
+                    {
+                        IdCompra = (long)datos.Lector["IDCompra"],
+                        Producto = new Producto
+                        {
+                            IdProducto = (long)datos.Lector["IDProducto"],
+                            Nombre = datos.Lector["NombreProducto"].ToString()
+                        },
+                        Cantidad = (short)datos.Lector["Cantidad"],
+                        PrecioUnitario = (decimal)datos.Lector["PrecioUnitario"],
+                        PrecioParcial = (decimal)datos.Lector["PrecioParcial"]
+                    };
+
+                    lista.Add(aux);
+                }
+
+                return lista;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
     }
 }

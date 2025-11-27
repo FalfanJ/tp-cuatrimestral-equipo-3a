@@ -1,9 +1,6 @@
 ﻿using Dominio;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Negocio
 {
@@ -16,65 +13,172 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDCompra, IDUsuario, IDProveedor, Fecha, Total FROM Compras WHERE Estado=1");
+                datos.SetearConsulta(
+        @"SELECT c.IDCompra,
+         c.Fecha,
+         c.Total,
+         p.IDProveedor,
+         p.Nombre AS ProveedorNombre,
+         c.IDUsuario,
+         c.Estado
+  FROM Compras c
+  INNER JOIN Proveedor p ON p.IDProveedor = c.IDProveedor
+  WHERE c.Estado = 1
+  ORDER BY c.IDCompra DESC");
+
                 datos.EjecutarLectura();
+
+                // Instancia de negocio para traer detalles
+                DetalleCompraNegocio detalleNegocio = new DetalleCompraNegocio();
+
                 while (datos.Lector.Read())
                 {
-                    Compra aux = new Compra();
-                    aux.IdCompra = (Int64)datos.Lector["IDCompra"];
-                    aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
-                    aux.Proveedor.IdProveedor = (Int64)datos.Lector["IDProveedor"];
-                    aux.Fecha = (DateTime)datos.Lector["Fecha"];
-                    aux.Total = (decimal)datos.Lector["Total"];
-                    lista.Add(aux);
+                    Compra compra = new Compra
+                    {
+                        IdCompra = (long)datos.Lector["IDCompra"],
+                        Fecha = (DateTime)datos.Lector["Fecha"],
+                        Total = (decimal)datos.Lector["Total"],
+
+                        Proveedor = new Proveedor
+                        {
+                            IdProveedor = (long)datos.Lector["IDProveedor"],
+                            Nombre = datos.Lector["ProveedorNombre"].ToString()
+                        },
+
+                        Usuario = new Usuario
+                        {
+                            IdUsuario = (long)datos.Lector["IDUsuario"]
+                        }
+                    };
+
+                    // 🔥 Aca cargamos el detalle de la compra
+                    compra.Detalle = detalleNegocio.ListarPorCompra(compra.IdCompra);
+
+                    lista.Add(compra);
                 }
-                return lista;
+
+                datos.CerrarConexion();
             }
             catch (Exception ex)
             {
+                throw new Exception("Error al cargar compras: " + ex.Message);
+            }
 
-                throw ex;
-            }
-            finally
-            {
-                datos.CerrarConexion();
-            }
+            return lista;
         }
+
+
+
+
+
+
+
         public void Agregar(Compra nuevo)
         {
+            if (nuevo == null) throw new ArgumentNullException(nameof(nuevo));
+            if (nuevo.Proveedor == null || nuevo.Proveedor.IdProveedor <= 0) throw new ArgumentException("Proveedor inválido.");
+            if (nuevo.Usuario == null || nuevo.Usuario.IdUsuario <= 0) throw new ArgumentException("Usuario inválido.");
+            if (nuevo.Detalle == null || nuevo.Detalle.Count == 0) throw new ArgumentException("Debe agregar al menos un producto.");
+
             AccesoDatos datos = new AccesoDatos();
-            DetalleCompraNegocio detalleNeg = new DetalleCompraNegocio();
 
             try
             {
-                datos.SetearConsulta("INSERT INTO Compras(IDUsuario, IDProveedor, Fecha, Total) VALUES (@idusuario, @idproveedor, @fecha, @total); SELECT SCOPE_IDENTITY()");
+                // Calcular total
+                decimal total = 0;
+                foreach (var d in nuevo.Detalle)
+                    total += d.Cantidad * d.PrecioUnitario;
+                nuevo.Total = total;
+
+                // Insertar compra (CABECERA)
+                datos.SetearConsulta(
+                    @"INSERT INTO Compras (IDUsuario, IDProveedor, Fecha, Total, Estado)
+                      VALUES (@idusuario, @idproveedor, @fecha, @total, 1);
+                      SELECT CAST(SCOPE_IDENTITY() AS BIGINT);"
+                );
+
                 datos.SetearParametro("@idusuario", nuevo.Usuario.IdUsuario);
                 datos.SetearParametro("@idproveedor", nuevo.Proveedor.IdProveedor);
                 datos.SetearParametro("@fecha", nuevo.Fecha);
                 datos.SetearParametro("@total", nuevo.Total);
+
                 nuevo.IdCompra = Convert.ToInt64(datos.EjecutarScalar());
-                foreach (DetalleCompra item in nuevo.Detalle)
+
+                // ===============================
+                // INSERTAR DETALLE (Detalle_Compra)
+                // ===============================
+
+                foreach (var det in nuevo.Detalle)
                 {
-                    item.IdCompra = nuevo.IdCompra;
+                    datos = new AccesoDatos();
+
+                    datos.SetearConsulta(
+                        @"INSERT INTO Detalle_Compra 
+                          (IDCompra, IDProducto, Cantidad, PrecioUnitario, PrecioParcial, Estado)
+                          VALUES (@idcompra, @idproducto, @cantidad, @preciounitario, @precioparcial, 1);"
+                    );
+
+                    datos.SetearParametro("@idcompra", nuevo.IdCompra);
+                    datos.SetearParametro("@idproducto", det.Producto.IdProducto);
+                    datos.SetearParametro("@cantidad", det.Cantidad);
+                    datos.SetearParametro("@preciounitario", det.PrecioUnitario);
+                    datos.SetearParametro("@precioparcial", det.Cantidad * det.PrecioUnitario);
+
+                    datos.EjecutarAccion();
+
+                    // ===============================
+                    // ACTUALIZAR STOCK
+                    // ===============================
+                    datos = new AccesoDatos();
+                    datos.SetearConsulta(
+                        @"UPDATE Productos 
+                          SET Stock = Stock + @cantidad,
+                              Precio = @precioUnitario,
+                              FechaActualizacion = GETDATE()
+                          WHERE IdProducto = @idproducto;"
+                    );
+
+                    datos.SetearParametro("@cantidad", det.Cantidad);
+                    datos.SetearParametro("@precioUnitario", det.PrecioUnitario);
+                    datos.SetearParametro("@idproducto", det.Producto.IdProducto);
+
+                    datos.EjecutarAccion();
+
+                    // ===============================
+                    // INSERTAR HISTORIAL DE PRECIOS
+                    // ===============================
+                    datos = new AccesoDatos();
+                    datos.SetearConsulta(
+                        @"INSERT INTO PriceHistory 
+                          (ProductId, ProviderId, PurchaseId, Price, DateCreated, CreatedBy)
+                          VALUES (@productId, @providerId, @purchaseId, @price, GETDATE(), @createdBy);"
+                    );
+
+                    datos.SetearParametro("@productId", det.Producto.IdProducto);
+                    datos.SetearParametro("@providerId", nuevo.Proveedor.IdProveedor);
+                    datos.SetearParametro("@purchaseId", nuevo.IdCompra);
+                    datos.SetearParametro("@price", det.PrecioUnitario);
+                    datos.SetearParametro("@createdBy", nuevo.Usuario.IdUsuario);
+
+                    datos.EjecutarAccion();
                 }
-                detalleNeg.Agregar(nuevo.Detalle);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
             finally
             {
                 datos.CerrarConexion();
             }
         }
+
         public void Modificar(Compra modificado)
         {
             AccesoDatos datos = new AccesoDatos();
-
             try
             {
-                datos.SetearConsulta("UPDATE Compras SET IDUsuario = @idusuario, IDProveedor = @idproveedor, Fecha = @fecha, Total = @total WHERE IDCompra = @idcompra");
+                datos.SetearConsulta(
+                    @"UPDATE Compras 
+                      SET IDUsuario=@idusuario, IDProveedor=@idproveedor, Fecha=@fecha, Total=@total
+                      WHERE IDCompra=@idcompra"
+                );
                 datos.SetearParametro("@idcompra", modificado.IdCompra);
                 datos.SetearParametro("@idusuario", modificado.Usuario.IdUsuario);
                 datos.SetearParametro("@idproveedor", modificado.Proveedor.IdProveedor);
@@ -82,33 +186,29 @@ namespace Negocio
                 datos.SetearParametro("@total", modificado.Total);
                 datos.EjecutarAccion();
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
             finally
             {
                 datos.CerrarConexion();
             }
         }
-        public bool BajaLogica(Int64 ID)
+
+        public bool BajaLogica(long ID)
         {
             AccesoDatos datos = new AccesoDatos();
             DetalleCompraNegocio detComNeg = new DetalleCompraNegocio();
-            bool Resultado = false;
+            bool resultado = false;
+
             try
             {
                 if (detComNeg.BajaLogica(ID))
                 {
-                    datos.SetearConsulta("UPDATE Compras SET Estado=0 WHERE IDCompra = @idcompra SELECT @@ROWCOUNT");
+                    datos.SetearConsulta(
+                        "UPDATE Compras SET Estado=0 WHERE IDCompra=@idcompra; SELECT @@ROWCOUNT;"
+                    );
                     datos.SetearParametro("@idcompra", ID);
-                    Resultado = Convert.ToBoolean(datos.EjecutarScalar());
+                    resultado = Convert.ToInt32(datos.EjecutarScalar()) > 0;
                 }
-                return Resultado;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return resultado;
             }
             finally
             {

@@ -12,7 +12,12 @@ namespace Presentacion
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Aquí podrías agregar validación de sesión si es necesario
+            if (!IsPostBack)
+            {
+                CargarProveedores();
+                CargarProductosFaltantes();
+                CargarCompras(); 
+            }
         }
 
         protected void btnNuevaVenta_Click(object sender, EventArgs e)
@@ -20,15 +25,10 @@ namespace Presentacion
             Response.Redirect("~/SeleccionCliente.aspx");
         }
 
-        // 🟢 1. ABRIR MODAL DE COMPRA Y CARGAR DATOS
         protected void btnNuevaCompra_Click(object sender, EventArgs e)
         {
             try
             {
-                CargarProveedores();
-                CargarProductosFaltantes();
-
-                // Abrir el modal usando ScriptManager
                 ScriptManager.RegisterStartupScript(this, GetType(), "abrirModalCompra", "abrirModalCompra();", true);
             }
             catch (Exception ex)
@@ -41,13 +41,10 @@ namespace Presentacion
         {
             ProveedorNegocio negocio = new ProveedorNegocio();
             List<Proveedor> lista = negocio.Listar();
-
             ddlProveedores.DataSource = lista;
             ddlProveedores.DataTextField = "Nombre";
             ddlProveedores.DataValueField = "IdProveedor";
             ddlProveedores.DataBind();
-
-            // Opción por defecto
             ddlProveedores.Items.Insert(0, new ListItem("Seleccione un proveedor", "0"));
         }
 
@@ -55,16 +52,46 @@ namespace Presentacion
         {
             ProductoNegocio negocio = new ProductoNegocio();
             List<Producto> lista = negocio.Listar();
-
-            // Filtramos productos donde el Stock actual es menor o igual al Stock Mínimo
-            // Esto automatiza la sugerencia de qué comprar
             List<Producto> faltantes = lista.Where(p => p.Stock <= p.StockMinimo).ToList();
-
             gvProductosFaltantes.DataSource = faltantes;
             gvProductosFaltantes.DataBind();
         }
 
-        // 🟢 2. PROCESAR LA COMPRA (ACTUALIZAR STOCK)
+        private void CargarCompras()
+        {
+            try
+            {
+                CompraNegocio compraNegocio = new CompraNegocio();
+                List<Compra> lista = compraNegocio.Listar();
+
+                // ---- Preparamos datos para mostrar en GridView
+                var listaParaGrid = lista.Select(c => new
+                {
+                    IdCompra = c.IdCompra,
+                    ProveedorNombre = c.Proveedor?.Nombre ?? "N/D",
+                    Fecha = c.Fecha,
+                    TotalProductos = c.Total,
+                    Detalle = c.Detalle
+                }).ToList();
+
+                foreach (var compra in listaParaGrid)
+                {
+                    string json = Newtonsoft.Json.JsonConvert.SerializeObject(compra.Detalle);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(),
+                        "logDetalle" + compra.IdCompra,
+                        $"console.log('Detalle compra {compra.IdCompra}: ', {json});",
+                        true);
+                }
+
+                gvCompras.DataSource = listaParaGrid;
+                gvCompras.DataBind();
+            }
+            catch (Exception ex)
+            {
+                MostrarMensaje("Error al cargar compras: " + ex.Message, "danger");
+            }
+        }
+
         protected void btnConfirmarCompra_Click(object sender, EventArgs e)
         {
             try
@@ -76,36 +103,44 @@ namespace Presentacion
                 }
 
                 ProductoNegocio prodNegocio = new ProductoNegocio();
+                CompraNegocio compraNegocio = new CompraNegocio();
+
+                Compra nuevaCompra = new Compra
+                {
+                    Proveedor = new Proveedor { IdProveedor = Convert.ToInt64(ddlProveedores.SelectedValue) },
+                    Usuario = new Usuario { IdUsuario = 1 }, 
+                    Fecha = DateTime.Now,
+                    Total = 0,
+                    Detalle = new List<DetalleCompra>()
+                };
+
                 int productosActualizados = 0;
                 bool huboErrores = false;
 
-                // Recorremos cada fila de la grilla para ver qué se seleccionó
                 foreach (GridViewRow row in gvProductosFaltantes.Rows)
                 {
-                    // Buscamos los controles dentro de la fila
                     CheckBox chk = (CheckBox)row.FindControl("chkSeleccionar");
                     TextBox txtCant = (TextBox)row.FindControl("txtCantidadCompra");
 
-                    // Si el usuario marcó el checkbox
                     if (chk != null && chk.Checked)
                     {
-                        // Validamos que la cantidad sea un número positivo
                         if (int.TryParse(txtCant.Text, out int cantidadAComprar) && cantidadAComprar > 0)
                         {
-                            // Obtenemos el ID del producto desde DataKeys
                             long idProducto = Convert.ToInt64(gvProductosFaltantes.DataKeys[row.RowIndex].Value);
-
-                            // Buscamos el producto actual
-                            // Nota: Lo ideal sería tener un método específico "SumarStock(id, cantidad)" en Negocio
-                            // Aquí simulamos trayendo el objeto, modificándolo y guardando.
                             Producto producto = prodNegocio.Listar().Find(p => p.IdProducto == idProducto);
 
                             if (producto != null)
                             {
-                                // Sumamos al stock existente
-                                producto.Stock += (short)cantidadAComprar;
+                                DetalleCompra detalle = new DetalleCompra
+                                {
+                                    Producto = producto,
+                                    Cantidad = (short)cantidadAComprar,
+                                    PrecioUnitario = producto.Precio
+                                };
+                                nuevaCompra.Detalle.Add(detalle);
 
-                                // Guardamos en base de datos
+                                // Actualizamos stock local y en base
+                                producto.Stock += (short)cantidadAComprar;
                                 prodNegocio.Modificar(producto);
 
                                 productosActualizados++;
@@ -113,19 +148,19 @@ namespace Presentacion
                         }
                         else
                         {
-                            huboErrores = true; // Marcamos error si seleccionó pero puso cantidad 0 o vacía
+                            huboErrores = true;
                         }
                     }
                 }
 
-                if (productosActualizados > 0)
+                if (nuevaCompra.Detalle.Count > 0)
                 {
-                    MostrarMensaje($"Compra exitosa. Se actualizó el stock de {productosActualizados} productos.", "success");
+                    compraNegocio.Agregar(nuevaCompra);
 
-                    // Recargamos la grilla (los productos actualizados desaparecerán si su stock > mínimo)
+                    MostrarMensaje($"Compra registrada correctamente. Se actualizó el stock de {productosActualizados} productos.", "success");
+
                     CargarProductosFaltantes();
-
-                    // Cerramos el modal
+                    CargarCompras(); // <- refrescamos la lista de compras
                     ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "cerrarModalCompra();", true);
                 }
                 else if (huboErrores)
@@ -145,9 +180,19 @@ namespace Presentacion
 
         private void MostrarMensaje(string mensaje, string tipo)
         {
-            // Reutilizamos el toast de tu MasterPage o el script incluido en el ASPX
             ScriptManager.RegisterStartupScript(this, GetType(), "toast",
                 $"mostrarToast('{mensaje.Replace("'", "")}','{tipo}');", true);
+        }
+
+        public string FormatearDetalle(object detalleObj)
+        {
+            var detalle = detalleObj as List<Dominio.DetalleCompra>;
+            if (detalle == null || detalle.Count == 0)
+                return "-";
+
+            return string.Join("<br/>",
+                detalle.Select(d => $"{d.Producto.Nombre} (x{d.Cantidad})")
+            );
         }
     }
 }
