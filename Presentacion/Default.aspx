@@ -125,7 +125,7 @@
                         <i class="bi bi-cash-stack text-warning"></i>
                         <h5 class="card-title fw-bold">Ventas</h5>
                         <p class="card-text">Registra ventas.</p>
-                        <a href="ComprasVentas.aspx" class="btn btn-warning w-100">Ir a Compras / Ventas</a>
+                        <a href="ComprasVentas.aspx" class="btn btn-warning w-100">Ir a Ventas</a>
                     </div>
                 </div>
             </div>

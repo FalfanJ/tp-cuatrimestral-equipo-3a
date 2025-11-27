@@ -247,6 +247,7 @@ namespace Presentacion
 
 
                 ven.NFactura = GFactura();
+                lblNumeroFactura.Text = ven.NFactura;
                 ven.Detalle = listDetalle;
                 ven.Usuario = usuario;
                 ven.Cliente = cliente;

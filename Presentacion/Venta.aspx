@@ -52,7 +52,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-  
+
     <style>
         body {
             background: linear-gradient(135deg, #2735F5 0%, #4D079C 100%) !important;
@@ -79,41 +79,71 @@
             color: white;
             padding: 15px 20px;
         }
-        
+
         .btn-action-green {
-            background-color: #8BD100; border: none; color: white; font-weight: 600;
+            background-color: #8BD100;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-green:hover { background-color: #75b300; color: white; transform: scale(1.05); }
+
+            .btn-action-green:hover {
+                background-color: #75b300;
+                color: white;
+                transform: scale(1.05);
+            }
 
         .btn-action-red {
-            background-color: #D10000; border: none; color: white; font-weight: 600;
+            background-color: #D10000;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-red:hover { background-color: #a30000; color: white; transform: scale(1.05); }
+
+            .btn-action-red:hover {
+                background-color: #a30000;
+                color: white;
+                transform: scale(1.05);
+            }
 
         .btn-general-blue {
-             background-color: #8FADFA; border: none; color: white; font-weight: 600;
-             transition: transform 0.2s;
+            background-color: #8FADFA;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.2s;
         }
-        .btn-general-blue:hover { background-color: #6c94f7; color: white; transform: scale(1.05); }
 
-        .form-label, label { font-weight: 600; color: #4D079C; }
-        
-        .lbl-precio { font-size: 1.1rem; font-weight: bold; color: #2735F5; }
-        
+            .btn-general-blue:hover {
+                background-color: #6c94f7;
+                color: white;
+                transform: scale(1.05);
+            }
+
+        .form-label, label {
+            font-weight: 600;
+            color: #4D079C;
+        }
+
+        .lbl-precio {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2735F5;
+        }
     </style>
 
     <div class="container pb-5">
-        
+
         <div class="row mb-4 mt-4 align-items-center">
             <div class="col-md-6">
                 <h2 class="fw-bold"><i class="fas fa-shopping-cart me-2"></i>Gestión Ventas</h2>
             </div>
             <div class="col-md-6 text-md-end">
-                <asp:Button Text="Cancelar Venta" runat="server" CssClass="btn btn-action-red btn-lg shadow me-2" ID="btnCancelarVenta" OnClick="btnCancelarVenta_Click"/>
+                <asp:Button Text="Cancelar Venta" runat="server" CssClass="btn btn-action-red btn-lg shadow me-2" ID="btnCancelarVenta" OnClick="btnCancelarVenta_Click" />
                 <button type="button" class="btn btn-action-green btn-lg shadow" data-bs-toggle="modal" data-bs-target="#modalProductos">
-                    <i class="fas fa-plus me-1"></i> Agregar Productos
+                    <i class="fas fa-plus me-1"></i>Agregar Productos
                 </button>
             </div>
         </div>
@@ -121,7 +151,7 @@
         <%-- GRILLA DE CARRITO DE COMPRAS --%>
         <asp:UpdatePanel runat="server" ID="upDetalleGrid" UpdateMode="Conditional">
             <ContentTemplate>
-                
+
                 <div class="card card-custom shadow mb-4">
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -136,7 +166,7 @@
                                 DataKeyNames="ID">
 
                                 <HeaderStyle BackColor="White" ForeColor="#1A0047" BorderStyle="None" Height="50px" Font-Bold="True" />
-                                
+
                                 <Columns>
                                     <asp:BoundField DataField="Producto.Nombre" HeaderText="Nombre" />
                                     <asp:BoundField DataField="Producto.NSerie" HeaderText="N° Serie" />
@@ -144,7 +174,7 @@
                                     <asp:BoundField DataField="PrecioUnitario" HeaderText="$ Unitario" DataFormatString="{0:C}" />
                                     <asp:BoundField DataField="PorcentajeGanancia" HeaderText="% Gan." />
                                     <asp:BoundField DataField="PrecioParcial" HeaderText="$ Subtotal" DataFormatString="{0:C}" ItemStyle-CssClass="fw-bold text-primary" />
-                                    
+
                                     <asp:TemplateField HeaderText="Acción" ItemStyle-CssClass="text-center">
                                         <ItemTemplate>
                                             <asp:LinkButton
@@ -161,7 +191,7 @@
                             </asp:GridView>
                         </div>
                     </div>
-                    
+
                     <div class="card-footer bg-white p-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -185,7 +215,7 @@
 
                 <asp:UpdatePanel runat="server" ID="upProductosGrid" UpdateMode="Conditional">
                     <ContentTemplate>
-                        
+
                         <div class="modal-header header-gradient-bg">
                             <h5 class="modal-title fw-bold">Selección de Productos</h5>
                             <asp:Button runat="server" ID="btnCerrarModal" OnClick="btnCerrarModal_Click" CssClass="btn-close btn-close-white" />
@@ -202,7 +232,7 @@
                                     DataKeyNames="IdProducto">
 
                                     <HeaderStyle BackColor="White" ForeColor="#1A0047" BorderStyle="None" Height="50px" Font-Bold="True" />
-                                    
+
                                     <Columns>
                                         <asp:CommandField ShowSelectButton="true" SelectText="Seleccionar" HeaderText="Acción" ControlStyle-CssClass="btn btn-sm btn-outline-primary fw-bold" />
                                         <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
@@ -294,9 +324,13 @@
                 <div class="modal-body text-center py-4">
                     <i class="fas fa-receipt fa-3x mb-3 text-success"></i>
                     <p class="fs-4 fw-bold">Venta cargada correctamente</p>
+                    <p class="mt-2">
+                        Número factura:
+                        <asp:Label ID="lblNumeroFactura" runat="server"></asp:Label>
+                    </p>
                 </div>
                 <div class="modal-footer bg-light justify-content-center">
-                    <asp:Button Text="Salir" runat="server" CssClass="btn btn-action-green px-5" ID="btnFin" OnClick="btnFin_Click"/>
+                    <asp:Button Text="Salir" runat="server" CssClass="btn btn-action-green px-5" ID="btnFin" OnClick="btnFin_Click" />
                 </div>
             </div>
         </div>
