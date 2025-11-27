@@ -43,13 +43,21 @@ namespace Presentacion
         }
         void limpiarModalYSalir()
         {
-            lblParcial.Text = "";
-            lblPrecio.Text = "";
-            lblProducto.Text = "";
-            txtCantidad.Text = "";
-            btnAgregar.Enabled = false;
-            txtCantidad.Enabled = false;
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "closeModal();", true);
+            try
+            {
+                lblParcial.Text = "";
+                lblPrecio.Text = "";
+                lblProducto.Text = "";
+                txtCantidad.Text = "";
+                btnAgregar.Enabled = false;
+                txtCantidad.Enabled = false;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "closeModal();", true);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -78,115 +86,148 @@ namespace Presentacion
         }
         protected void gvDetalle_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "Eliminar")
+            try
             {
-                Int64 id = Convert.ToInt64(e.CommandArgument);
-
-                List<DetalleVenta> detalles = (List<DetalleVenta>)Session["listDetalle"];
-
-                if (detalles != null)
+                if (e.CommandName == "Eliminar")
                 {
-                    DetalleVenta aux = detalles.FirstOrDefault(x => x.ID == id);
-                    detalles.Remove(aux);
+                    Int64 id = Convert.ToInt64(e.CommandArgument);
+
+                    List<DetalleVenta> detalles = (List<DetalleVenta>)Session["listDetalle"];
+
+                    if (detalles != null)
+                    {
+                        DetalleVenta aux = detalles.FirstOrDefault(x => x.ID == id);
+                        detalles.Remove(aux);
+                    }
+
+                    Session["listDetalle"] = detalles;
+                    UpdateTotal();
+                    CargarPanelDetalle();
                 }
 
-                Session["listDetalle"] = detalles;
-                UpdateTotal();
-                CargarPanelDetalle();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
         }
         protected void txtCantidad_TextChanged(object sender, EventArgs e)
         {
-            DetalleVenta detalle = (DetalleVenta)Session["detalleActual"];
-            lblErrorCantidad.Text = "";
-            lblParcial.Text = "";
-            btnAgregar.Enabled = false;
-
-            //Verificacion
-            if (detalle == null)
-                return;
-
-            if (txtCantidad.Text.Length == 0)
+            try
             {
-                lblErrorCantidad.Text = "Ingreso un numero";
-                return;
-            }
-            foreach (char item in txtCantidad.Text)
-            {
-                if (!(char.IsNumber(item)))
+                DetalleVenta detalle = (DetalleVenta)Session["detalleActual"];
+                lblErrorCantidad.Text = "";
+                lblParcial.Text = "";
+                btnAgregar.Enabled = false;
+
+                //Verificacion
+                if (detalle == null)
+                    return;
+
+                if (txtCantidad.Text.Length == 0)
                 {
-                    lblErrorCantidad.Text = "Solo números.";
+                    lblErrorCantidad.Text = "Ingreso un numero";
                     return;
                 }
-            }
-            int cantidad = int.Parse(txtCantidad.Text);
+                foreach (char item in txtCantidad.Text)
+                {
+                    if (!(char.IsNumber(item)))
+                    {
+                        lblErrorCantidad.Text = "Solo números.";
+                        return;
+                    }
+                }
+                int cantidad = int.Parse(txtCantidad.Text);
 
-            if (cantidad <= 0)
+                if (cantidad <= 0)
+                {
+                    lblErrorCantidad.Text = "No se permite 0";
+                    return;
+                }
+                else if (cantidad > detalle.Producto.Stock)
+                {
+                    lblErrorCantidad.Text = "Cantidad supera Stock";
+                    return;
+                }
+
+                //
+                decimal parcial = (detalle.PrecioUnitario * (((decimal)detalle.PorcentajeGanancia / 100) + 1)) * cantidad;
+                lblParcial.Text = parcial.ToString();
+                btnAgregar.Enabled = true;
+                detalle.Cantidad = (Int16)cantidad;
+                detalle.PrecioParcial = parcial;
+                Session["detalleActual"] = detalle;
+
+            }
+            catch (Exception ex)
             {
-                lblErrorCantidad.Text = "No se permite 0";
-                return;
-            }
-            else if (cantidad > detalle.Producto.Stock)
-            {
-                lblErrorCantidad.Text = "Cantidad supera Stock";
-                return;
-            }
 
-            //
-            decimal parcial = (detalle.PrecioUnitario * (((decimal)detalle.PorcentajeGanancia / 100) + 1)) * cantidad;
-            lblParcial.Text = parcial.ToString();
-            btnAgregar.Enabled = true;
-            detalle.Cantidad = (Int16)cantidad;
-            detalle.PrecioParcial = parcial;
-            Session["detalleActual"] = detalle;
-        }
-
-        protected void btnAgregar_Click(object sender, EventArgs e)
-        {
-            List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
-            DetalleVenta detalle = (DetalleVenta)Session["detalleActual"];
-            listDetalle.Add(detalle);
-            Session["listDetalle"] = listDetalle;
-            detalle = new DetalleVenta();
-            Session["detalleActual"] = detalle;
-            UpdateTotal();
-            CargarPanelDetalle();
-            limpiarModalYSalir();
+                throw ex;
+            }
         }
 
         protected void gvProdcutos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txtCantidad.Enabled = true;
-            txtCantidad.Text = "";
-            btnAgregar.Enabled = false;
-            lblParcial.Text = "";
-            lblErrorCantidad.Text = "";
-            List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
-            int id = int.Parse(gvProdcutos.SelectedDataKey.Value.ToString());
-
-
-            if (listDetalle.Find(x => x.ID == id) != null)
+            try
             {
-                txtCantidad.Enabled = false;
-                lblProducto.Text = "Producto ya cargado";
-                lblPrecio.Text = "";
-                return;
+                txtCantidad.Enabled = true;
+                txtCantidad.Text = "";
+                btnAgregar.Enabled = false;
+                lblParcial.Text = "";
+                lblErrorCantidad.Text = "";
+                List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
+                int id = int.Parse(gvProdcutos.SelectedDataKey.Value.ToString());
+
+
+                if (listDetalle.Find(x => x.ID == id) != null)
+                {
+                    txtCantidad.Enabled = false;
+                    lblProducto.Text = "Producto ya cargado";
+                    lblPrecio.Text = "";
+                    return;
+                }
+
+                //recuperamos de session la lista de productos
+                DetalleVenta detalle = new DetalleVenta();
+                List<Producto> listProductos = (List<Producto>)Session["listProducto"];
+
+                detalle.Producto = listProductos.FirstOrDefault(x => x.IdProducto == id);
+                detalle.PrecioUnitario = detalle.Producto.Precio;
+                detalle.PorcentajeGanancia = detalle.Producto.PorcentajeGanancia;
+                detalle.ID = detalle.Producto.IdProducto;
+
+                //Guardamos el producto seleccionado
+                Session["detalleActual"] = detalle;
+
+                lblProducto.Text = detalle.Producto.Nombre;
+                lblPrecio.Text = detalle.Producto.Precio.ToString();
             }
+            catch (Exception ex)
+            {
 
-            //recuperamos de session la lista de productos
-            DetalleVenta detalle = new DetalleVenta();
-            List<Producto> listProductos = (List<Producto>)Session["listProducto"];
+                throw ex;
+            }
+        }
+        protected void btnAgregar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
+                DetalleVenta detalle = (DetalleVenta)Session["detalleActual"];
+                listDetalle.Add(detalle);
+                Session["listDetalle"] = listDetalle;
+                detalle = new DetalleVenta();
+                Session["detalleActual"] = detalle;
+                UpdateTotal();
+                CargarPanelDetalle();
+                limpiarModalYSalir();
+            }
+            catch (Exception ex)
+            {
 
-            detalle.Producto = listProductos.FirstOrDefault(x => x.IdProducto == id);
-            detalle.PrecioUnitario = detalle.Producto.Precio;
-            detalle.PorcentajeGanancia = detalle.Producto.PorcentajeGanancia;
-            detalle.ID = detalle.Producto.IdProducto;
-
-            //Guardamos el producto seleccionado
-            Session["detalleActual"] = detalle;
-
-            lblProducto.Text = detalle.Producto.Nombre;
-            lblPrecio.Text = detalle.Producto.Precio.ToString();
+                throw ex;
+            }
         }
 
         protected void btnCerrarModal_Click(object sender, EventArgs e)
@@ -196,23 +237,34 @@ namespace Presentacion
 
         protected void btnFinalizar_Click(object sender, EventArgs e)
         {
-            Dominio.Venta ven = new Dominio.Venta();
-            VentaNegocio negVenta = new VentaNegocio();
-            List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
-            Usuario usuario = (Usuario)Session["UsurioVenta"];
-            Cliente cliente = (Cliente)Session["Cliente"];
-            ven.NFactura = "SD454ASD";
-
-
-            ven.Detalle = listDetalle;
-            ven.Usuario = usuario;
-            ven.Cliente = cliente;
-            ven.Total = Convert.ToDecimal(lblTotal.Text);
-            ven.Fecha = DateTime.Now;
-
-            if (negVenta.Agregar(ven))
+            try
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalFinFin();", true);
+                Dominio.Venta ven = new Dominio.Venta();
+                VentaNegocio negVenta = new VentaNegocio();
+                List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
+                Usuario usuario = (Usuario)Session["UsurioVenta"];
+                Cliente cliente = (Cliente)Session["Cliente"];
+
+
+                ven.NFactura = GFactura();
+                ven.Detalle = listDetalle;
+                ven.Usuario = usuario;
+                ven.Cliente = cliente;
+                ven.Total = Convert.ToDecimal(lblTotal.Text);
+                ven.Fecha = DateTime.Now;
+
+                if (negVenta.Agregar(ven))
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalFinFin();", true);
+                    ProductoNegocio negProducto = new ProductoNegocio();
+                    negProducto.ReducirStock(listDetalle);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
         }
 
@@ -223,22 +275,31 @@ namespace Presentacion
 
         private void UpdateTotal()
         {
-            List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
-            lblTotal.Text = "";
-            decimal total = 0;
-            foreach (DetalleVenta item in listDetalle)
+            try
             {
-                total += item.PrecioParcial;
-            }
-            lblTotal.Text = Convert.ToString(total);
-            if (total==0)
-            {
+                List<DetalleVenta> listDetalle = (List<DetalleVenta>)Session["listDetalle"];
                 lblTotal.Text = "";
-                btnAbrirModalFinalizar.Enabled=false;
+                decimal total = 0;
+                foreach (DetalleVenta item in listDetalle)
+                {
+                    total += item.PrecioParcial;
+                }
+                lblTotal.Text = Convert.ToString(total);
+                if (total == 0)
+                {
+                    lblTotal.Text = "";
+                    btnAbrirModalFinalizar.Enabled = false;
+                }
+                else
+                {
+                    btnAbrirModalFinalizar.Enabled = true;
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                btnAbrirModalFinalizar.Enabled = true;
+
+                throw ex;
             }
         }
 
@@ -251,17 +312,66 @@ namespace Presentacion
         {
             Salir();
         }
-        public void Salir()
+        void Salir()
         {
-            if (Session["listDetalle"] != null)
-                Session.Remove("listDetalle");
-            if (Session["Cliente"] != null)
-                Session.Remove("Cliente");
-            if (Session["detalleActual"] != null)
-                Session.Remove("detalleActual");
-            if (Session["listProducto"] != null)
-                Session.Remove("listProducto");
-            Response.Redirect("~/ComprasVentas.aspx");
+            try
+            {
+                if (Session["listDetalle"] != null)
+                    Session.Remove("listDetalle");
+                if (Session["Cliente"] != null)
+                    Session.Remove("Cliente");
+                if (Session["detalleActual"] != null)
+                    Session.Remove("detalleActual");
+                if (Session["listProducto"] != null)
+                    Session.Remove("listProducto");
+                Response.Redirect("~/ComprasVentas.aspx");
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        string GFactura()
+        {
+            try
+            {
+                List<Dominio.Venta> ventas = new List<Dominio.Venta>();
+                VentaNegocio negVenta = new VentaNegocio();
+                ventas = negVenta.Listar();
+                var rand = new Random();
+                char[] cj = new char[5];
+                bool bandera = true;
+                string fac;
+                do
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        cj[i] = (char)(('A' + rand.Next(26)));
+                    }
+                    DateTime fecha = DateTime.Now;
+                    string factura = new string(cj);
+                    factura = factura + fecha.Year;
+                    Console.WriteLine("\n");
+                    fac = $"{DateTime.Today.ToString("yyyyMMdd")}-{new string(cj)}";
+                    foreach (Dominio.Venta item in ventas)
+                    {
+                        if (item.NFactura != fac)
+                        {
+                            bandera = false;
+                        }
+                    }
+                } while (bandera);
+                return fac;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     }
 }

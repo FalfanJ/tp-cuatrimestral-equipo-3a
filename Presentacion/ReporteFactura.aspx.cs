@@ -45,15 +45,11 @@ namespace Presentacion
                 pnlFactura.Visible = false;
                 lblError.Visible = false;
 
-                if (string.IsNullOrWhiteSpace(txtNumVenta.Text))
-                {
-                    MostrarError("Por favor, ingrese un número de venta.");
-                    return;
-                }
+                string numeroFactura = txtNumVenta.Text.Trim();
 
-                if (!long.TryParse(txtNumVenta.Text.Trim(), out long idVenta))
+                if (string.IsNullOrWhiteSpace(numeroFactura))
                 {
-                    MostrarError("El ID de venta debe ser un número.");
+                    MostrarError("Por favor, ingrese un número de factura.");
                     return;
                 }
 
@@ -62,7 +58,7 @@ namespace Presentacion
 
                 // 🔴 CORRECCIÓN AQUÍ: Usamos 'Dominio.Venta' explícitamente
                 List<Dominio.Venta> listaVentas = ventaNeg.Listar();
-                Dominio.Venta ventaSeleccionada = listaVentas.FirstOrDefault(x => x.IdVenta == idVenta);
+                Dominio.Venta ventaSeleccionada = listaVentas.FirstOrDefault(x => x.NFactura == numeroFactura);
 
                 if (ventaSeleccionada == null)
                 {
@@ -73,7 +69,7 @@ namespace Presentacion
                 // --- PASO 2: BUSCAR DETALLES ---
                 DetalleVentaNegocio detalleNeg = new DetalleVentaNegocio();
                 List<DetalleVenta> todosLosDetalles = detalleNeg.Listar();
-                List<DetalleVenta> detallesVenta = todosLosDetalles.Where(x => x.IdVenta == idVenta).ToList();
+                List<DetalleVenta> detallesVenta = todosLosDetalles.Where(x => x.IdVenta == ventaSeleccionada.IdVenta).ToList();
 
                 if (detallesVenta.Count == 0)
                 {
@@ -109,7 +105,7 @@ namespace Presentacion
 
                 // --- PASO 5: MOSTRAR DATOS ---
 
-                lblNumeroFactura.Text = string.IsNullOrEmpty(ventaSeleccionada.NFactura) ? idVenta.ToString() : ventaSeleccionada.NFactura;
+                lblNumeroFactura.Text = string.IsNullOrEmpty(ventaSeleccionada.NFactura) ? ventaSeleccionada.IdVenta.ToString() : ventaSeleccionada.NFactura;
                 lblFecha.Text = ventaSeleccionada.Fecha.ToString("dd/MM/yyyy HH:mm");
 
                 // Vendedor

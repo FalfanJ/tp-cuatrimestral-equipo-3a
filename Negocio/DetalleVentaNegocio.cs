@@ -22,6 +22,7 @@ namespace Negocio
                 {
                     DetalleVenta aux = new DetalleVenta();
                     aux.IdVenta = (Int64)datos.Lector["IDVenta"];
+                    aux.Producto = new Producto();
                     aux.Producto.IdProducto = (Int64)datos.Lector["IDProducto"];
                     aux.Cantidad = (Int16)datos.Lector["Cantidad"];
                     aux.PrecioUnitario = (decimal)datos.Lector["PrecioUnitario"];

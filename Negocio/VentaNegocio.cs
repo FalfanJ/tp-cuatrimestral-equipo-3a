@@ -22,7 +22,9 @@ namespace Negocio
                 {
                     Venta aux = new Venta();
                     aux.IdVenta = (Int64)datos.Lector["IDVenta"];
+                    aux.Cliente = new Cliente();
                     aux.Cliente.IdCliente = (Int64)datos.Lector["IDCliente"];
+                    aux.Usuario = new Usuario();
                     aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
                     aux.NFactura = (string)datos.Lector["NFactura"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
