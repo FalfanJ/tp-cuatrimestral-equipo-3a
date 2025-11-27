@@ -72,7 +72,7 @@
                     <div class="card-body p-4">
                         <h5 class="mb-3 fw-bold" style="color: #4D079C;">Buscar Venta</h5>
                         <div class="input-group">
-                            <asp:TextBox ID="txtNumVenta" runat="server" CssClass="form-control" placeholder="ID Venta" TextMode="Number"></asp:TextBox>
+                            <asp:TextBox ID="txtNumVenta" runat="server" CssClass="form-control" placeholder="Numero Factura" TextMode="SingleLine"></asp:TextBox>
                             <asp:Button ID="btnBuscarVenta" runat="server" Text="Generar" CssClass="btn btn-primary" OnClick="btnBuscarVenta_Click" />
                         </div>
                         <asp:Label ID="lblError" runat="server" CssClass="text-danger mt-2 d-block fw-bold" Visible="false"></asp:Label>

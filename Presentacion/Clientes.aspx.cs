@@ -213,7 +213,8 @@ namespace Presentacion
                 hfIdPersonaEliminar.Value = "";
 
                 // Cerrar modal
-                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModalEliminar", "$('#modalEliminarCliente').modal('hide');", true);
+                //ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModalEliminar", "$('#modalEliminarCliente').modal('hide');", true);
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModalEliminar", "var myModalEl = document.getElementById('modalEliminarCliente'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
             }
             catch (Exception ex)
             {

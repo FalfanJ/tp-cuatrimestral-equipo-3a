@@ -53,7 +53,6 @@ namespace Negocio
                 datos.SetearParametro("@correo", nuevo.email);
                 datos.SetearParametro("@pass", nuevo.Contrasenia);
                 datos.EjecutarAccion();
-                datos.EjecutarAccion();
             }
             catch (Exception ex)
             {

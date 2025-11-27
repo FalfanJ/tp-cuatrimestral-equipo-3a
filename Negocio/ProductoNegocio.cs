@@ -154,5 +154,30 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+        public void ReducirStock(List<DetalleVenta> productos)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("UPDATE Productos SET StockActual = @stockactual WHERE IDProducto = @idproducto");
+                foreach (DetalleVenta item in productos)
+                {
+                    datos.SetearParametro("@idproducto", item.Producto.IdProducto);
+                    Int16 stockActual = Convert.ToInt16(item.Producto.Stock - item.Cantidad);
+                    datos.SetearParametro("@stockactual", stockActual);
+                    datos.EjecutarAccion();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
     }
 }
