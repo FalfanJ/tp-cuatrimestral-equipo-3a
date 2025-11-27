@@ -154,5 +154,48 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+        public List<Persona> ListarTodo()
+        {
+            List<Persona> lista = new List<Persona>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.SetearConsulta("SELECT IDPersona, Nombre, Apellido, DNI, CUIT, TipoPersona, Telefono, Email, Direccion FROM Personas");
+                datos.EjecutarLectura();
+                while (datos.Lector.Read())
+                {
+                    Persona aux = new Persona();
+                    aux.IdPersona = (Int64)datos.Lector["IDPersona"];
+                    aux.Nombre = (string)datos.Lector["Nombre"];
+                    aux.Apellido = (string)datos.Lector["Apellido"];
+
+                    if (!(datos.Lector["DNI"] is DBNull))
+                        aux.Dni = (Int64)datos.Lector["DNI"];
+                    if (!(datos.Lector["CUIT"] is DBNull))
+                        aux.Cuit = (Int64)datos.Lector["CUIT"];
+
+                    aux.TipoPersona = (bool)datos.Lector["TipoPersona"];
+                    aux.Telefono = (Int64)datos.Lector["Telefono"];
+
+                    if (!(datos.Lector["Email"] is DBNull))
+                        aux.Email = (string)datos.Lector["Email"];
+                    if (!(datos.Lector["Direccion"] is DBNull))
+                        aux.Direccion = (string)datos.Lector["Direccion"];
+
+                    lista.Add(aux);
+                }
+                return lista;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
     }
 }

@@ -128,5 +128,55 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
+        //LISTAR TODO: todo cliente en el registro
+        public List<Cliente> ListarTodo()
+        {
+            List<Cliente> lista = new List<Cliente>();
+            List<Persona> perList = new List<Persona>();
+            AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
+
+            try
+            {
+                perList = perNeg.ListarTodo(); // Traemos todas las personas
+                datos.SetearConsulta("SELECT IDCliente, IDPersona, Estado FROM Clientes");
+                datos.EjecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Cliente aux = new Cliente();
+                    aux.IdCliente = (Int64)datos.Lector["IDCliente"];
+                    aux.IdPersona = (Int64)datos.Lector["IDPersona"];
+                    aux.Estado = (bool)datos.Lector["Estado"];
+
+                    // Mapear datos de Persona
+                    Persona persona = perList.FirstOrDefault(p => p.IdPersona == aux.IdPersona);
+                    if (persona != null)
+                    {
+                        aux.Nombre = persona.Nombre;
+                        aux.Apellido = persona.Apellido;
+                        aux.Dni = persona.Dni;
+                        aux.Cuit = persona.Cuit;
+                        aux.TipoPersona = persona.TipoPersona;
+                        aux.Telefono = persona.Telefono;
+                        aux.Email = persona.Email;
+                        aux.Direccion = persona.Direccion;
+                    }
+
+                    lista.Add(aux);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
     }
 }

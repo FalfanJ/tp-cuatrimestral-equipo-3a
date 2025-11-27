@@ -97,7 +97,7 @@ namespace Presentacion
 
                 // --- PASO 4: CRUZAR CON CLIENTE ---
                 ClienteNegocio cliNeg = new ClienteNegocio();
-                List<Cliente> todosLosClientes = cliNeg.Listar();
+                List<Cliente> todosLosClientes = cliNeg.ListarTodo();
 
                 // Usamos ventaSeleccionada que ahora es de tipo Dominio.Venta
                 Cliente clienteReal = todosLosClientes.FirstOrDefault(c => c.IdCliente == ventaSeleccionada.Cliente.IdCliente);
