@@ -11,79 +11,70 @@ namespace Presentacion
 {
 
 
-    public partial class Default
+    public partial class Compras
     {
 
         /// <summary>
-        /// cardClientes control.
+        /// upMain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardClientes;
+        protected global::System.Web.UI.UpdatePanel upMain;
 
         /// <summary>
-        /// cardProductos control.
+        /// btnNuevaCompra control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardProductos;
+        protected global::System.Web.UI.WebControls.Button btnNuevaCompra;
 
         /// <summary>
-        /// cardCompras control.
+        /// gvCompras control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardCompras;
+        protected global::System.Web.UI.WebControls.GridView gvCompras;
 
         /// <summary>
-        /// cardComprasVentas control.
+        /// upModalCompra control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardComprasVentas;
+        protected global::System.Web.UI.UpdatePanel upModalCompra;
 
         /// <summary>
-        /// cardProveedores control.
+        /// ddlProveedores control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardProveedores;
+        protected global::System.Web.UI.WebControls.DropDownList ddlProveedores;
 
         /// <summary>
-        /// cardMarcasCategorias control.
+        /// gvProductosFaltantes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardMarcasCategorias;
+        protected global::System.Web.UI.WebControls.GridView gvProductosFaltantes;
 
         /// <summary>
-        /// cardReportes control.
+        /// btnConfirmarCompra control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardReportes;
-
-        /// <summary>
-        /// cardUsuarios control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardUsuarios;
+        protected global::System.Web.UI.WebControls.Button btnConfirmarCompra;
     }
 }

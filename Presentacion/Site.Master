@@ -76,8 +76,12 @@
                                     <a runat="server" href="~/MarcasCategorias.aspx" class="dropdown-item">Marcas y Categorías</a>
                                 </li>
 
+                                 <li id="menuCompras" runat="server">
+                                    <a runat="server" href="~/Compras.aspx" class="dropdown-item">Compras</a>
+                                   </li>
+
                                 <li id="menuComprasVentas" runat="server">
-                                    <a runat="server" href="~/ComprasVentas.aspx" class="dropdown-item">Compras y Ventas</a>
+                                    <a runat="server" href="~/ComprasVentas.aspx" class="dropdown-item">Ventas</a>
                                 </li>
 
                                 <li id="menuReportes" runat="server">

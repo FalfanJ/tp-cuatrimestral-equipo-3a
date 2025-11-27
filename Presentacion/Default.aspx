@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Inicio" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Presentacion.Default" %> 
+﻿<%@ Page Title="Inicio" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Presentacion.Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
@@ -8,9 +8,21 @@
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .container { padding: 3rem 1rem; }
-        h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        p.fs-5 { color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; }
+
+        .container {
+            padding: 3rem 1rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p.fs-5 {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+        }
+
         .card {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 1rem;
@@ -21,17 +33,47 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            }
+
+            .card i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
         }
-        .card i { font-size: 3rem; margin-bottom: 1rem; }
-        .card-title { font-size: 1.5rem; margin-bottom: 0.5rem; color:white; }
-        .card-text { color: rgba(255,255,255,0.8); flex-grow: 1; }
-        a.btn { font-weight: bold; border-radius: 50px; transition: background 0.3s; }
-        a.btn:hover { opacity: 0.9; }
-        .row { justify-content: center; }
-        .footer { text-align: center; margin-top: 3rem; color: rgba(255,255,255,0.6); }
+
+        .card-text {
+            color: rgba(255,255,255,0.8);
+            flex-grow: 1;
+        }
+
+        a.btn {
+            font-weight: bold;
+            border-radius: 50px;
+            transition: background 0.3s;
+        }
+
+            a.btn:hover {
+                opacity: 0.9;
+            }
+
+        .row {
+            justify-content: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255,255,255,0.6);
+        }
     </style>
 
     <div class="container text-center">
@@ -64,13 +106,25 @@
                 </div>
             </div>
 
-            <!-- Compras / Ventas -->
+            <!-- Compras -->
+            <div class="col-md-4 col-sm-6 mb-4" runat="server" id="cardCompras">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cart-check text-primary"></i>
+                        <h5 class="card-title fw-bold">Compras</h5>
+                        <p class="card-text">Registra y administra las compras realizadas a proveedores.</p>
+                        <a href="Compras.aspx" class="btn btn-primary w-100">Ir a Compras</a>
+                    </div>
+                </div>
+            </div>
+
+            <!--Ventas -->
             <div class="col-md-4 col-sm-6 mb-4" runat="server" id="cardComprasVentas">
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
                         <i class="bi bi-cash-stack text-warning"></i>
-                        <h5 class="card-title fw-bold">Compras / Ventas</h5>
-                        <p class="card-text">Registra compras y ventas.</p>
+                        <h5 class="card-title fw-bold">Ventas</h5>
+                        <p class="card-text">Registra ventas.</p>
                         <a href="ComprasVentas.aspx" class="btn btn-warning w-100">Ir a Compras / Ventas</a>
                     </div>
                 </div>

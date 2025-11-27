@@ -23,14 +23,15 @@ namespace Presentacion
                 if (rol == "Vendedor")
                 {
                     // Acceso permitido
+                    menuCompras.Visible = true;
+                    menuClientes.Visible = true;
                     menuComprasVentas.Visible = true;
+                    menuReportes.Visible = true;
 
                     // Acceso denegado
-                    menuClientes.Visible = false;
                     menuProveedores.Visible = false;
                     menuProductos.Visible = false;
                     menuMarcas.Visible = false;
-                    menuReportes.Visible = false;
                     menuUsuarios.Visible = false;
                 }
 
@@ -43,6 +44,7 @@ namespace Presentacion
                     menuProductos.Visible =
                     menuMarcas.Visible =
                     menuReportes.Visible =
+                    menuCompras.Visible =
                     menuUsuarios.Visible = true;
                 }
             }

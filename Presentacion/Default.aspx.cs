@@ -31,14 +31,14 @@ namespace Presentacion
                 // CONTROL DE PERMISOS SEGÚN ROL
                 if (usuario.TipoUsuario == "Vendedor")
                 {
-                    // Ocultar todo excepto Compras/Ventas
-                    cardClientes.Visible = false;
+                    // Ocultar todo excepto Compras/Ventas/Clientes/Facturacion
+                    cardClientes.Visible = true;
                     cardProductos.Visible = false;
                     cardProveedores.Visible = false;
                     cardMarcasCategorias.Visible = false;
-                    cardReportes.Visible = false;
+                    cardReportes.Visible = true;
                     cardUsuarios.Visible = false;
-
+                    cardCompras.Visible = true;
                     cardComprasVentas.Visible = true;
                 }
             }
