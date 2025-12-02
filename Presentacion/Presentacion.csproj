@@ -134,6 +134,7 @@
     <Content Include="ComprasVentas.aspx" />
     <Content Include="ReporteFactura.aspx" />
     <Content Include="MarcasCategorias.aspx" />
+    <Content Include="Estadisticas.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -280,6 +281,13 @@
     </Compile>
     <Compile Include="MarcasCategorias.aspx.designer.cs">
       <DependentUpon>MarcasCategorias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Estadisticas.aspx.cs">
+      <DependentUpon>Estadisticas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Estadisticas.aspx.designer.cs">
+      <DependentUpon>Estadisticas.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

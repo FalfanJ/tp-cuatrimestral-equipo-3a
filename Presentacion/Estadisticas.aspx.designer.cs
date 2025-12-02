@@ -11,88 +11,70 @@ namespace Presentacion
 {
 
 
-    public partial class Default
+    public partial class Estadisticas
     {
 
         /// <summary>
-        /// Control cardClientes.
+        /// Control gvTopClientes.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardClientes;
+        protected global::System.Web.UI.WebControls.GridView gvTopClientes;
 
         /// <summary>
-        /// Control cardProductos.
+        /// Control gvTopVendedores.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardProductos;
+        protected global::System.Web.UI.WebControls.GridView gvTopVendedores;
 
         /// <summary>
-        /// Control cardCompras.
+        /// Control ddlFiltroTiempo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardCompras;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFiltroTiempo;
 
         /// <summary>
-        /// Control cardComprasVentas.
+        /// Control gvProductosVendidos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardComprasVentas;
+        protected global::System.Web.UI.WebControls.GridView gvProductosVendidos;
 
         /// <summary>
-        /// Control cardProveedores.
+        /// Control gvStockCritico.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardProveedores;
+        protected global::System.Web.UI.WebControls.GridView gvStockCritico;
 
         /// <summary>
-        /// Control cardMarcasCategorias.
+        /// Control gvStockExceso.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardMarcasCategorias;
+        protected global::System.Web.UI.WebControls.GridView gvStockExceso;
 
         /// <summary>
-        /// Control cardReportes.
+        /// Control gvMargenCategoria.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardReportes;
-
-        /// <summary>
-        /// Control cardEstadisticas.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardEstadisticas;
-
-        /// <summary>
-        /// Control cardUsuarios.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cardUsuarios;
+        protected global::System.Web.UI.WebControls.GridView gvMargenCategoria;
     }
 }
