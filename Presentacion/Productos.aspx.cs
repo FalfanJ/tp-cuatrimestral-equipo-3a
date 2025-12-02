@@ -210,7 +210,7 @@ namespace Presentacion
 
                 txtNombreProducto.Text = seleccionado.Nombre;
                 txtNumeroSerie.Text = seleccionado.NSerie;
-                txtPrecio.Text = seleccionado.Precio.ToString("0.00").Replace(",", "."); // Formato seguro
+                txtPrecio.Text = seleccionado.Precio.ToString("0.00").Replace(",", "."); 
                 txtStock.Text = seleccionado.Stock.ToString();
                 txtStockMinimo.Text = seleccionado.StockMinimo.ToString();
                 txtDescripcion.Text = seleccionado.Descripcion;
@@ -231,22 +231,63 @@ namespace Presentacion
         {
             try
             {
-                Producto producto = new Producto();
                 ProductoNegocio negocio = new ProductoNegocio();
 
-                // 1. Mapear datos del formulario al objeto
-                producto.Nombre = txtNombreProducto.Text.Trim();
-                producto.NSerie = txtNumeroSerie.Text.Trim();
+                string nombreIngresado = txtNombreProducto.Text.Trim();
+                string nSerieIngresado = txtNumeroSerie.Text.Trim();
+                int idMarcaIngresada = int.Parse(ddlMarcaNuevo.SelectedValue);
+                int idCategoriaIngresada = int.Parse(ddlCategoriaNuevo.SelectedValue);
+
+                long idActual = string.IsNullOrEmpty(hfIdProducto.Value) ? 0 : long.Parse(hfIdProducto.Value);
+
+               
+                List<Producto> listaValidacion = negocio.Listar();
 
                 
+                bool existeNombreMarca = listaValidacion.Any(x =>
+                    x.Nombre.Equals(nombreIngresado, StringComparison.OrdinalIgnoreCase) &&
+                    x.Marca.IdMarca == idMarcaIngresada &&
+                    x.IdProducto != idActual 
+                );
+
+                if (existeNombreMarca)
+                {
+                    
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toastDuplicado",
+                        "mostrarToast('⚠️ Ya existe un producto con ese Nombre y Marca.', 'warning');", true);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(nSerieIngresado))
+                {
+                    bool existeSerie = listaValidacion.Any(x =>
+                        x.NSerie.Equals(nSerieIngresado, StringComparison.OrdinalIgnoreCase) &&
+                        x.IdProducto != idActual
+                    );
+
+                    if (existeSerie)
+                    {
+                        ScriptManager.RegisterStartupScript(this, GetType(), "toastSerie",
+                            "mostrarToast('⚠️ El Número de Serie ya pertenece a otro producto.', 'warning');", true);
+                        return;
+                    }
+                }
+                
+
+                
+                Producto producto = new Producto();
+                producto.IdProducto = idActual; 
+                producto.Nombre = nombreIngresado;
+                producto.NSerie = nSerieIngresado;
+
                 producto.Marca = new Marca();
-                producto.Marca.IdMarca = int.Parse(ddlMarcaNuevo.SelectedValue);
+                producto.Marca.IdMarca = idMarcaIngresada;
 
                 producto.Categoria = new Categoria();
-                producto.Categoria.IdCategoria = int.Parse(ddlCategoriaNuevo.SelectedValue);
+                producto.Categoria.IdCategoria = idCategoriaIngresada;
 
                 producto.Descripcion = txtDescripcion.Text.Trim();
-                producto.Modelo = "ModeloX"; 
+                producto.Modelo = "ModeloX";
 
                 if (decimal.TryParse(txtPrecio.Text, out decimal precio)) producto.Precio = precio;
                 else producto.Precio = 0;
@@ -257,32 +298,26 @@ namespace Presentacion
                 if (short.TryParse(txtStockMinimo.Text, out short stMin)) producto.StockMinimo = stMin;
                 else producto.StockMinimo = 0;
 
-               
                 if (short.TryParse(txtGanancia.Text, out short ganancia)) producto.PorcentajeGanancia = ganancia;
 
-
-                // 2.LÓGICA CRÍTICA: DECIDIR SI ES INSERT O UPDATE 
-                if (string.IsNullOrEmpty(hfIdProducto.Value))
+                if (idActual == 0)
                 {
-                    // SI NO HAY ID => ES NUEVO => AGREGAR
+                    // NUEVO
                     negocio.Agregar(producto);
                     ScriptManager.RegisterStartupScript(this, GetType(), "toast", "mostrarToast('Producto agregado con éxito.', 'success');", true);
                 }
                 else
                 {
-                    // SI HAY ID => ESTAMOS EDITANDO => MODIFICAR
-                    producto.IdProducto = long.Parse(hfIdProducto.Value); 
+                    // MODIFICAR
                     negocio.Modificar(producto);
                     ScriptManager.RegisterStartupScript(this, GetType(), "toast", "mostrarToast('Producto modificado con éxito.', 'success');", true);
                 }
 
-               
                 CargarGrilla();
                 LimpiarCamposModalNuevoProducto();
 
-                // Cerrar modal
-                //ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "$('#modalNuevoProducto').modal('hide');", true);
-                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "var myModalEl = document.getElementById('modalNuevoProducto'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal",
+                    "var myModalEl = document.getElementById('modalNuevoProducto'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
             }
             catch (Exception ex)
             {
