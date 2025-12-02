@@ -18,8 +18,21 @@ namespace Presentacion
                 if (!IsPostBack)
                 {
                     ClienteNegocio negCliente = new ClienteNegocio();
+                    ProductoNegocio negProducto = new ProductoNegocio();
                     List<Cliente> listClientes = new List<Cliente>();
                     listClientes = negCliente.Listar();
+                    if (listClientes == null || listClientes.Count == 0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, GetType(), "AbrirModalCliente",
+                            "var myModalEl = document.getElementById('modalClienteBD'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.show();", true);
+                        return;
+                    }
+                    if (negProducto.CantidadRegistro()==0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, GetType(), "AbrirModalCliente",
+                            "var myModalEl = document.getElementById('modalProductoBD'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.show();", true);
+                        return;
+                    }
                     Session["listCliente"] = listClientes;
                     gvCliente.DataSource = listClientes;
                     gvCliente.DataBind();
@@ -56,6 +69,11 @@ namespace Presentacion
             if (Session["listCliente"] != null)
                 Session.Remove("listCliente");
             Response.Redirect("~/Venta.aspx");
+        }
+
+        protected void btnValidacionBase_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Default.aspx");
         }
     }
 }

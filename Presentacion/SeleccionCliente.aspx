@@ -21,6 +21,12 @@
             color: white !important;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+
+        .header-yellow-bg {
+            background-color: #E1A904;
+            color: white;
+            padding: 15px 20px;
+        }
     </style>
     <script type="text/javascript">
         function openModal() {
@@ -73,6 +79,7 @@
         </div>
     </div>
 
+    <%---- Modal Confirmacion ----%>
     <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -81,7 +88,41 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
-                    <asp:Button Text="SI" runat="server" ID="btnConfirmacion" OnClick="btnConfirmacion_Click"  CssClass="btn btn-primary" />
+                    <asp:Button Text="SI" runat="server" ID="btnConfirmacion" OnClick="btnConfirmacion_Click" CssClass="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%---- Modal Sin Clientes ----%>
+    <div class="modal fade" id="modalClienteBD" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-custom">
+                <div class="modal-header header-yellow-bg">
+                    <h5 class="modal-title fw-bold">Sin Clientes</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p class="fs-5">Sin clientes en la base de datos</p>
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <asp:Button Text="Inicio" runat="server" CssClass="btn btn-primary" ID="btnValidacionBase" OnClick="btnValidacionBase_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%---- Modal Sin Productos ----%>
+    <div class="modal fade" id="modalProductoBD" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-custom">
+                <div class="modal-header header-yellow-bg">
+                    <h5 class="modal-title fw-bold">Sin Productos</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p class="fs-5">Sin prodcutos en la base de datos</p>
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <asp:Button Text="Inicio" runat="server" CssClass="btn btn-primary" ID="btnValidacionBase2" OnClick="btnValidacionBase_Click" />
                 </div>
             </div>
         </div>

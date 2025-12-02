@@ -119,14 +119,16 @@ namespace Consola
 
             //negHistorialMovimiento.Agregar(his);
 
-            List<Persona> aux = new List<Persona>();
+            //List<Persona> aux = new List<Persona>();
 
-            aux=negPersona.Listar();
+            //aux=negPersona.Listar();
 
-            foreach (Persona item in aux)
-            {
-                Console.WriteLine(item.IdPersona);
-            }
+            //foreach (Persona item in aux)
+            //{
+            //    Console.WriteLine(item.IdPersona);
+            //}
+
+            Console.WriteLine(negProducto.CantidadRegistro());
 
         }
     }

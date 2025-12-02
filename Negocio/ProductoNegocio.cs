@@ -179,5 +179,23 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+        public int CantidadRegistro()
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.SetearConsulta("SELECT COUNT(*) FROM Productos WHERE Estado=1");
+                return Convert.ToInt32(datos.EjecutarScalar());
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
     }
 }
