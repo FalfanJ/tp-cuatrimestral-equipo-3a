@@ -166,6 +166,18 @@
                 </div>
             </div>
 
+            <!--Estaditicas-->
+               <div class="col-md-4 col-sm-6 mb-4" runat="server" id="cardEstadisticas">
+       <div class="card shadow-sm">
+           <div class="card-body text-center">
+              <i class="bi bi-bar-chart-line-fill text-primary"></i>
+               <h5 class="card-title fw-bold">Estadísticas</h5>
+               <p class="card-text">Controlar estadísticas de negocio.</p>
+               <a href="Estadisticas.aspx" class="btn btn-success w-100">Visualizar Estadísticas</a>
+           </div>
+       </div>
+   </div>
+
             <!-- Usuarios -->
             <div class="col-md-4 col-sm-6 mb-4" runat="server" id="cardUsuarios">
                 <div class="card shadow-sm">

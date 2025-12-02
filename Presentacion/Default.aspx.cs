@@ -35,6 +35,7 @@ namespace Presentacion
                     cardClientes.Visible = true;
                     cardProductos.Visible = false;
                     cardProveedores.Visible = false;
+                    cardEstadisticas.Visible = false;
                     cardMarcasCategorias.Visible = false;
                     cardReportes.Visible = true;
                     cardUsuarios.Visible = false;
