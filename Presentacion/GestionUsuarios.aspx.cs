@@ -2,6 +2,7 @@
 using Negocio;
 using Presentacion.Models;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
@@ -110,7 +111,7 @@ namespace Presentacion
                     string.IsNullOrEmpty(ddlTipoUsuario.SelectedValue))
                 {
                     MostrarMensaje("Por favor, complete todos los campos.", "warning");
-                    AbrirModal();
+                    AbrirModal(); 
                     return;
                 }
 
@@ -130,28 +131,63 @@ namespace Presentacion
 
                 UsuarioNegocio negocio = new UsuarioNegocio();
 
+                string nombreUsuarioIngresado = txtNombreUsuario.Text.Trim();
+                string emailIngresado = txtEmail.Text.Trim();
+
+                long idActual = string.IsNullOrEmpty(hfIdUsuario.Value) ? 0 : long.Parse(hfIdUsuario.Value);
+
+                var listaValidacion = negocio.Listar();
+
+                bool existeUsuario = listaValidacion.Any(u =>
+                    u.NombreUsuario.Equals(nombreUsuarioIngresado, StringComparison.OrdinalIgnoreCase) &&
+                    u.IdUsuario != idActual); 
+
+                if (existeUsuario)
+                {
+                    MostrarMensaje("⚠️ El Nombre de Usuario ya está en uso. Elija otro.", "warning");
+                    AbrirModal(); 
+                    return;
+                }
+
+                bool existeEmail = listaValidacion.Any(u =>
+                    u.email.Equals(emailIngresado, StringComparison.OrdinalIgnoreCase) &&
+                    u.IdUsuario != idActual);
+
+                if (existeEmail)
+                {
+                    MostrarMensaje("⚠️ Ese correo electrónico ya está registrado en el sistema.", "warning");
+                    AbrirModal();
+                    return;
+                }
+
                 Usuario nuevo = new Usuario
                 {
-                    NombreUsuario = txtNombreUsuario.Text.Trim(),
-                    email = txtEmail.Text.Trim(),
+                    NombreUsuario = nombreUsuarioIngresado,
+                    email = emailIngresado,
                     TipoUsuario = ddlTipoUsuario.SelectedValue,
                     Contrasenia = txtContrasenia.Text.Trim()
                 };
 
-                if (!string.IsNullOrEmpty(hfIdUsuario.Value))
+                if (idActual != 0)
                 {
-                    nuevo.IdUsuario = Convert.ToInt64(hfIdUsuario.Value);
+                    // EDITAR
+                    nuevo.IdUsuario = idActual;
                     negocio.Modificar(nuevo);
                     MostrarMensaje("Usuario actualizado correctamente.", "success");
                 }
                 else
                 {
+                    // NUEVO
                     negocio.Agregar(nuevo);
                     MostrarMensaje("Usuario agregado correctamente.", "success");
                 }
 
                 CargarUsuarios();
                 LimpiarCampos();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "cerrarModal",
+                    "var myModalEl = document.getElementById('modalNuevoUsuario'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
+
             }
             catch (Exception ex)
             {

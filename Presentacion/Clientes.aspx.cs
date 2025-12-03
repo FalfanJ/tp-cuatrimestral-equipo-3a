@@ -155,19 +155,52 @@ namespace Presentacion
                     return;
                 }
 
+                string emailIngresado = txtEmail.Text.Trim();
+                long dniIngresado = 0;
+                long.TryParse(txtDNI.Text.Trim(), out dniIngresado); 
+                long cuitIngresado = 0;
+                long.TryParse(txtCUIT.Text.Trim(), out cuitIngresado);
+
+                long idClienteActual = string.IsNullOrEmpty(hfIdCliente.Value) ? 0 : long.Parse(hfIdCliente.Value);
+
+                List<Cliente> listaValidacion = negocio.Listar();
+
+                if (dniIngresado > 0)
+                {
+                    bool existeDni = listaValidacion.Any(x =>
+                        x.Dni == dniIngresado &&
+                        x.IdCliente != idClienteActual);
+
+                    if (existeDni)
+                    {
+                        MostrarMensaje($"⚠️ El DNI {dniIngresado} ya se encuentra registrado en otro cliente.", "warning");
+                        return; 
+                    }
+                }
+
+                bool existeEmail = listaValidacion.Any(x =>
+                    x.Email.Equals(emailIngresado, StringComparison.OrdinalIgnoreCase) &&
+                    x.IdCliente != idClienteActual);
+
+                if (existeEmail)
+                {
+                    MostrarMensaje("⚠️ Ese correo electrónico ya está asociado a otro cliente.", "warning");
+                    return;
+                }
+                
                 Cliente cliente = new Cliente();
                 cliente.Nombre = txtNombre.Text.Trim();
                 cliente.Apellido = txtApellido.Text.Trim();
-                cliente.Email = txtEmail.Text.Trim();
+                cliente.Email = emailIngresado;
                 cliente.Direccion = txtDireccion.Text.Trim();
                 cliente.TipoPersona = true;
 
+                if (dniIngresado > 0) cliente.Dni = dniIngresado;
+                if (cuitIngresado > 0) cliente.Cuit = cuitIngresado;
                 if (long.TryParse(txtTelefono.Text.Trim(), out long tel)) cliente.Telefono = tel;
-                if (long.TryParse(txtDNI.Text.Trim(), out long dni)) cliente.Dni = dni;
-                if (long.TryParse(txtCUIT.Text.Trim(), out long cuit)) cliente.Cuit = cuit;
 
-                // 3. Decidir si es Insert o Update
-                if (string.IsNullOrEmpty(hfIdCliente.Value))
+
+                if (idClienteActual == 0)
                 {
                     // NUEVO
                     negocio.Agregar(cliente);
@@ -176,17 +209,17 @@ namespace Presentacion
                 else
                 {
                     // EDITAR
-                    cliente.IdCliente = Convert.ToInt64(hfIdCliente.Value);
-                    cliente.IdPersona = Convert.ToInt64(hfIdPersona.Value); // Necesario para tu lógica de negocio
+                    cliente.IdCliente = idClienteActual;
+                    cliente.IdPersona = Convert.ToInt64(hfIdPersona.Value); 
                     negocio.Modificar(cliente);
                     MostrarMensaje("Cliente modificado correctamente.", "success");
                 }
-
                 CargarGrid();
                 LimpiarCamposModal();
 
                 // Cerrar modal
-                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal", "var myModalEl = document.getElementById('modalFormularioCliente'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
+                ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal",
+                    "var myModalEl = document.getElementById('modalFormularioCliente'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
             }
             catch (Exception ex)
             {
