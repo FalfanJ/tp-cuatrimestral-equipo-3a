@@ -15,6 +15,7 @@ namespace Presentacion
             if (!IsPostBack)
             {
                 CargarProveedoresFiltro();
+                CargarUsuariosFiltro();
                 CargarCompras();
             }
         }
@@ -47,16 +48,18 @@ namespace Presentacion
                 CompraNegocio compraNegocio = new CompraNegocio();
                 List<Compra> lista = compraNegocio.Listar();
 
-                // ---- Aplicamos si hay filtros
+                // ---- Aplicamos filtros si existen
                 lista = AplicarFiltros(lista);
 
+                // ---- Preparamos lista para el GridView
                 var listaParaGrid = lista.Select(c => new
                 {
                     IdCompra = c.IdCompra,
                     ProveedorNombre = c.Proveedor?.Nombre ?? "N/D",
                     Fecha = c.Fecha,
                     TotalProductos = c.Total,
-                    Detalle = c.Detalle
+                    Detalle = c.Detalle,
+                    Usuario = c.Usuario
                 }).ToList();
 
                 gvCompras.DataSource = listaParaGrid;
@@ -68,6 +71,7 @@ namespace Presentacion
                 lblMensaje.Visible = true;
             }
         }
+
 
         // ---- Metodo para formatear el detalle de productos
         public string FormatearDetalle(object detalleObj)
@@ -104,11 +108,20 @@ namespace Presentacion
         // ---- Aplicamos los filtros seleccionados a la lista de compras
         private List<Compra> AplicarFiltros(List<Compra> lista)
         {
+
+
             // ---- Filtrar por proveedor
             if (ddlProveedorFiltro.SelectedValue != "0")
             {
                 int idProveedor = int.Parse(ddlProveedorFiltro.SelectedValue);
                 lista = lista.Where(c => c.Proveedor != null && c.Proveedor.IdProveedor == idProveedor).ToList();
+            }
+
+            // ---- Filtrar por usuaruo responsable
+            if (ddlUsuarioFiltro.SelectedValue != "0")
+            {
+                long idUsuario = long.Parse(ddlUsuarioFiltro.SelectedValue);
+                lista = lista.Where(c => c.Usuario != null && c.Usuario.IdUsuario == idUsuario).ToList();
             }
 
             // ---- Filtrar por fechas
@@ -124,6 +137,25 @@ namespace Presentacion
             }
 
             return lista;
+        }
+
+        private void CargarUsuariosFiltro()
+        {
+            try
+            {
+                UsuarioNegocio usuarioNeg = new UsuarioNegocio();
+                var listaUsuarios = usuarioNeg.Listar();
+                ddlUsuarioFiltro.DataSource = listaUsuarios;
+                ddlUsuarioFiltro.DataTextField = "email";
+                ddlUsuarioFiltro.DataValueField = "IdUsuario";
+                ddlUsuarioFiltro.DataBind();
+                ddlUsuarioFiltro.Items.Insert(0, new ListItem("Todos", "0"));
+            }
+            catch (Exception ex)
+            {
+                lblMensaje.Text = "Error al cargar usuarios: " + ex.Message;
+                lblMensaje.Visible = true;
+            }
         }
 
     }

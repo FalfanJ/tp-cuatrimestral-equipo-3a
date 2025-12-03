@@ -20,11 +20,14 @@ namespace Presentacion
 
             dynamic usuario = Session["usuario"];
 
+            /*
+
             if (Seguridad.EsVendedor(usuario))
             {
                 Response.Redirect("Default.aspx");
                 return;
             }
+            */
 
             if (!IsPostBack && Request.QueryString["id"] != null)
             {

@@ -15,16 +15,19 @@ namespace Negocio
             {
                 datos.SetearConsulta(
         @"SELECT c.IDCompra,
-         c.Fecha,
-         c.Total,
-         p.IDProveedor,
-         p.Nombre AS ProveedorNombre,
-         c.IDUsuario,
-         c.Estado
-  FROM Compras c
-  INNER JOIN Proveedor p ON p.IDProveedor = c.IDProveedor
-  WHERE c.Estado = 1
-  ORDER BY c.IDCompra DESC");
+       c.Fecha,
+       c.Total,
+       p.IDProveedor,
+       p.Nombre AS ProveedorNombre,
+       u.IDUsuario,
+       u.Email AS email,
+       c.Estado
+FROM Compras c
+INNER JOIN Proveedor p ON p.IDProveedor = c.IDProveedor
+INNER JOIN Usuarios u ON u.IDUsuario = c.IDUsuario
+WHERE c.Estado = 1
+ORDER BY c.IDCompra DESC");
+
 
                 datos.EjecutarLectura();
 
@@ -47,7 +50,8 @@ namespace Negocio
 
                         Usuario = new Usuario
                         {
-                            IdUsuario = (long)datos.Lector["IDUsuario"]
+                            IdUsuario = (long)datos.Lector["IDUsuario"],
+                            email = datos.Lector["email"].ToString()
                         }
                     };
 

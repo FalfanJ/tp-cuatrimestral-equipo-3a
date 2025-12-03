@@ -2,15 +2,62 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        body { background: linear-gradient(135deg, #2735F5 0%, #4D079C 100%) !important; background-attachment: fixed; min-height: 100vh; }
-        h2 { color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3); font-weight: bold; }
-        .card-custom { border: none; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); background-color: #fff; overflow: hidden; }
-        .header-gradient-bg { background: linear-gradient(to right, #2735F5, #4D079C); color: white; padding: 15px 20px; }
-        .btn-action-green { background-color: #8BD100; border: none; color: white; font-weight: 600; transition: transform 0.2s; }
-        .btn-action-green:hover { background-color: #75b300; transform: scale(1.05); }
-        .btn-general-blue { background-color: #8FADFA; border: none; color: white; font-weight: 600; transition: transform 0.2s; }
-        .btn-general-blue:hover { background-color: #6c94f7; transform: scale(1.05); }
-        .form-label { font-weight: 600; color: #4D079C; }
+        body {
+            background: linear-gradient(135deg, #2735F5 0%, #4D079C 100%) !important;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        h2 {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        .header-gradient-bg {
+            background: linear-gradient(to right, #2735F5, #4D079C);
+            color: white;
+            padding: 15px 20px;
+        }
+
+        .btn-action-green {
+            background-color: #8BD100;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+            .btn-action-green:hover {
+                background-color: #75b300;
+                transform: scale(1.05);
+            }
+
+        .btn-general-blue {
+            background-color: #8FADFA;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+            .btn-general-blue:hover {
+                background-color: #6c94f7;
+                transform: scale(1.05);
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: #4D079C;
+        }
     </style>
 
     <div class="container pb-5">
@@ -40,6 +87,11 @@
                         <label class="form-label">Fecha Hasta:</label>
                         <asp:TextBox ID="txtFechaHasta" runat="server" CssClass="form-control" TextMode="Date" AutoPostBack="true" OnTextChanged="Filtro_SelectedIndexChanged"></asp:TextBox>
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Usuario Responsable:</label>
+                        <asp:DropDownList ID="ddlUsuarioFiltro" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="Filtro_SelectedIndexChanged">
+                        </asp:DropDownList>
+                    </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <asp:Button ID="btnLimpiarFiltros" runat="server" Text="Limpiar Filtros" CssClass="btn btn-general-blue w-100" OnClick="btnLimpiarFiltros_Click" />
                     </div>
@@ -62,9 +114,15 @@
                         GridLines="None">
                         <Columns>
                             <asp:BoundField DataField="IdCompra" HeaderText="ID" />
+                            <asp:TemplateField HeaderText="Usuario Responsable">
+                                <ItemTemplate>
+                                    <%# Eval("Usuario.Email") %>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
                             <asp:BoundField DataField="Fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy}" />
                             <asp:BoundField DataField="ProveedorNombre" HeaderText="Proveedor" />
-                            <asp:BoundField DataField="TotalProductos" HeaderText="Total Compra" />
+                            <asp:BoundField DataField="TotalProductos" HeaderText="Total Compra" DataFormatString="{0:C}" HtmlEncode="False" />
                             <asp:TemplateField HeaderText="Detalle">
                                 <ItemTemplate>
                                     <%# FormatearDetalle(Eval("Detalle")) %>

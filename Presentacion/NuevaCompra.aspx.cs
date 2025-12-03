@@ -50,13 +50,22 @@ namespace Presentacion
                     return;
                 }
 
+                // ---- Obtener Id del usuario desde la sesión
+                var usuarioSesion = Session["usuario"];
+                Int64 idUsuario = 0;
+                if (usuarioSesion != null)
+                {
+                    idUsuario = Convert.ToInt64(usuarioSesion.GetType().GetProperty("IdUsuario")?.GetValue(usuarioSesion) ?? 0);
+                }
+
                 ProductoNegocio prodNegocio = new ProductoNegocio();
                 CompraNegocio compraNegocio = new CompraNegocio();
 
+                // ---- Crear nueva compra
                 Compra nuevaCompra = new Compra
                 {
                     Proveedor = new Proveedor { IdProveedor = Convert.ToInt64(ddlProveedores.SelectedValue) },
-                    Usuario = new Usuario { IdUsuario = 1 },
+                    Usuario = new Usuario { IdUsuario = idUsuario }, // ---- aquí usamos el ID de sesión
                     Fecha = DateTime.Now,
                     Total = 0,
                     Detalle = new List<DetalleCompra>()
