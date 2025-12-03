@@ -11,17 +11,8 @@ namespace Presentacion
 {
 
 
-    public partial class Compras
+    public partial class NuevaCompra
     {
-
-        /// <summary>
-        /// btnNuevaCompra control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNuevaCompra;
 
         /// <summary>
         /// lblMensaje control.
@@ -33,48 +24,30 @@ namespace Presentacion
         protected global::System.Web.UI.WebControls.Label lblMensaje;
 
         /// <summary>
-        /// ddlProveedorFiltro control.
+        /// ddlProveedores control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlProveedorFiltro;
+        protected global::System.Web.UI.WebControls.DropDownList ddlProveedores;
 
         /// <summary>
-        /// txtFechaDesde control.
+        /// gvProductosFaltantes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtFechaDesde;
+        protected global::System.Web.UI.WebControls.GridView gvProductosFaltantes;
 
         /// <summary>
-        /// txtFechaHasta control.
+        /// btnConfirmarCompra control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtFechaHasta;
-
-        /// <summary>
-        /// btnLimpiarFiltros control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLimpiarFiltros;
-
-        /// <summary>
-        /// gvCompras control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvCompras;
+        protected global::System.Web.UI.WebControls.Button btnConfirmarCompra;
     }
 }

@@ -126,41 +126,6 @@ namespace Negocio
 
                     datos.EjecutarAccion();
 
-                    // ===============================
-                    // ACTUALIZAR STOCK
-                    // ===============================
-                    datos = new AccesoDatos();
-                    datos.SetearConsulta(
-                        @"UPDATE Productos 
-                          SET Stock = Stock + @cantidad,
-                              Precio = @precioUnitario,
-                              FechaActualizacion = GETDATE()
-                          WHERE IdProducto = @idproducto;"
-                    );
-
-                    datos.SetearParametro("@cantidad", det.Cantidad);
-                    datos.SetearParametro("@precioUnitario", det.PrecioUnitario);
-                    datos.SetearParametro("@idproducto", det.Producto.IdProducto);
-
-                    datos.EjecutarAccion();
-
-                    // ===============================
-                    // INSERTAR HISTORIAL DE PRECIOS
-                    // ===============================
-                    datos = new AccesoDatos();
-                    datos.SetearConsulta(
-                        @"INSERT INTO PriceHistory 
-                          (ProductId, ProviderId, PurchaseId, Price, DateCreated, CreatedBy)
-                          VALUES (@productId, @providerId, @purchaseId, @price, GETDATE(), @createdBy);"
-                    );
-
-                    datos.SetearParametro("@productId", det.Producto.IdProducto);
-                    datos.SetearParametro("@providerId", nuevo.Proveedor.IdProveedor);
-                    datos.SetearParametro("@purchaseId", nuevo.IdCompra);
-                    datos.SetearParametro("@price", det.PrecioUnitario);
-                    datos.SetearParametro("@createdBy", nuevo.Usuario.IdUsuario);
-
-                    datos.EjecutarAccion();
                 }
             }
             finally
