@@ -100,6 +100,25 @@
         </div>
 
         <!-- Registros de coompras -->
+        <div class="card card-custom my-4 p-4">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fas fa-chart-line me-2 text-primary" style="font-size: 22px;"></i>
+                <h4 class="fw-bold mb-0">Resumen del último mes</h4>
+            </div>
+
+            <div class="p-3 rounded" style="background: #f7f9ff; border-left: 5px solid #4D079C;">
+                <asp:Label ID="lblTopUsuario" runat="server"
+                    CssClass="fw-bold d-block mb-2"
+                    Style="font-size: 18px; color: #4D079C;">
+                </asp:Label>
+
+                <asp:Label ID="lblTotalMes" runat="server"
+                    CssClass="fw-bold d-block"
+                    Style="font-size: 18px; color: #2735F5;">
+                </asp:Label>
+            </div>
+        </div>
+
         <div class="card card-custom mt-4">
             <div class="card-header header-gradient-bg">
                 <h4 class="mb-0 fw-bold"><i class="fas fa-list me-2"></i>Compras Realizadas</h4>

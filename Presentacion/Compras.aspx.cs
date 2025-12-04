@@ -17,6 +17,7 @@ namespace Presentacion
                 CargarProveedoresFiltro();
                 CargarUsuariosFiltro();
                 CargarCompras();
+                CalcularResumenUltimoMes();
             }
         }
 
@@ -80,7 +81,9 @@ namespace Presentacion
             if (detalle == null || detalle.Count == 0)
                 return "-";
 
-            return string.Join("<br/>", detalle.Select(d => $"{d.Producto.Nombre} (x{d.Cantidad})"));
+            return string.Join("<br/>", detalle.Select(d =>
+                $"{d.Producto.Nombre} – x{d.Cantidad} – {d.PrecioUnitario:C} c/u"
+            ));
         }
 
         // ---- Boton para ir al la seccion de registro de compra
@@ -101,6 +104,7 @@ namespace Presentacion
             ddlProveedorFiltro.SelectedIndex = 0;
             txtFechaDesde.Text = string.Empty;
             txtFechaHasta.Text = string.Empty;
+            ddlUsuarioFiltro.SelectedIndex = 0;
 
             CargarCompras();
         }
@@ -157,6 +161,56 @@ namespace Presentacion
                 lblMensaje.Visible = true;
             }
         }
+
+        private void CalcularResumenUltimoMes()
+        {
+            try
+            {
+                CompraNegocio compraNegocio = new CompraNegocio();
+                List<Compra> todas = compraNegocio.Listar();
+
+                DateTime desde = DateTime.Now.AddDays(-30);
+                var comprasUltimoMes = todas.Where(c => c.Fecha >= desde).ToList();
+
+                if (comprasUltimoMes.Count == 0)
+                {
+                    lblTopUsuario.Text = "No hay compras registradas en el último mes bajo los filtros seleccionados.";
+                    lblTotalMes.Text = "";
+                    return;
+                }
+
+                decimal totalMes = comprasUltimoMes.Sum(c => c.Total);
+                lblTotalMes.Text = $"Total gastado en los últimos 30 días: {totalMes:C}";
+
+                var topUsuario = comprasUltimoMes
+                    .Where(c => c.Usuario != null)
+                    .GroupBy(c => c.Usuario.IdUsuario)  
+                    .Select(g => new
+                    {
+                        IdUsuario = g.Key,
+                        Email = g.First().Usuario.email,
+                        TotalGastado = g.Sum(x => x.Total)
+                    })
+                    .OrderByDescending(x => x.TotalGastado)
+                    .FirstOrDefault();
+
+                if (topUsuario != null)
+                {
+                    lblTopUsuario.Text =
+                        $"Usuario con más compras del último mes: {topUsuario.Email} (Gastó {topUsuario.TotalGastado:C})";
+                }
+                else
+                {
+                    lblTopUsuario.Text = "No se pudo determinar el usuario top.";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblTopUsuario.Text = "Error al calcular el resumen: " + ex.Message;
+            }
+        }
+
+
 
     }
 }
