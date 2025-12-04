@@ -21,17 +21,18 @@ namespace Presentacion
             }
         }
 
-        // ---- Cargamos los proveedores para el dropdown de filtro
         private void CargarProveedoresFiltro()
         {
             try
             {
                 ProveedorNegocio provNeg = new ProveedorNegocio();
-                var listaProveedores = provNeg.Listar();
-                ddlProveedorFiltro.DataSource = listaProveedores;
+                var lista = provNeg.Listar();
+
+                ddlProveedorFiltro.DataSource = lista;
                 ddlProveedorFiltro.DataTextField = "Nombre";
                 ddlProveedorFiltro.DataValueField = "IdProveedor";
                 ddlProveedorFiltro.DataBind();
+
                 ddlProveedorFiltro.Items.Insert(0, new ListItem("Todos", "0"));
             }
             catch (Exception ex)
@@ -41,29 +42,26 @@ namespace Presentacion
             }
         }
 
-        // ---- Cargamos todas las compras y las mostramos en el grid
         private void CargarCompras()
         {
             try
             {
-                CompraNegocio compraNegocio = new CompraNegocio();
-                List<Compra> lista = compraNegocio.Listar();
+                CompraNegocio negocio = new CompraNegocio();
+                var lista = negocio.Listar();
 
-                // ---- Aplicamos filtros si existen
                 lista = AplicarFiltros(lista);
 
-                // ---- Preparamos lista para el GridView
-                var listaParaGrid = lista.Select(c => new
+                var listaGrid = lista.Select(c => new
                 {
-                    IdCompra = c.IdCompra,
+                    c.IdCompra,
                     ProveedorNombre = c.Proveedor?.Nombre ?? "N/D",
-                    Fecha = c.Fecha,
+                    c.Fecha,
                     TotalProductos = c.Total,
-                    Detalle = c.Detalle,
+                    c.Detalle,
                     Usuario = c.Usuario
                 }).ToList();
 
-                gvCompras.DataSource = listaParaGrid;
+                gvCompras.DataSource = listaGrid;
                 gvCompras.DataBind();
             }
             catch (Exception ex)
@@ -73,11 +71,9 @@ namespace Presentacion
             }
         }
 
-
-        // ---- Metodo para formatear el detalle de productos
         public string FormatearDetalle(object detalleObj)
         {
-            var detalle = detalleObj as List<Dominio.DetalleCompra>;
+            var detalle = detalleObj as List<DetalleCompra>;
             if (detalle == null || detalle.Count == 0)
                 return "-";
 
@@ -86,58 +82,47 @@ namespace Presentacion
             ));
         }
 
-        // ---- Boton para ir al la seccion de registro de compra
         protected void btnNuevaCompra_Click(object sender, EventArgs e)
         {
             Response.Redirect("NuevaCompra.aspx");
         }
 
-        // ---- Evento al cambiar filtros
         protected void Filtro_SelectedIndexChanged(object sender, EventArgs e)
         {
             CargarCompras();
         }
 
-        // ---- Boton para limpiar filtros
         protected void btnLimpiarFiltros_Click(object sender, EventArgs e)
         {
             ddlProveedorFiltro.SelectedIndex = 0;
-            txtFechaDesde.Text = string.Empty;
-            txtFechaHasta.Text = string.Empty;
             ddlUsuarioFiltro.SelectedIndex = 0;
+            txtFechaDesde.Text = "";
+            txtFechaHasta.Text = "";
 
             CargarCompras();
         }
 
-        // ---- Aplicamos los filtros seleccionados a la lista de compras
         private List<Compra> AplicarFiltros(List<Compra> lista)
         {
-
-
-            // ---- Filtrar por proveedor
             if (ddlProveedorFiltro.SelectedValue != "0")
             {
-                int idProveedor = int.Parse(ddlProveedorFiltro.SelectedValue);
-                lista = lista.Where(c => c.Proveedor != null && c.Proveedor.IdProveedor == idProveedor).ToList();
+                int idProv = Convert.ToInt32(ddlProveedorFiltro.SelectedValue);
+                lista = lista.Where(c => c.Proveedor?.IdProveedor == idProv).ToList();
             }
 
-            // ---- Filtrar por usuaruo responsable
             if (ddlUsuarioFiltro.SelectedValue != "0")
             {
-                long idUsuario = long.Parse(ddlUsuarioFiltro.SelectedValue);
-                lista = lista.Where(c => c.Usuario != null && c.Usuario.IdUsuario == idUsuario).ToList();
+                long idUsr = Convert.ToInt64(ddlUsuarioFiltro.SelectedValue);
+                lista = lista.Where(c => c.Usuario?.IdUsuario == idUsr).ToList();
             }
 
-            // ---- Filtrar por fechas
-            if (DateTime.TryParse(txtFechaDesde.Text, out DateTime fechaDesde))
-            {
-                lista = lista.Where(c => c.Fecha >= fechaDesde).ToList();
-            }
+            if (DateTime.TryParse(txtFechaDesde.Text, out DateTime desde))
+                lista = lista.Where(c => c.Fecha >= desde).ToList();
 
-            if (DateTime.TryParse(txtFechaHasta.Text, out DateTime fechaHasta))
+            if (DateTime.TryParse(txtFechaHasta.Text, out DateTime hasta))
             {
-                fechaHasta = fechaHasta.AddDays(1).AddTicks(-1); // <-- Incluye todo el día
-                lista = lista.Where(c => c.Fecha <= fechaHasta).ToList();
+                hasta = hasta.AddDays(1).AddTicks(-1);
+                lista = lista.Where(c => c.Fecha <= hasta).ToList();
             }
 
             return lista;
@@ -147,12 +132,14 @@ namespace Presentacion
         {
             try
             {
-                UsuarioNegocio usuarioNeg = new UsuarioNegocio();
-                var listaUsuarios = usuarioNeg.Listar();
-                ddlUsuarioFiltro.DataSource = listaUsuarios;
-                ddlUsuarioFiltro.DataTextField = "email";
+                UsuarioNegocio negocio = new UsuarioNegocio();
+                var lista = negocio.Listar();
+
+                ddlUsuarioFiltro.DataSource = lista;
+                ddlUsuarioFiltro.DataTextField = "Email";
                 ddlUsuarioFiltro.DataValueField = "IdUsuario";
                 ddlUsuarioFiltro.DataBind();
+
                 ddlUsuarioFiltro.Items.Insert(0, new ListItem("Todos", "0"));
             }
             catch (Exception ex)
@@ -185,7 +172,7 @@ namespace Presentacion
 
                 var topUsuario = comprasUltimoMes
                     .Where(c => c.Usuario != null)
-                    .GroupBy(c => c.Usuario.IdUsuario)  
+                    .GroupBy(c => c.Usuario.IdUsuario)
                     .Select(g => new
                     {
                         IdUsuario = g.Key,
@@ -211,7 +198,43 @@ namespace Presentacion
             }
         }
 
+        protected void gvCompras_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
 
+        }
 
+        // ---- Eliminar registro de compra
+        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(ocultoIdCompra.Value) && long.TryParse(ocultoIdCompra.Value, out id))
+                {
+                    CompraNegocio negocio = new CompraNegocio();
+                    bool ok = negocio.BajaLogica(id);
+
+                    if (ok)
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ok",
+                            "showToast('Compra eliminada correctamente. Se ha devuelto el stock.', true);", true);
+                    else
+                        ScriptManager.RegisterStartupScript(this, GetType(), "fail",
+                            "showToast('No se pudo eliminar la compra.', false);", true);
+
+                    CargarCompras();
+                    CalcularResumenUltimoMes();
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "noid",
+                        "showToast('ID de compra inválido.', false);", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "err",
+                    $"showToast('Error al eliminar: {ex.Message}', false);", true);
+            }
+        }
     }
 }

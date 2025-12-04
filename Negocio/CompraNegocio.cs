@@ -88,13 +88,13 @@ ORDER BY c.IDCompra DESC");
 
             try
             {
-                // Calcular total
+                // ---- Calcular total
                 decimal total = 0;
                 foreach (var d in nuevo.Detalle)
                     total += d.Cantidad * d.PrecioUnitario;
                 nuevo.Total = total;
 
-                // Insertar compra (CABECERA)
+                // --- Insertar compra (CABECERA)
                 datos.SetearConsulta(
                     @"INSERT INTO Compras (IDUsuario, IDProveedor, Fecha, Total, Estado)
                       VALUES (@idusuario, @idproveedor, @fecha, @total, 1);
@@ -108,10 +108,8 @@ ORDER BY c.IDCompra DESC");
 
                 nuevo.IdCompra = Convert.ToInt64(datos.EjecutarScalar());
 
-                // ===============================
-                // INSERTAR DETALLE (Detalle_Compra)
-                // ===============================
-
+                //---- INSERTAR DETALLE (Detalle_Compra)
+   
                 foreach (var det in nuevo.Detalle)
                 {
                     datos = new AccesoDatos();
@@ -161,28 +159,57 @@ ORDER BY c.IDCompra DESC");
             }
         }
 
-        public bool BajaLogica(long ID)
+        public bool BajaLogica(long idCompra)
         {
             AccesoDatos datos = new AccesoDatos();
-            DetalleCompraNegocio detComNeg = new DetalleCompraNegocio();
-            bool resultado = false;
+            AccesoDatos datosDetalle = new AccesoDatos();
+            ProductoNegocio prodNeg = new ProductoNegocio();
 
             try
             {
-                if (detComNeg.BajaLogica(ID))
+  
+                datosDetalle.SetearConsulta(
+                    @"SELECT IDProducto, Cantidad 
+              FROM Detalle_Compra 
+              WHERE IDCompra = @id AND Estado = 1");
+
+                datosDetalle.SetearParametro("@id", idCompra);
+                datosDetalle.EjecutarLectura();
+
+                List<(long idProducto, int cantidad)> devolverStock = new List<(long, int)>();
+
+                while (datosDetalle.Lector.Read())
                 {
-                    datos.SetearConsulta(
-                        "UPDATE Compras SET Estado=0 WHERE IDCompra=@idcompra; SELECT @@ROWCOUNT;"
-                    );
-                    datos.SetearParametro("@idcompra", ID);
-                    resultado = Convert.ToInt32(datos.EjecutarScalar()) > 0;
+                    devolverStock.Add((
+                    Convert.ToInt64(datosDetalle.Lector["IDProducto"]),
+                    Convert.ToInt32(datosDetalle.Lector["Cantidad"])
+                ));
+
                 }
-                return resultado;
+                datosDetalle.CerrarConexion();
+
+
+                // ---- Devolvemos stock a cada producto
+                foreach (var item in devolverStock)
+                {
+                    prodNeg.SumarStock(item.idProducto, item.cantidad);
+                }
+
+                // ---- Baja lógica de la compra
+                datos.SetearConsulta("UPDATE Compras SET Estado = 0 WHERE IDCompra = @id");
+                datos.SetearParametro("@id", idCompra);
+
+                datos.EjecutarAccion();
+                return true;
+
             }
-            finally
+            catch (Exception ex)
             {
-                datos.CerrarConexion();
+                throw new Exception("Error al eliminar compra: " + ex.Message);
             }
         }
+
+
+
     }
 }

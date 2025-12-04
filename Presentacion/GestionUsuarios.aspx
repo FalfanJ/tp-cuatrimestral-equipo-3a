@@ -29,32 +29,59 @@
             color: white;
             padding: 15px 20px;
         }
-        
+
         .header-red-bg {
-             background-color: #D10000;
-             color: white;
-             padding: 15px 20px;
+            background-color: #D10000;
+            color: white;
+            padding: 15px 20px;
         }
 
         .btn-action-green {
-            background-color: #8BD100; border: none; color: white; font-weight: 600;
+            background-color: #8BD100;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-green:hover { background-color: #75b300; color: white; transform: scale(1.05); }
+
+            .btn-action-green:hover {
+                background-color: #75b300;
+                color: white;
+                transform: scale(1.05);
+            }
 
         .btn-action-red {
-            background-color: #D10000; border: none; color: white; font-weight: 600;
+            background-color: #D10000;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-red:hover { background-color: #a30000; color: white; transform: scale(1.05); }
+
+            .btn-action-red:hover {
+                background-color: #a30000;
+                color: white;
+                transform: scale(1.05);
+            }
 
         .btn-general-blue {
-             background-color: #8FADFA; border: none; color: white; font-weight: 600;
-             transition: transform 0.2s;
+            background-color: #8FADFA;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.2s;
         }
-        .btn-general-blue:hover { background-color: #6c94f7; color: white; transform: scale(1.05); }
 
-        .form-label { font-weight: 600; color: #4D079C; }
+            .btn-general-blue:hover {
+                background-color: #6c94f7;
+                color: white;
+                transform: scale(1.05);
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: #4D079C;
+        }
     </style>
 
     <div class="container pb-5">
@@ -216,7 +243,7 @@
         }
     </script>
 
-        <%-- TOAST NOTIFICACIONES --%>
+    <!-- TOAST NOTIFICACIONES -->
     <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 80px; right: 20px; z-index: 1060;">
         <div class="toast hide shadow-lg align-items-center border-0" role="alert" id="liveToast">
             <div class="d-flex">
@@ -233,7 +260,6 @@
 
             toastBody.innerText = mensaje;
 
-
             if (tipo === 'danger') {
                 toastEl.style.backgroundColor = "#D10000";
                 toastEl.classList.add('text-white');
@@ -249,5 +275,6 @@
             toast.show();
         }
     </script>
+
 
 </asp:Content>

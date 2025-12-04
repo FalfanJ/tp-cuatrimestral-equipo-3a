@@ -3,6 +3,7 @@ using Negocio;
 using Presentacion.Models;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 
 namespace Presentacion
@@ -52,7 +53,90 @@ namespace Presentacion
         {
             try
             {
+                bool tieneErrores = false;
+
+                // Validaciones
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MostrarMensaje("El nombre es obligatorio.", "danger");
+                    tieneErrores = true;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtCUIT.Text))
+                {
+                    MostrarMensaje("El CUIT es obligatorio.", "danger");
+                    tieneErrores = true;
+                }
+                else
+                {
+                    Regex regexCUIT = new Regex(@"^\d{2}-\d{8}-\d{1}$");
+                    if (!regexCUIT.IsMatch(txtCUIT.Text.Trim()))
+                    {
+                        MostrarMensaje("El CUIT debe tener el formato XX-XXXXXXXX-X.", "danger");
+                        tieneErrores = true;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(txtDireccion.Text))
+                {
+                    MostrarMensaje("La dirección es obligatoria.", "danger");
+                    tieneErrores = true;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtTelefono.Text))
+                {
+                    MostrarMensaje("El teléfono es obligatorio.", "danger");
+                    tieneErrores = true;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtEmail.Text))
+                {
+                    MostrarMensaje("El email es obligatorio.", "danger");
+                    tieneErrores = true;
+                }
+                else
+                {
+                    try
+                    {
+                        var mail = new System.Net.Mail.MailAddress(txtEmail.Text.Trim());
+                    }
+                    catch
+                    {
+                        MostrarMensaje("El email no tiene un formato válido.", "danger");
+                        tieneErrores = true;
+                    }
+                }
+
+                if (tieneErrores)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "abrirModalError",
+                        "var modalEl = document.getElementById('modalNuevoProveedor');" +
+                        "var modal = bootstrap.Modal.getOrCreateInstance(modalEl);" +
+                        "modal.show();",
+                        true);
+                    return;
+                }
+
+                // VALIDAR NOMBRE DUPLICADO
                 ProveedorNegocio negocio = new ProveedorNegocio();
+
+                long? idActual = string.IsNullOrEmpty(hfIdProveedor.Value)
+                    ? (long?)null
+                    : Convert.ToInt64(hfIdProveedor.Value);
+
+                if (negocio.ExisteNombre(txtNombre.Text.Trim(), idActual))
+                {
+                    MostrarMensaje("Ya existe un proveedor con ese nombre.", "danger");
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "abrirModalDuplicado",
+                        "var modalEl = document.getElementById('modalNuevoProveedor');" +
+                        "var modal = bootstrap.Modal.getOrCreateInstance(modalEl);" +
+                        "modal.show();",
+                        true);
+                    return;
+                }
+
+                // GUARDAR O EDITAR
                 Proveedor nuevo = new Proveedor
                 {
                     Nombre = txtNombre.Text.Trim(),
@@ -63,7 +147,6 @@ namespace Presentacion
                     Estado = true
                 };
 
-                // Si hay un ID oculto, estamos editando
                 if (!string.IsNullOrEmpty(hfIdProveedor.Value))
                 {
                     nuevo.IdProveedor = Convert.ToInt64(hfIdProveedor.Value);
@@ -79,15 +162,31 @@ namespace Presentacion
                 CargarProveedores();
                 LimpiarCampos();
 
-                // Cerrar el modal vía JS
+
+                // Cerrar modal
                 ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal",
-                    "var myModalEl = document.getElementById('modalNuevoProveedor'); var modal = bootstrap.Modal.getInstance(myModalEl); if(modal){ modal.hide(); } else { new bootstrap.Modal(myModalEl).hide(); }", true);
+                    "var modalEl = document.getElementById('modalNuevoProveedor');" +
+                    "var modal = bootstrap.Modal.getOrCreateInstance(modalEl);" +
+                    "modal.hide();",
+                    true);
+
             }
             catch (Exception ex)
             {
-                MostrarMensaje($"Error: {ex.Message}", "danger");
+                MostrarMensaje("Error: " + ex.Message, "danger");
+
+                // Si hubo una excepción, reabrir el modal
+                ScriptManager.RegisterStartupScript(this, GetType(), "abrirModalCatch",
+                    "var modalEl = document.getElementById('modalNuevoProveedor');" +
+                    "var modal = bootstrap.Modal.getOrCreateInstance(modalEl);" +
+                    "modal.show();",
+                    true);
             }
         }
+
+
+
+
 
         private void LimpiarCampos()
         {

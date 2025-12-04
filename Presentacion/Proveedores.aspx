@@ -33,37 +33,64 @@
             color: white;
             padding: 15px 20px;
         }
-        
+
         .header-red-bg {
-             background-color: #D10000;
-             color: white;
-             padding: 15px 20px;
+            background-color: #D10000;
+            color: white;
+            padding: 15px 20px;
         }
 
         /* --- BOTONES --- */
-        
+
         /* Verde (#8BD100) - Para Editar y Guardar */
         .btn-action-green {
-            background-color: #8BD100; border: none; color: white; font-weight: 600;
+            background-color: #8BD100;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-green:hover { background-color: #75b300; color: white; transform: scale(1.05); }
+
+            .btn-action-green:hover {
+                background-color: #75b300;
+                color: white;
+                transform: scale(1.05);
+            }
 
         /* Rojo (#D10000) - Para Eliminar */
         .btn-action-red {
-            background-color: #D10000; border: none; color: white; font-weight: 600;
+            background-color: #D10000;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-red:hover { background-color: #a30000; color: white; transform: scale(1.05); }
+
+            .btn-action-red:hover {
+                background-color: #a30000;
+                color: white;
+                transform: scale(1.05);
+            }
 
         /* Azul Claro (#8FADFA) - Secundarios */
         .btn-general-blue {
-             background-color: #8FADFA; border: none; color: white; font-weight: 600;
-             transition: transform 0.2s;
+            background-color: #8FADFA;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.2s;
         }
-        .btn-general-blue:hover { background-color: #6c94f7; color: white; transform: scale(1.05); }
 
-        .form-label { font-weight: 600; color: #4D079C; }
+            .btn-general-blue:hover {
+                background-color: #6c94f7;
+                color: white;
+                transform: scale(1.05);
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: #4D079C;
+        }
     </style>
 
     <div class="container pb-5">
@@ -72,7 +99,7 @@
                 <h2 class="fw-bold"><i class="fas fa-truck me-2"></i>Gestión de Proveedores</h2>
             </div>
             <div class="col-md-6 text-md-end">
-                <button type="button" class="btn btn-action-green btn-lg shadow" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" 
+                <button type="button" class="btn btn-action-green btn-lg shadow" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor"
                     onclick="limpiarFormulario()">
                     ✚ Nuevo Proveedor
                 </button>

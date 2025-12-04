@@ -226,96 +226,62 @@ namespace Presentacion
             }
         }
 
-        // BOTÓN GUARDAR (CREAR O EDITAR)
+        // BOTON GUARDAR
         protected void btnGuardarProducto_Click(object sender, EventArgs e)
         {
             try
             {
-                ProductoNegocio negocio = new ProductoNegocio();
-
-                string nombreIngresado = txtNombreProducto.Text.Trim();
-                string nSerieIngresado = txtNumeroSerie.Text.Trim();
-                int idMarcaIngresada = int.Parse(ddlMarcaNuevo.SelectedValue);
-                int idCategoriaIngresada = int.Parse(ddlCategoriaNuevo.SelectedValue);
-
-                long idActual = string.IsNullOrEmpty(hfIdProducto.Value) ? 0 : long.Parse(hfIdProducto.Value);
-
-               
-                List<Producto> listaValidacion = negocio.Listar();
-
-                
-                bool existeNombreMarca = listaValidacion.Any(x =>
-                    x.Nombre.Equals(nombreIngresado, StringComparison.OrdinalIgnoreCase) &&
-                    x.Marca.IdMarca == idMarcaIngresada &&
-                    x.IdProducto != idActual 
-                );
-
-                if (existeNombreMarca)
+                // --- VALIDACION DE CAMPOS VACIOS ---
+                if (string.IsNullOrWhiteSpace(txtNombreProducto.Text) ||
+                    string.IsNullOrWhiteSpace(txtNumeroSerie.Text) ||
+                    string.IsNullOrWhiteSpace(txtPrecio.Text) ||
+                    string.IsNullOrWhiteSpace(txtStock.Text) ||
+                    string.IsNullOrWhiteSpace(txtStockMinimo.Text) ||
+                    string.IsNullOrWhiteSpace(txtGanancia.Text) ||
+                    string.IsNullOrWhiteSpace(txtDescripcion.Text) ||
+                    ddlMarcaNuevo.SelectedIndex <= 0 ||
+                    ddlCategoriaNuevo.SelectedIndex <= 0)
                 {
-                    
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toastDuplicado",
-                        "mostrarToast('⚠️ Ya existe un producto con ese Nombre y Marca.', 'warning');", true);
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toastError",
+                        "mostrarToast('⚠️ Todos los campos son obligatorios.', 'danger');", true);
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(nSerieIngresado))
+                ProductoNegocio negocio = new ProductoNegocio();
+                long idActual = string.IsNullOrEmpty(hfIdProducto.Value) ? 0 : long.Parse(hfIdProducto.Value);
+
+                Producto producto = new Producto
                 {
-                    bool existeSerie = listaValidacion.Any(x =>
-                        x.NSerie.Equals(nSerieIngresado, StringComparison.OrdinalIgnoreCase) &&
-                        x.IdProducto != idActual
-                    );
-
-                    if (existeSerie)
-                    {
-                        ScriptManager.RegisterStartupScript(this, GetType(), "toastSerie",
-                            "mostrarToast('⚠️ El Número de Serie ya pertenece a otro producto.', 'warning');", true);
-                        return;
-                    }
-                }
-                
-
-                
-                Producto producto = new Producto();
-                producto.IdProducto = idActual; 
-                producto.Nombre = nombreIngresado;
-                producto.NSerie = nSerieIngresado;
-
-                producto.Marca = new Marca();
-                producto.Marca.IdMarca = idMarcaIngresada;
-
-                producto.Categoria = new Categoria();
-                producto.Categoria.IdCategoria = idCategoriaIngresada;
-
-                producto.Descripcion = txtDescripcion.Text.Trim();
-                producto.Modelo = "ModeloX";
-
-                if (decimal.TryParse(txtPrecio.Text, out decimal precio)) producto.Precio = precio;
-                else producto.Precio = 0;
-
-                if (short.TryParse(txtStock.Text, out short stock)) producto.Stock = stock;
-                else producto.Stock = 0;
-
-                if (short.TryParse(txtStockMinimo.Text, out short stMin)) producto.StockMinimo = stMin;
-                else producto.StockMinimo = 0;
-
-                if (short.TryParse(txtGanancia.Text, out short ganancia)) producto.PorcentajeGanancia = ganancia;
+                    IdProducto = idActual,
+                    Nombre = txtNombreProducto.Text.Trim(),
+                    NSerie = txtNumeroSerie.Text.Trim(),
+                    Marca = new Marca { IdMarca = int.Parse(ddlMarcaNuevo.SelectedValue) },
+                    Categoria = new Categoria { IdCategoria = int.Parse(ddlCategoriaNuevo.SelectedValue) },
+                    Descripcion = txtDescripcion.Text.Trim(),
+                    Modelo = "ModeloX",
+                    Precio = decimal.TryParse(txtPrecio.Text.Trim(), out decimal precio) ? precio : 0,
+                    Stock = short.TryParse(txtStock.Text.Trim(), out short stock) ? stock : (short)0,
+                    StockMinimo = short.TryParse(txtStockMinimo.Text.Trim(), out short stMin) ? stMin : (short)0,
+                    PorcentajeGanancia = short.TryParse(txtGanancia.Text.Trim(), out short ganancia) ? ganancia : (short)0
+                };
 
                 if (idActual == 0)
                 {
-                    // NUEVO
                     negocio.Agregar(producto);
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toast", "mostrarToast('Producto agregado con éxito.', 'success');", true);
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                        "mostrarToast('Producto agregado con éxito.', 'success');", true);
                 }
                 else
                 {
-                    // MODIFICAR
                     negocio.Modificar(producto);
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toast", "mostrarToast('Producto modificado con éxito.', 'success');", true);
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                        "mostrarToast('Producto modificado con éxito.', 'success');", true);
                 }
 
                 CargarGrilla();
                 LimpiarCamposModalNuevoProducto();
 
+                // Cerramos el modal
                 ScriptManager.RegisterStartupScript(this, GetType(), "cerrarModal",
                     "var myModalEl = document.getElementById('modalNuevoProducto'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.hide();", true);
             }
@@ -326,7 +292,9 @@ namespace Presentacion
             }
         }
 
-        //  LÓGICA DE ELIMINAR 
+
+
+        //  Eliminar producto
         protected void btnEliminarProductoConfirmado_Click(object sender, EventArgs e)
         {
             try

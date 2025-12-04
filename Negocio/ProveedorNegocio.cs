@@ -92,5 +92,33 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
+        public bool ExisteNombre(string nombre, long? idEditar = null)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                string query = "SELECT COUNT(*) FROM Proveedor WHERE LOWER(Nombre) = LOWER(@nombre) AND Estado = 1";
+
+                if (idEditar.HasValue)
+                    query += " AND IDProveedor <> @id";
+
+                datos.SetearConsulta(query);
+                datos.SetearParametro("@nombre", nombre);
+
+                if (idEditar.HasValue)
+                    datos.SetearParametro("@id", idEditar.Value);
+
+                datos.EjecutarLectura();
+                datos.Lector.Read();
+
+                return Convert.ToInt32(datos.Lector[0]) > 0;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+
     }
 }
