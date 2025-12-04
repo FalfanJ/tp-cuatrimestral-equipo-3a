@@ -98,7 +98,15 @@
                                             <asp:BoundField DataField="IdVenta" HeaderText="ID Venta" ItemStyle-CssClass="fw-bold" />
                                             <asp:BoundField DataField="Fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy}" />
                                             <asp:BoundField DataField="UsuarioEmail" HeaderText="Vendedor" />
-                                            <asp:BoundField DataField="NFactura" HeaderText="Factura" />
+                                            <asp:TemplateField HeaderText="Factura">
+                                                <ItemTemplate>
+                                                    <asp:HyperLink ID="hlFactura" runat="server" Text='<%# Eval("NFactura") %>'
+                                                        NavigateUrl='<%# "ReporteFactura.aspx?nfactura=" + Eval("NFactura") %>' Target="_blank"
+                                                        CssClass="text-decoration-none fw-bold">
+                                                    </asp:HyperLink>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+
                                             <asp:BoundField DataField="Total" HeaderText="Total" DataFormatString="{0:C}" ItemStyle-CssClass="text-primary fw-bold" />
                                         </Columns>
                                     </asp:GridView>

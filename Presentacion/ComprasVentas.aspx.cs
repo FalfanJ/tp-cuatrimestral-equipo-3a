@@ -3,6 +3,7 @@ using Negocio;
 using System;
 using System.Linq;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Presentacion
 {
@@ -48,6 +49,12 @@ namespace Presentacion
         protected void btnNuevaVenta_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/SeleccionCliente.aspx");
+        }
+
+        protected void lnkFactura_Command(object sender, CommandEventArgs e)
+        {
+            string nFactura = e.CommandArgument.ToString();
+            Response.Redirect("ReporteFactura.aspx?nfactura=" + nFactura);
         }
     }
 }
