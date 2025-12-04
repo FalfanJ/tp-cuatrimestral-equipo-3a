@@ -27,7 +27,7 @@ namespace Presentacion
                             "var myModalEl = document.getElementById('modalClienteBD'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.show();", true);
                         return;
                     }
-                    if (negProducto.CantidadRegistro()==0)
+                    if (negProducto.CantidadRegistro() == 0)
                     {
                         ScriptManager.RegisterStartupScript(this, GetType(), "AbrirModalCliente",
                             "var myModalEl = document.getElementById('modalProductoBD'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.show();", true);
@@ -43,10 +43,9 @@ namespace Presentacion
                 }
             }
             catch (Exception ex)
-{
+            {
                 lblErrorTotal.Text = ex.Message;
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
-                throw;
             }
 
         }
@@ -58,15 +57,23 @@ namespace Presentacion
 
         protected void gvCliente_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
-            List<Cliente> listClientes = (List<Cliente>)Session["listCliente"];
-            Int64 ID = Int64.Parse(gvCliente.SelectedDataKey.Value.ToString());
-
-            Cliente selected = listClientes.Find(x => x.IdCliente == ID);
-
-            if (selected != null)
+            try
             {
-                Session["Cliente"] = selected;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+                List<Cliente> listClientes = (List<Cliente>)Session["listCliente"];
+                Int64 ID = Int64.Parse(gvCliente.SelectedDataKey.Value.ToString());
+
+                Cliente selected = listClientes.Find(x => x.IdCliente == ID);
+
+                if (selected != null)
+                {
+                    Session["Cliente"] = selected;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
