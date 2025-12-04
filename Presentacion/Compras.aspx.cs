@@ -179,6 +179,7 @@ namespace Presentacion
                     return;
                 }
 
+                // ---- Cargamos el label
                 decimal totalMes = comprasUltimoMes.Sum(c => c.Total);
                 lblTotalMes.Text = $"Total gastado en los últimos 30 días: {totalMes:C}";
 
