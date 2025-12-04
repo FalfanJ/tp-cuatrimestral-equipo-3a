@@ -353,9 +353,6 @@ namespace Presentacion
                     {
                         cj[i] = (char)(('A' + rand.Next(26)));
                     }
-                    DateTime fecha = DateTime.Now;
-                    string factura = new string(cj);
-                    factura = factura + fecha.Year;
                     fac = $"{DateTime.Today.ToString("yyyyMMdd")}-{new string(cj)}";
                     bandera = ventas.Any(x => x.NFactura == fac);
                 } while (bandera);
