@@ -127,4 +127,34 @@
             </div>
         </div>
     </div>
+    <%--Error que viene por el catch --%>
+    <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalFinalizarLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-custom">
+                <div class="modal-body text-center py-4">
+                    <p class="mt-2">
+                        Error: 
+                   
+                        <asp:Label runat="server" CssClass="text-danger mt-2 d-block fw-bold" ID="lblErrorTotal"></asp:Label>
+                    </p>
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <asp:Button Text="Salir" runat="server" CssClass="btn btn-action-red px-5" ID="btnErrorSalir" OnClick="btnCancelarVenta_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function openModalError() {
+            var myModalEl = document.getElementById('modalError');
+            var modal = bootstrap.Modal.getInstance(myModalEl);
+            if (!modal) {
+                modal = new bootstrap.Modal(myModalEl);
+            }
+            modal.show();
+        }
+    </script>
 </asp:Content>
+
+

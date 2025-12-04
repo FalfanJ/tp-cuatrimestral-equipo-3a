@@ -33,16 +33,22 @@ namespace Presentacion
                             "var myModalEl = document.getElementById('modalProductoBD'); var modal = bootstrap.Modal.getInstance(myModalEl); if (!modal) { modal = new bootstrap.Modal(myModalEl);} modal.show();", true);
                         return;
                     }
+
                     Session["listCliente"] = listClientes;
                     gvCliente.DataSource = listClientes;
                     gvCliente.DataBind();
+
+
+
                 }
             }
-            catch (Exception)
-            {
-
+            catch (Exception ex)
+{
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
                 throw;
             }
+
         }
 
         protected void btnCancelarVenta_Click(object sender, EventArgs e)
