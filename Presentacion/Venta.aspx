@@ -330,6 +330,7 @@
                     </p>
                 </div>
                 <div class="modal-footer bg-light justify-content-center">
+                    <asp:Button Text="Ver Reporte" runat="server" CssClass="btn btn-info px-5" ID="btnReporte" OnClick="btnReporte_Click"/>
                     <asp:Button Text="Salir" runat="server" CssClass="btn btn-action-green px-5" ID="btnFin" OnClick="btnFin_Click" />
                 </div>
             </div>

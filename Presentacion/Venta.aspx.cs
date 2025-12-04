@@ -248,6 +248,7 @@ namespace Presentacion
 
                 ven.NFactura = GFactura();
                 lblNumeroFactura.Text = ven.NFactura;
+                Session["nFacturaSession"] = ven.NFactura;
                 ven.Detalle = listDetalle;
                 ven.Usuario = usuario;
                 ven.Cliente = cliente;
@@ -366,6 +367,29 @@ namespace Presentacion
                     }
                 } while (bandera);
                 return fac;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        protected void btnReporte_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string fac = (string)Session["nFacturaSession"];
+                if (Session["listDetalle"] != null)
+                    Session.Remove("listDetalle");
+                if (Session["Cliente"] != null)
+                    Session.Remove("Cliente");
+                if (Session["detalleActual"] != null)
+                    Session.Remove("detalleActual");
+                if (Session["listProducto"] != null)
+                    Session.Remove("listProducto");
+                Response.Redirect("ReporteFactura.aspx?nfactura=" + fac);
 
             }
             catch (Exception ex)

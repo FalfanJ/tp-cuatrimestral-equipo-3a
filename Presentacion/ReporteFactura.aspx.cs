@@ -29,11 +29,28 @@ namespace Presentacion
             }
             */
 
-            if (!IsPostBack && Request.QueryString["id"] != null)
+            //if (!IsPostBack && Request.QueryString["id"] != null)
+            //{
+            //    txtNumVenta.Text = Request.QueryString["id"];
+            //    CargarFactura();
+            //}
+            if (!IsPostBack)
             {
-                txtNumVenta.Text = Request.QueryString["id"];
-                CargarFactura();
+                string id = Request.QueryString["id"];
+                string nfact = Request.QueryString["nfactura"];
+
+                if (!string.IsNullOrEmpty(id) && string.IsNullOrEmpty(nfact))
+                {
+                    txtNumVenta.Text = id;
+                    CargarFactura();
+                }
+                else if (!string.IsNullOrEmpty(nfact))
+                {
+                    txtNumVenta.Text = nfact;
+                    CargarFactura();
+                }
             }
+
         }
 
         protected void btnBuscarVenta_Click(object sender, EventArgs e)
