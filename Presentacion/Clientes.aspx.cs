@@ -276,6 +276,8 @@ namespace Presentacion
             txtCUIT.Text = "";
             txtDireccion.Text = "";
             TituloModal = "➕ Nuevo Cliente";
+            litTituloModal.Text = TituloModal;
+            UpdatePanelFormulario.Update();
         }
 
         private void MostrarMensaje(string mensaje, string tipo)

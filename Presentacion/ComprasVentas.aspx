@@ -23,7 +23,10 @@
             overflow: hidden;
             transition: transform 0.3s ease;
         }
-        .card-menu:hover { transform: translateY(-5px); }
+
+        .card-menu:hover {
+            transform: translateY(-5px);
+        }
 
         .header-gradient-bg {
             background: linear-gradient(to right, #2735F5, #4D079C);
@@ -32,49 +35,94 @@
         }
 
         .btn-action-green {
-            background-color: #8BD100; border: none; color: white; font-weight: 600;
+            background-color: #8BD100;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-action-green:hover { background-color: #75b300; transform: scale(1.05); }
+
+            .btn-action-green:hover {
+                background-color: #75b300;
+                transform: scale(1.05);
+            }
 
         .btn-general-blue {
-            background-color: #8FADFA; border: none; color: white; font-weight: 600;
+            background-color: #8FADFA;
+            border: none;
+            color: white;
+            font-weight: 600;
             transition: transform 0.2s;
         }
-        .btn-general-blue:hover { background-color: #6c94f7; transform: scale(1.05); }
 
-        .form-label { font-weight: 600; color: #4D079C; }
+            .btn-general-blue:hover {
+                background-color: #6c94f7;
+                transform: scale(1.05);
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: #4D079C;
+        }
     </style>
 
     <div class="container pb-5">
-        <h2 class="text-center mb-5 mt-4 fw-bold"><i class="fas fa-exchange-alt me-2"></i>Movimientos Comerciales</h2>
 
         <asp:UpdatePanel ID="upMain" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
 
-                <!-- Tarjetas Venta -->
-                <div class="row justify-content-center">
-
-                    <div class="col-md-5 mb-4">
-                        <div class="card card-custom card-menu h-100">
-                            <div class="card-header header-gradient-bg text-center">
-                                <h4 class="mb-0 fw-bold"><i class="fas fa-cash-register me-2"></i>Ventas</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="fw-bold"><i class="fas fa-cart-plus me-2"></i>Ventas</h2>
+                    <asp:Button ID="Button1" runat="server"
+                        CssClass="btn btn-action-green btn-lg shadow"
+                        Text="Registrar Venta" OnClick="btnNuevaVenta_Click" />
+                </div>
+                <!-- Tabla de Ventas -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card card-custom shadow">
+                            <div class="card-header header-gradient-bg">
+                                <h4 class="mb-0 fw-bold"><i class="fas fa-shopping-cart me-2"></i>Ventas Registradas</h4>
                             </div>
-                            <div class="card-body text-center p-5">
-                                <i class="fas fa-shopping-cart fa-4x mb-4" style="color: #8BD100;"></i>
-                                <p class="card-text text-muted mb-4">Iniciar nueva venta a cliente y generar comprobante.</p>
-                                <asp:Button ID="btnNuevaVenta" runat="server" 
-                                    CssClass="btn btn-action-green btn-lg w-100 shadow py-3" 
-                                    Text="Registrar Venta" OnClick="btnNuevaVenta_Click" />
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <asp:GridView ID="gvVentas" runat="server"
+                                        AutoGenerateColumns="False"
+                                        CssClass="table table-hover table-striped align-middle mb-0"
+                                        EmptyDataText="No hay ventas registradas"
+                                        GridLines="None">
+
+                                        <HeaderStyle BackColor="White" ForeColor="#1A0047" BorderStyle="None" Height="50px" Font-Bold="True" />
+
+                                        <Columns>
+                                            <asp:BoundField DataField="IdVenta" HeaderText="ID Venta" ItemStyle-CssClass="fw-bold" />
+                                            <asp:BoundField DataField="Fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy}" />
+                                            <asp:BoundField DataField="UsuarioEmail" HeaderText="Vendedor" />
+                                            <asp:BoundField DataField="NFactura" HeaderText="Factura" />
+                                            <asp:BoundField DataField="Total" HeaderText="Total" DataFormatString="{0:C}" ItemStyle-CssClass="text-primary fw-bold" />
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <asp:BoundField DataField="Total" HeaderText="Total" DataFormatString="{0:C}" ItemStyle-CssClass="text-primary fw-bold" />
+                </Columns>
+                                    </asp:GridView>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </ContentTemplate>
         </asp:UpdatePanel>
+
+
     </div>
 
- 
+
     <!-- Toast Notificaciones -->
     <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 80px; right: 20px; z-index: 1060;">
         <div class="toast hide shadow-lg align-items-center border-0" role="alert" id="liveToast">

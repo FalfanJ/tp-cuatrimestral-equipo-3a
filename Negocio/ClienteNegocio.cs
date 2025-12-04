@@ -178,5 +178,40 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
+        public Cliente ObtenerPorId(long idCliente)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            PersonaNegocio perNeg = new PersonaNegocio();
+
+            try
+            {
+                // Traemos solo el cliente solicitado
+                datos.SetearConsulta("SELECT IDCliente, IDPersona, Estado FROM Clientes WHERE IDCliente = @id");
+                datos.SetearParametro("@id", idCliente);
+                datos.EjecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    Cliente aux = new Cliente();
+                    aux.IdCliente = (long)datos.Lector["IDCliente"];
+                    aux.IdPersona = (long)datos.Lector["IDPersona"];
+                    aux.Estado = (bool)datos.Lector["Estado"];
+
+                    return aux;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.CerrarConexion();
+            }
+        }
+
     }
 }

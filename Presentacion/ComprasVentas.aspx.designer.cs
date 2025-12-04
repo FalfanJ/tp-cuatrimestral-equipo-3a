@@ -24,12 +24,21 @@ namespace Presentacion
         protected global::System.Web.UI.UpdatePanel upMain;
 
         /// <summary>
-        /// btnNuevaVenta control.
+        /// Button1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNuevaVenta;
+        protected global::System.Web.UI.WebControls.Button Button1;
+
+        /// <summary>
+        /// gvVentas control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvVentas;
     }
 }

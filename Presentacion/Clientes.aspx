@@ -150,7 +150,10 @@
                         <asp:HiddenField ID="hfIdPersona" runat="server" />
 
                         <div class="modal-header header-gradient-bg">
-                            <h5 class="modal-title fw-bold"><%= TituloModal %></h5>
+                            <h5 class="modal-title fw-bold">
+    <asp:Literal ID="litTituloModal" runat="server" />
+</h5>
+
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body p-4">

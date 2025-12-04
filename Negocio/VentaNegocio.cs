@@ -13,29 +13,38 @@ namespace Negocio
         {
             List<Venta> lista = new List<Venta>();
             AccesoDatos datos = new AccesoDatos();
+            ClienteNegocio clienteNeg = new ClienteNegocio();
+            UsuarioNegocio usuarioNeg = new UsuarioNegocio();
 
             try
             {
                 datos.SetearConsulta("SELECT IDVenta, IDCliente, IDUsuario, NFactura, Fecha, Total FROM Ventas WHERE Estado=1");
                 datos.EjecutarLectura();
+
                 while (datos.Lector.Read())
                 {
                     Venta aux = new Venta();
                     aux.IdVenta = (Int64)datos.Lector["IDVenta"];
-                    aux.Cliente = new Cliente();
-                    aux.Cliente.IdCliente = (Int64)datos.Lector["IDCliente"];
-                    aux.Usuario = new Usuario();
-                    aux.Usuario.IdUsuario = (Int64)datos.Lector["IDUsuario"];
+
+                    // Cargar Cliente completo
+                    var idCliente = (Int64)datos.Lector["IDCliente"];
+                    aux.Cliente = clienteNeg.ObtenerPorId(idCliente); // Debes implementar este método en ClienteNegocio
+
+                    // Cargar Usuario completo
+                    var idUsuario = (Int64)datos.Lector["IDUsuario"];
+                    aux.Usuario = usuarioNeg.ObtenerPorId(idUsuario); // Debes implementar este método en UsuarioNegocio
+
                     aux.NFactura = (string)datos.Lector["NFactura"];
                     aux.Fecha = (DateTime)datos.Lector["Fecha"];
                     aux.Total = (decimal)datos.Lector["Total"];
+
                     lista.Add(aux);
                 }
+
                 return lista;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
             finally
@@ -43,6 +52,7 @@ namespace Negocio
                 datos.CerrarConexion();
             }
         }
+
         public bool Agregar(Venta nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
