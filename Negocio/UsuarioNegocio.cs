@@ -174,7 +174,7 @@ namespace Negocio
 
             try
             {
-                datos.SetearConsulta("SELECT IDUsuario, TipoUsuario, NombreUsuario, Email, Contrasenia FROM Usuarios WHERE IDUsuario = @id AND Estado = 1");
+                datos.SetearConsulta("SELECT IDUsuario, TipoUsuario, NombreUsuario, Email, Contrasenia FROM Usuarios WHERE IDUsuario = @id");
                 datos.SetearParametro("@id", idUsuario);
                 datos.EjecutarLectura();
 
