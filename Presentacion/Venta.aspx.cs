@@ -109,7 +109,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
         protected void txtCantidad_TextChanged(object sender, EventArgs e)
@@ -163,7 +164,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
@@ -206,7 +208,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
         protected void btnAgregar_Click(object sender, EventArgs e)
@@ -226,7 +229,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
@@ -248,6 +252,7 @@ namespace Presentacion
 
                 ven.NFactura = GFactura();
                 lblNumeroFactura.Text = ven.NFactura;
+                Session["nFacturaSession"] = ven.NFactura;
                 ven.Detalle = listDetalle;
                 ven.Usuario = usuario;
                 ven.Cliente = cliente;
@@ -264,8 +269,9 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
 
-                throw ex;
             }
         }
 
@@ -331,7 +337,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
@@ -343,27 +350,17 @@ namespace Presentacion
                 VentaNegocio negVenta = new VentaNegocio();
                 ventas = negVenta.Listar();
                 var rand = new Random();
-                char[] cj = new char[5];
-                bool bandera = true;
+                bool bandera;
                 string fac;
                 do
                 {
+                    char[] cj = new char[5];
                     for (int i = 0; i < 5; i++)
                     {
                         cj[i] = (char)(('A' + rand.Next(26)));
                     }
-                    DateTime fecha = DateTime.Now;
-                    string factura = new string(cj);
-                    factura = factura + fecha.Year;
-                    Console.WriteLine("\n");
                     fac = $"{DateTime.Today.ToString("yyyyMMdd")}-{new string(cj)}";
-                    foreach (Dominio.Venta item in ventas)
-                    {
-                        if (item.NFactura != fac)
-                        {
-                            bandera = false;
-                        }
-                    }
+                    bandera = ventas.Any(x => x.NFactura == fac);
                 } while (bandera);
                 return fac;
 
@@ -372,6 +369,30 @@ namespace Presentacion
             {
 
                 throw ex;
+            }
+        }
+
+        protected void btnReporte_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string fac = (string)Session["nFacturaSession"];
+                if (Session["listDetalle"] != null)
+                    Session.Remove("listDetalle");
+                if (Session["Cliente"] != null)
+                    Session.Remove("Cliente");
+                if (Session["detalleActual"] != null)
+                    Session.Remove("detalleActual");
+                if (Session["listProducto"] != null)
+                    Session.Remove("listProducto");
+                Response.Redirect("ReporteFactura.aspx?nfactura=" + fac);
+
+            }
+            catch (Exception ex)
+            {
+
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
     }
