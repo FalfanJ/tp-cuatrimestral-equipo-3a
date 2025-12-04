@@ -344,11 +344,11 @@ namespace Presentacion
                 VentaNegocio negVenta = new VentaNegocio();
                 ventas = negVenta.Listar();
                 var rand = new Random();
-                char[] cj = new char[5];
-                bool bandera = true;
+                bool bandera;
                 string fac;
                 do
                 {
+                    char[] cj = new char[5];
                     for (int i = 0; i < 5; i++)
                     {
                         cj[i] = (char)(('A' + rand.Next(26)));
@@ -356,15 +356,8 @@ namespace Presentacion
                     DateTime fecha = DateTime.Now;
                     string factura = new string(cj);
                     factura = factura + fecha.Year;
-                    Console.WriteLine("\n");
                     fac = $"{DateTime.Today.ToString("yyyyMMdd")}-{new string(cj)}";
-                    foreach (Dominio.Venta item in ventas)
-                    {
-                        if (item.NFactura != fac)
-                        {
-                            bandera = false;
-                        }
-                    }
+                    bandera = ventas.Any(x => x.NFactura == fac);
                 } while (bandera);
                 return fac;
 
