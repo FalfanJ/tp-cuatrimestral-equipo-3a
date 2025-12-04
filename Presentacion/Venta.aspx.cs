@@ -109,7 +109,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
         protected void txtCantidad_TextChanged(object sender, EventArgs e)
@@ -163,7 +164,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
@@ -206,7 +208,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
         protected void btnAgregar_Click(object sender, EventArgs e)
@@ -226,7 +229,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
@@ -265,8 +269,9 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
 
-                throw ex;
             }
         }
 
@@ -332,7 +337,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
 
@@ -385,7 +391,8 @@ namespace Presentacion
             catch (Exception ex)
             {
 
-                throw ex;
+                lblErrorTotal.Text = ex.Message;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HidePopup", "openModalError();", true);
             }
         }
     }
